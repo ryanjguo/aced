@@ -4,7 +4,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Aced',
-  description: 'Watch VCT with friends. Call it before it happens.',
+  description: 'The VCT community hub.',
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

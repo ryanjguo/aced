@@ -1,8 +1,8 @@
 # aced
 
-Watch VCT with friends. Call it before it happens.
+The VCT community hub.
 
-Live match rooms, pick'em leagues and a track record for every call you make, built on official VALORANT Esports data.
+A home for VCT discussion: a feed, forums, and a page for every player, team and event, built on official VALORANT Esports data.
 
 ## Stack
 
@@ -17,28 +17,6 @@ packages/
   types/    Shared types
   tsconfig/ Shared TypeScript config
 ```
-
-## Getting started
-
-Requires Node 22+ and pnpm.
-
-```sh
-pnpm install
-cp .env.example .env
-pnpm dev
-```
-
-Web runs on `localhost:3000`, API on `localhost:4000`.
-
-## Scripts
-
-| Command          |                             |
-| ---------------- | --------------------------- |
-| `pnpm dev`       | Run every app in watch mode |
-| `pnpm build`     | Build everything            |
-| `pnpm typecheck` | Type-check all packages     |
-| `pnpm lint`      | Lint and format check       |
-| `pnpm format`    | Fix lint and formatting     |
 
 ---
 
