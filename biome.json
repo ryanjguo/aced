@@ -6,7 +6,12 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/.next", "!**/dist"]
+    "includes": [
+      "**",
+      "!**/.next",
+      "!**/dist",
+      "!**/*.md"
+    ]
   },
   "formatter": {
     "indentStyle": "space",
