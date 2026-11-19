@@ -4,7 +4,7 @@ export default function Home() {
       <h1 className="text-5xl font-bold tracking-tight">
         aced<span className="text-accent">.</span>
       </h1>
-      <p className="text-muted">Watch VCT with friends. Call it before it happens.</p>
+      <p className="text-muted">The VCT community hub.</p>
     </main>
   )
 }
