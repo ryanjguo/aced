@@ -11,7 +11,7 @@
     "typecheck": "turbo typecheck",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "db:up": "docker compose up -d postgres",
+    "db:up": "docker compose up -d",
     "db:generate": "pnpm --filter @aced/db db:generate",
     "db:migrate": "pnpm --filter @aced/db db:migrate",
     "db:studio": "pnpm --filter @aced/db db:studio"

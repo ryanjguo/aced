@@ -9,6 +9,7 @@ apps/web       Next.js (App Router) + Tailwind
 apps/api       Fastify REST API
 apps/worker    GRID ingestion and background jobs
 packages/db    Drizzle schema, client and migrations (@aced/db)
+packages/redis Redis client (@aced/redis)
 packages/types Shared types, imported as @aced/types
 packages/tsconfig Shared TS config
 ```
@@ -23,7 +24,7 @@ pnpm lint       # Biome lint + format check
 pnpm format     # fix lint + formatting
 pnpm typecheck
 pnpm build
-pnpm db:up       # local Postgres via Docker Compose
+pnpm db:up       # local Postgres + Redis via Docker Compose
 pnpm db:generate # generate a migration after editing packages/db/src/schema
 pnpm db:migrate  # apply migrations
 ```
