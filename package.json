@@ -10,7 +10,11 @@
     "build": "turbo build",
     "typecheck": "turbo typecheck",
     "lint": "biome check .",
-    "format": "biome check --write ."
+    "format": "biome check --write .",
+    "db:up": "docker compose up -d postgres",
+    "db:generate": "pnpm --filter @aced/db db:generate",
+    "db:migrate": "pnpm --filter @aced/db db:migrate",
+    "db:studio": "pnpm --filter @aced/db db:studio"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.8",
