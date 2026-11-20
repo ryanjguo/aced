@@ -18,6 +18,8 @@ packages/
   tsconfig/ Shared TypeScript config
 ```
 
+Deployment: see [docs/deployment.md](docs/deployment.md).
+
 ---
 
 Not affiliated with or endorsed by Riot Games.
