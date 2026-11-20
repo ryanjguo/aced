@@ -9,11 +9,11 @@ export function createDb(url: string, options: { max?: number } = {}) {
   return drizzle(sql, { schema, casing: 'snake_case' })
 }
 
-export async function pingDb(db: Db): Promise<boolean> {
-  try {
-    await db.execute('select 1')
-    return true
-  } catch {
-    return false
-  }
+export async function pingDb(db: Db, timeoutMs = 1000): Promise<boolean> {
+  const timeout = new Promise<false>((resolve) => setTimeout(() => resolve(false), timeoutMs))
+  const ping = db.execute('select 1').then(
+    () => true,
+    () => false,
+  )
+  return Promise.race([ping, timeout])
 }

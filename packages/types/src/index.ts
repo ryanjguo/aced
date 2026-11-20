@@ -19,7 +19,11 @@ export interface Series {
 }
 
 export interface HealthResponse {
-  status: 'ok'
+  status: 'ok' | 'degraded'
   service: string
   time: string
+  checks: {
+    postgres: boolean
+    redis: boolean
+  }
 }
