@@ -14,7 +14,8 @@
     "db:up": "docker compose up -d",
     "db:generate": "pnpm --filter @aced/db db:generate",
     "db:migrate": "pnpm --filter @aced/db db:migrate",
-    "db:studio": "pnpm --filter @aced/db db:studio"
+    "db:studio": "pnpm --filter @aced/db db:studio",
+    "test": "turbo test"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.8",

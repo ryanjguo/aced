@@ -39,6 +39,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm build
       - run: pnpm db:migrate
+      - run: pnpm test
       - name: Check migrations match schema
         run: |
           pnpm db:generate
