@@ -48,7 +48,7 @@ Run `pnpm lint && pnpm typecheck && pnpm build` before every push. CI runs the s
 - One issue → one branch → one PR. Small PRs.
 - Branches: `feat/<issue>-<slug>`, `fix/…`, `chore/…`, `docs/…` (e.g. `feat/12-esports-tables`).
 - Commits: short imperative subject ("Add series endpoints"), body only when needed.
-- PR description starts with `Closes #<issue>`. Squash-merge.
+- PR description starts with `Closes #<issue>`, then: What does this do? / Why is this important? / How was it tested? Keep each short and plain. Squash-merge.
 - Issues use the template: What does this do? / Why is this important? / Additional context / How do we test this? / Acceptance criteria.
 - Labels: one type (`feature`, `bug`, `chore`, `docs`) plus areas (`web`, `api`, `worker`, `infra`, `data`).
 
