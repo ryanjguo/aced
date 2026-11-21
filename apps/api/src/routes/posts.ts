@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { toPost } from '../mappers/social.js'
 import { assertClean, rateLimit } from '../moderation.js'
+import { loadTags, saveTags, tagsInput } from '../tags.js'
 import { currentUser, requireUser } from '../user.js'
 import { myVotes } from '../votes.js'
 
@@ -17,18 +18,34 @@ const takeBody = z.string().trim().min(1).max(500)
 
 // Users can create only these kinds; the rest are system-generated.
 const createBody = z.discriminatedUnion('kind', [
-  z.object({ kind: z.literal('thread'), boardId: z.uuid(), title, body: body.default('') }),
+  z.object({
+    kind: z.literal('thread'),
+    boardId: z.uuid(),
+    title,
+    body: body.default(''),
+    tags: tagsInput.default([]),
+  }),
   z.object({
     kind: z.literal('link'),
     boardId: z.uuid(),
     title,
     url: z.url({ protocol: /^https?$/ }).max(2000),
     body: body.default(''),
+    tags: tagsInput.default([]),
   }),
-  z.object({ kind: z.literal('take'), body: takeBody, boardId: z.uuid().optional() }),
+  z.object({
+    kind: z.literal('take'),
+    body: takeBody,
+    boardId: z.uuid().optional(),
+    tags: tagsInput.default([]),
+  }),
 ])
 
-const updateBody = z.object({ title: title.optional(), body: body.optional() })
+const updateBody = z.object({
+  title: title.optional(),
+  body: body.optional(),
+  tags: tagsInput.optional(),
+})
 const idParams = z.object({ id: z.uuid() })
 
 export const postRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -40,8 +57,11 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
       .leftJoin(boards, eq(boards.id, posts.boardId))
       .where(eq(posts.id, id))
     if (!row) throw new HttpError(404, 'not_found', 'Post not found')
-    const votes = await myVotes(app.db, userId, 'post', [id])
-    return toPost(row.post, row.author, row.board, votes.get(id))
+    const [votes, tags] = await Promise.all([
+      myVotes(app.db, userId, 'post', [id]),
+      loadTags(app.db, [id]),
+    ])
+    return toPost(row.post, row.author, row.board, votes.get(id), tags.get(id))
   }
 
   async function ownPost(id: string, userId: string): Promise<PostRow> {
@@ -68,11 +88,16 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
       )
       await rateLimit(app, user, 'post')
       const createdAt = new Date()
-      const [row] = await app.db
-        .insert(posts)
-        .values({ ...input, authorId: user.id, createdAt, hotScore: hotScore(0, createdAt) })
-        .returning({ id: posts.id })
-      if (!row) throw new Error('insert returned no row')
+      const { tags, ...values } = input
+      const row = await app.db.transaction(async (tx) => {
+        const [created] = await tx
+          .insert(posts)
+          .values({ ...values, authorId: user.id, createdAt, hotScore: hotScore(0, createdAt) })
+          .returning({ id: posts.id })
+        if (!created) throw new Error('insert returned no row')
+        await saveTags(tx, created.id, tags)
+        return created
+      })
       reply.code(201)
       return loadPost(row.id, user.id)
     },
@@ -87,20 +112,23 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireUser, schema: { params: idParams, body: updateBody } },
     async (req): Promise<Post> => {
       const post = await ownPost(req.params.id, currentUser(req).id)
-      const { title, body } = req.body
+      const { title, body, tags } = req.body
       if (post.kind === 'take') {
         if (title !== undefined) throw new HttpError(400, 'bad_request', 'Takes have no title')
         if (body !== undefined && !takeBody.safeParse(body).success) {
           throw new HttpError(400, 'bad_request', 'Takes are 1–500 characters')
         }
       }
-      if (title === undefined && body === undefined)
-        return loadPost(post.id, post.authorId ?? undefined)
       assertClean(title, body)
-      await app.db
-        .update(posts)
-        .set({ title, body, editedAt: new Date() })
-        .where(eq(posts.id, post.id))
+      await app.db.transaction(async (tx) => {
+        if (title !== undefined || body !== undefined) {
+          await tx
+            .update(posts)
+            .set({ title, body, editedAt: new Date() })
+            .where(eq(posts.id, post.id))
+        }
+        if (tags) await saveTags(tx, post.id, tags)
+      })
       return loadPost(post.id, post.authorId ?? undefined)
     },
   )

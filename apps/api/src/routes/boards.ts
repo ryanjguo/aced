@@ -4,6 +4,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
 import { toBoard, toPost } from '../mappers/social.js'
+import { loadTags } from '../tags.js'
 import { myVotes } from '../votes.js'
 
 const PAGE_SIZE = 25
@@ -75,8 +76,14 @@ export const boardRoutes: FastifyPluginAsyncZod = async (app) => {
         'post',
         page.map((r) => r.post.id),
       )
+      const tags = await loadTags(
+        app.db,
+        page.map((r) => r.post.id),
+      )
       return {
-        items: page.map((r) => toPost(r.post, r.author, board, votes.get(r.post.id))),
+        items: page.map((r) =>
+          toPost(r.post, r.author, board, votes.get(r.post.id), tags.get(r.post.id)),
+        ),
         nextCursor: rows.length > PAGE_SIZE && last ? encodeCursor([last.key, last.post.id]) : null,
       }
     },
