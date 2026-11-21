@@ -8,7 +8,6 @@ import type {
   teams,
 } from './schema/index.js'
 
-// Database row types. API response shapes live in @aced/types.
 export type EventRow = typeof events.$inferSelect
 export type TeamRow = typeof teams.$inferSelect
 export type PlayerRow = typeof players.$inferSelect
