@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
+import { FollowButton } from '@/components/FollowButton'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { serverApi } from '@/lib/server-api'
 import { cn } from '@/lib/utils'
@@ -76,6 +77,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
           </p>
           {profile.bio && <p className="mt-2 text-sm break-words">{profile.bio}</p>}
         </div>
+        <FollowButton type="user" id={profile.id} />
       </header>
 
       <nav

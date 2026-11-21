@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
+import { FollowButton } from '@/components/FollowButton'
 import { api } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
 import { Discussion } from '../../_components/Discussion'
@@ -58,21 +59,24 @@ export default async function PlayerPage({ params }: Props) {
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight">{player.handle}</h1>
-        <p className="text-sm text-muted">
-          {[player.realName, player.country && `${flag(player.country)} ${player.country}`]
-            .filter(Boolean)
-            .join(' · ')}
-          {player.team && (
-            <>
-              {(player.realName || player.country) && ' · '}
-              <Link href={`/teams/${player.team.slug}`} className="text-fg/80 hover:underline">
-                {player.team.name}
-              </Link>
-            </>
-          )}
-        </p>
+      <header className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold tracking-tight">{player.handle}</h1>
+          <p className="text-sm text-muted">
+            {[player.realName, player.country && `${flag(player.country)} ${player.country}`]
+              .filter(Boolean)
+              .join(' · ')}
+            {player.team && (
+              <>
+                {(player.realName || player.country) && ' · '}
+                <Link href={`/teams/${player.team.slug}`} className="text-fg/80 hover:underline">
+                  {player.team.name}
+                </Link>
+              </>
+            )}
+          </p>
+        </div>
+        <FollowButton type="player" id={player.id} />
       </header>
 
       <section aria-labelledby="averages">

@@ -3,6 +3,7 @@ import type { Event, EventDetail } from '@aced/types'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
+import { FollowButton } from '@/components/FollowButton'
 import { api } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
 import { Discussion } from '../../_components/Discussion'
@@ -48,11 +49,14 @@ export default async function EventPage({ params }: Props) {
     <main className="mx-auto max-w-3xl px-4 py-8">
       {detail ? (
         <>
-          <header className="mb-6 flex flex-col gap-1">
-            <h1 className="text-2xl font-bold tracking-tight">{detail.event.name}</h1>
-            <p className="text-sm text-muted">
-              {[dates(detail.event), region(detail.event)].filter(Boolean).join(' · ')}
-            </p>
+          <header className="mb-6 flex items-start justify-between gap-4">
+            <div className="flex min-w-0 flex-col gap-1">
+              <h1 className="text-2xl font-bold tracking-tight">{detail.event.name}</h1>
+              <p className="text-sm text-muted">
+                {[dates(detail.event), region(detail.event)].filter(Boolean).join(' · ')}
+              </p>
+            </div>
+            <FollowButton type="event" id={detail.event.id} />
           </header>
           <MatchList series={detail.series} timeZone={timeZone} />
           <div className="mt-8">
