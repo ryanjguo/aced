@@ -12,8 +12,10 @@ export {
   lte,
   ne,
   or,
+  type SQL,
   sql,
 } from 'drizzle-orm'
+export type { AnyPgColumn } from 'drizzle-orm/pg-core'
 export { createDb, type Db, pingDb, type Tx } from './client.js'
 export * as schema from './schema/index.js'
 export type * from './types.js'

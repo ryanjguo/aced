@@ -270,3 +270,13 @@ export interface PostTag {
   name: string
   slug: string
 }
+
+export interface EntityResult {
+  type: TagEntityType
+  id: string
+  /** Player handle, team name or event name. */
+  name: string
+  slug: string
+  /** Player's current team tag, team tag or event region. */
+  detail: string | null
+}
