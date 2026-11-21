@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
+import { PostCard } from '@/components/cards/PostCard'
 import { Markdown } from '@/components/Markdown'
 import { TagChips } from '@/components/TagChips'
 import { Badge } from '@/components/ui/badge'
@@ -63,7 +64,7 @@ export default async function PostPage({ params }: Props) {
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
       <article className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 sm:p-6">
         <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
-          {post.kind !== 'thread' && (
+          {post.kind !== 'thread' && !post.data && (
             <Badge variant="secondary" className="capitalize">
               {post.kind.replace('_', ' ')}
             </Badge>
@@ -73,13 +74,21 @@ export default async function PostPage({ params }: Props) {
               {post.board.name}
             </Link>
           )}
-          <span>{post.author && !post.isRemoved ? `@${post.author.handle}` : '[removed]'}</span>
+          {post.isRemoved ? (
+            <span>[removed]</span>
+          ) : (
+            post.author && <span>@{post.author.handle}</span>
+          )}
           <time dateTime={post.createdAt}>{timeAgo(post.createdAt)}</time>
           {post.editedAt && <span>edited</span>}
           {post.isLocked && <Badge variant="outline">Locked</Badge>}
         </p>
+        {post.data && !post.isRemoved && <PostCard data={post.data} />}
         {post.title && (
-          <h1 className="text-xl font-bold tracking-tight break-words">{post.title}</h1>
+          // The card shows the same facts, so keep the title for screen readers only.
+          <h1 className={post.data ? 'sr-only' : 'text-xl font-bold tracking-tight break-words'}>
+            {post.title}
+          </h1>
         )}
         {post.isRemoved ? (
           <p className="text-sm text-muted italic">[removed]</p>
