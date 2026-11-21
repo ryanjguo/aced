@@ -142,6 +142,30 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
+  app.get(
+    '/rumors',
+    {
+      schema: {
+        querystring: z.object({
+          status: z.enum(['open', 'confirmed', 'denied']).default('open'),
+          cursor: z.string().max(500).optional(),
+        }),
+      },
+    },
+    async (req): Promise<Page<Post>> => {
+      const { rumorStatus } = schema
+      const where = sql`exists (select 1 from ${rumorStatus} where ${rumorStatus.postId} = ${posts.id}
+        and ${rumorStatus.status} = ${req.query.status})`
+      return listPosts(app.db, {
+        where,
+        sort: 'new',
+        t: 'all',
+        cursor: req.query.cursor,
+        userId: req.user?.id,
+      })
+    },
+  )
+
   app.get('/posts/:id', { schema: { params: idParams } }, (req) =>
     loadPost(req.params.id, req.user?.id),
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import type { BoardPostsQuery } from '@aced/api-client'
-import type { Post, TagEntityType } from '@aced/types'
+import type { Post, RumorStatus, TagEntityType } from '@aced/types'
 import { useEffect, useRef, useState } from 'react'
 import { PostRow } from '@/app/_components/PostRow'
 import { api } from '@/lib/api'
@@ -12,6 +12,7 @@ export type FeedSource =
   | { entityType: TagEntityType; entityId: string }
   | { search: string }
   | { feed: 'for-you' | 'following' }
+  | { rumors: RumorStatus }
 
 export function PostFeed({
   source,
@@ -45,7 +46,9 @@ export function PostFeed({
               ? await api.searchPosts(source.search, cursor)
               : 'feed' in source
                 ? await api.feed(source.feed, cursor)
-                : await api.entityPosts(source.entityType, source.entityId, params)
+                : 'rumors' in source
+                  ? await api.rumors(source.rumors, cursor)
+                  : await api.entityPosts(source.entityType, source.entityId, params)
         setItems((prev) => [...prev, ...page.items])
         setCursor(page.nextCursor)
       } catch {
