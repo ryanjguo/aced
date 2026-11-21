@@ -1,9 +1,12 @@
+import { createDb } from '@aced/db'
 import { createJobQueues } from '@aced/jobs'
 import { createQueueConnection } from '@aced/redis'
 import { Worker } from 'bullmq'
 import { env } from './env.js'
-import { jobs } from './jobs/index.js'
+import { createJobs } from './jobs/index.js'
 
+const db = createDb(env.databaseUrl)
+const jobs = createJobs(db)
 const connection = createQueueConnection(env.redisUrl)
 const queues = createJobQueues(connection)
 
@@ -24,6 +27,7 @@ async function shutdown(signal: string) {
   await Promise.all(workers.map((w) => w.close()))
   await queues.close()
   connection.disconnect()
+  await db.$client.end()
   process.exit(0)
 }
 process.once('SIGTERM', () => void shutdown('SIGTERM'))

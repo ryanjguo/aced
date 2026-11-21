@@ -11,7 +11,9 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@aced/db": "workspace:*",
     "@aced/jobs": "workspace:*",
+    "@aced/ranking": "workspace:*",
     "@aced/redis": "workspace:*",
     "@aced/types": "workspace:*",
     "bullmq": "^6.7.8"
