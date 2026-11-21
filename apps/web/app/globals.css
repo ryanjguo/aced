@@ -30,6 +30,15 @@
   --color-ring: var(--color-accent);
 }
 
+@layer base {
+  /* Tailwind v4 borders default to currentColor; shadcn components expect the border token. */
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-border);
+  }
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-fg);
