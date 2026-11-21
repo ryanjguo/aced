@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@aced/api-client": "workspace:*",
     "@aced/types": "workspace:*",
     "next": "^16.4.6",
     "react": "^19.3.1",
