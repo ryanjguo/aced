@@ -150,3 +150,12 @@ export interface Comment {
 }
 
 export type VoteValue = -1 | 0 | 1
+
+export interface SeriesList {
+  items: Series[]
+}
+
+export interface EventDetail {
+  event: Event
+  series: Series[]
+}
