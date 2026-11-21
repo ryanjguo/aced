@@ -14,6 +14,7 @@ import { boardRoutes } from './routes/boards.js'
 import { commentRoutes } from './routes/comments.js'
 import { entityRoutes } from './routes/entities.js'
 import { eventRoutes } from './routes/events.js'
+import { followRoutes } from './routes/follows.js'
 import { healthRoutes } from './routes/health.js'
 import { meRoutes } from './routes/me.js'
 import { modRoutes } from './routes/mod.js'
@@ -82,6 +83,7 @@ export function buildApp(options: AppOptions) {
   app.register(modRoutes)
   app.register(userRoutes)
   app.register(searchRoutes)
+  app.register(followRoutes)
 
   return app
 }

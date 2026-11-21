@@ -138,3 +138,22 @@ export const postTags = pgTable(
     index().on(t.entityType, t.entityId, t.postId),
   ],
 )
+
+export const followTarget = pgEnum('follow_target', ['player', 'team', 'event', 'user'])
+
+export const follows = pgTable(
+  'follows',
+  {
+    userId: uuid()
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    targetType: followTarget().notNull(),
+    // Polymorphic, so no foreign key.
+    targetId: uuid().notNull(),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.targetType, t.targetId] }),
+    index().on(t.targetType, t.targetId),
+  ],
+)
