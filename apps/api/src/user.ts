@@ -25,8 +25,12 @@ export function registerCurrentUser(app: FastifyInstance) {
   })
 }
 
+/** Requires a signed-in user; banned users can still read but not write. */
 export async function requireUser(req: FastifyRequest) {
-  currentUser(req)
+  const user = currentUser(req)
+  if (req.method !== 'GET' && user.bannedUntil && user.bannedUntil > new Date()) {
+    throw new HttpError(403, 'banned', `You're banned until ${user.bannedUntil.toISOString()}`)
+  }
 }
 
 const rank: Record<UserRole, number> = { user: 0, moderator: 1, admin: 2 }
