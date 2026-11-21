@@ -1,9 +1,11 @@
 import type {
   accounts,
+  boards,
   events,
   maps,
   playerMapStats,
   players,
+  posts,
   rosterStints,
   series,
   sessions,
@@ -21,3 +23,5 @@ export type PlayerMapStatRow = typeof playerMapStats.$inferSelect
 export type UserRow = typeof users.$inferSelect
 export type SessionRow = typeof sessions.$inferSelect
 export type AccountRow = typeof accounts.$inferSelect
+export type BoardRow = typeof boards.$inferSelect
+export type PostRow = typeof posts.$inferSelect
