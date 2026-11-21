@@ -1,11 +1,16 @@
 import type {
   ApiError,
   ApiErrorCode,
+  BoardList,
   EventDetail,
   HealthResponse,
+  Page,
+  Post,
+  PostSort,
   SeriesDetail,
   SeriesList,
   SeriesStatus,
+  TopWindow,
 } from '@aced/types'
 
 export class ApiClientError extends Error {
@@ -24,6 +29,19 @@ export interface SeriesQuery {
   to?: string
   status?: SeriesStatus
   eventId?: string
+}
+
+export interface BoardPostsQuery {
+  sort?: PostSort
+  t?: TopWindow
+  cursor?: string
+}
+
+const query = (params: object) => {
+  const search = new URLSearchParams(
+    Object.entries(params).filter((e): e is [string, string] => e[1] !== undefined),
+  )
+  return search.size ? `?${search}` : ''
 }
 
 export interface ApiClientOptions {
@@ -47,16 +65,15 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
   return {
     // 503 still carries a health report saying what is down.
     health: (init?: RequestInit) => request<HealthResponse>('/health', init, [503]),
-    series: (query: SeriesQuery = {}, init?: RequestInit) => {
-      const params = new URLSearchParams(
-        Object.entries(query).filter((e): e is [string, string] => e[1] !== undefined),
-      )
-      return request<SeriesList>(`/series${params.size ? `?${params}` : ''}`, init)
-    },
+    series: (params: SeriesQuery = {}, init?: RequestInit) =>
+      request<SeriesList>(`/series${query(params)}`, init),
     seriesById: (id: string, init?: RequestInit) =>
       request<SeriesDetail>(`/series/${encodeURIComponent(id)}`, init),
     event: (slug: string, init?: RequestInit) =>
       request<EventDetail>(`/events/${encodeURIComponent(slug)}`, init),
+    boards: (init?: RequestInit) => request<BoardList>('/boards', init),
+    boardPosts: (slug: string, params: BoardPostsQuery = {}, init?: RequestInit) =>
+      request<Page<Post>>(`/boards/${encodeURIComponent(slug)}/posts${query(params)}`, init),
   }
 }
 
