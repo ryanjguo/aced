@@ -23,7 +23,8 @@ export function ApiStatus() {
       {health && health.status !== 'ok' && (
         <span>
           (postgres {health.checks.postgres ? 'up' : 'down'}, redis{' '}
-          {health.checks.redis ? 'up' : 'down'})
+          {health.checks.redis ? 'up' : 'down'}
+          {health.checks.worker === false && ', data sync stale'})
         </span>
       )}
     </p>
