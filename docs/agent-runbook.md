@@ -5,12 +5,23 @@ How an unattended agent session picks up and ships one ticket. Read CLAUDE.md fi
 ## 1. Pick a ticket
 
 1. Open the pinned **Build order** issue. Work top to bottom.
-2. Take the first unchecked issue that:
-   - is open and labelled `agent-ready`
-   - has no open PR already linked to it
-   - has every "Depends on" issue either closed or with an open PR you can stack on
-3. Skip `needs-human` and `blocked` issues.
-4. Do one ticket per session. If time remains, take the next one.
+2. A ticket is **available** if it is open, labelled `agent-ready`, has no open PR linked to it, and every "Depends on" issue is closed or has an open PR you can stack on.
+3. Never take `needs-human`, `blocked` or `epic` issues: they need Ryan or something external.
+4. Prefer tickets Ryan won't need to act on. A ticket **needs Ryan** if its PR would need manual steps to work (new keys, accounts, env vars, dashboard changes). Take one of those only if:
+   - later tickets depend on it, or
+   - no other available ticket is left.
+   Build the code anyway and list the manual steps in the PR.
+5. Before starting, check the ticket's size. If it would clearly exceed ~400 changed lines (excluding generated files), split it: create sub-issues with the issue template (add them under the ticket via the sub-issues API), add them to the Build order right after the parent, then start the first one.
+6. Keep going ticket after ticket.
+
+### When the Build order is done
+
+There is always more to do. When no available ticket is left:
+
+1. Compare the app with `docs/` and the open issues, and look for gaps: bugs, missing tests, missing empty/error/loading states, accessibility, performance, missing pieces of finished slices.
+2. Create tickets for what you find (issue template, labels, `agent-ready` or `needs-human`) and append them to the Build order.
+3. Only when the current slices have no gaps left, break down the first `epic` issue in the Build order's "Later" list into tickets the same way.
+4. Continue with the new tickets.
 
 ## 2. Branch
 
