@@ -14,3 +14,7 @@ export const timestamps = {
     .defaultNow()
     .$onUpdate(() => new Date()),
 }
+
+export const tsvector = customType<{ data: string }>({
+  dataType: () => 'tsvector',
+})

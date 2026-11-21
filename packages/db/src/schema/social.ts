@@ -15,7 +15,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core'
 import { users } from './auth.js'
-import { citext, id, timestamps } from './columns.js'
+import { citext, id, timestamps, tsvector } from './columns.js'
 import { series } from './esports.js'
 
 export const boards = pgTable('boards', {
@@ -61,8 +61,13 @@ export const posts = pgTable(
     isLocked: boolean().notNull().default(false),
     ...timestamps,
     editedAt: timestamp({ withTimezone: true }),
+    // Full-text search over title and body.
+    searchVector: tsvector().generatedAlwaysAs(
+      sql`to_tsvector('english', coalesce(title, '') || ' ' || body)`,
+    ),
   },
   (t) => [
+    index('posts_search_idx').using('gin', t.searchVector),
     index().on(t.boardId, t.hotScore.desc()),
     index().on(t.boardId, t.createdAt.desc()),
     index().on(t.authorId, t.createdAt.desc()),
