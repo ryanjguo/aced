@@ -2,6 +2,7 @@ import type {
   ApiError,
   ApiErrorCode,
   BoardList,
+  CommentNode,
   EventDetail,
   HealthResponse,
   Me,
@@ -79,6 +80,15 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
     boards: (init?: RequestInit) => request<BoardList>('/boards', init),
     boardPosts: (slug: string, params: BoardPostsQuery = {}, init?: RequestInit) =>
       request<Page<Post>>(`/boards/${encodeURIComponent(slug)}/posts${query(params)}`, init),
+    post: (id: string, init?: RequestInit) =>
+      request<Post>(`/posts/${encodeURIComponent(id)}`, init),
+    postComments: (id: string, cursor?: string, init?: RequestInit) =>
+      request<Page<CommentNode>>(
+        `/posts/${encodeURIComponent(id)}/comments${query({ cursor })}`,
+        init,
+      ),
+    commentReplies: (id: string, init?: RequestInit) =>
+      request<{ items: CommentNode[] }>(`/comments/${encodeURIComponent(id)}/replies`, init),
     modReports: (cursor?: string, init?: RequestInit) =>
       request<Page<ModQueueItem>>(`/mod/reports${query({ cursor })}`, init),
     modAction: (input: ModActionInput) =>
