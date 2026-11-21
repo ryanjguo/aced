@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { api } from '@/lib/api'
+import { getTimeZone } from '@/lib/time-zone'
 import { MatchList } from '../../matches/_components/MatchList'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function EventPage({ params }: Props) {
-  const detail = await getEvent((await params).slug)
+  const [detail, timeZone] = await Promise.all([getEvent((await params).slug), getTimeZone()])
   if (detail === 'not_found') notFound()
 
   return (
@@ -52,7 +53,7 @@ export default async function EventPage({ params }: Props) {
               {[dates(detail.event), region(detail.event)].filter(Boolean).join(' · ')}
             </p>
           </header>
-          <MatchList series={detail.series} />
+          <MatchList series={detail.series} timeZone={timeZone} />
         </>
       ) : (
         <p role="alert" className="py-12 text-center text-sm text-muted">
