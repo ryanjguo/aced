@@ -11,6 +11,8 @@ import { type Auth, type AuthOptions, createAuth } from './auth.js'
 import { registerErrorHandlers } from './errors.js'
 import { authRoutes } from './routes/auth.js'
 import { healthRoutes } from './routes/health.js'
+import { meRoutes } from './routes/me.js'
+import { registerCurrentUser } from './user.js'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -45,9 +47,15 @@ export function buildApp(options: AppOptions) {
   })
 
   registerErrorHandlers(app)
-  app.register(cors, { origin: options.webOrigin, credentials: true })
+  registerCurrentUser(app)
+  app.register(cors, {
+    origin: options.webOrigin,
+    credentials: true,
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  })
   app.register(healthRoutes)
   app.register(authRoutes)
+  app.register(meRoutes)
 
   return app
 }
