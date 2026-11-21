@@ -1,21 +1,26 @@
-import { Search } from 'lucide-react'
 import Link from 'next/link'
 import { AccountMenu } from './AccountMenu'
+import { MobileMenu } from './MobileMenu'
+
+const link = 'hidden text-sm text-muted hover:text-fg sm:inline'
 
 export function SiteHeader() {
   return (
     <header className="border-b border-border">
       <nav className="mx-auto flex h-14 max-w-3xl items-center gap-6 px-4">
-        <Link href="/" className="text-lg font-bold tracking-tight">
-          aced<span className="text-accent">.</span>
-        </Link>
-        <Link href="/matches" className="text-sm text-muted hover:text-fg">
+        <div className="flex items-center gap-3">
+          <MobileMenu />
+          <Link href="/" className="text-lg font-bold tracking-tight">
+            aced<span className="text-accent">.</span>
+          </Link>
+        </div>
+        <Link href="/matches" className={link}>
           Matches
         </Link>
-        <Link href="/boards" className="text-sm text-muted hover:text-fg">
+        <Link href="/boards" className={link}>
           Boards
         </Link>
-        <Link href="/rumors" className="hidden text-sm text-muted hover:text-fg sm:inline">
+        <Link href="/rumors" className={link}>
           Rumors
         </Link>
         <div className="ml-auto flex items-center gap-3">
@@ -30,9 +35,6 @@ export function SiteHeader() {
               />
             </form>
           </search>
-          <Link href="/search" aria-label="Search" className="text-muted hover:text-fg sm:hidden">
-            <Search className="size-5" />
-          </Link>
           <AccountMenu />
         </div>
       </nav>
