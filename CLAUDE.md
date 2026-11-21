@@ -47,6 +47,8 @@ Run `pnpm lint && pnpm typecheck && pnpm build` before every push. CI runs the s
 
 ## Workflow
 
+- Unattended agent sessions follow `docs/agent-runbook.md`.
+
 - One issue → one branch → one PR. PRs are atomic: one concern, ideally under ~400 changed lines excluding generated files. Split bigger tickets into stacked PRs.
 - Micro commits: one small logical step each.
 - Branches: `feat/<issue>-<slug>`, `fix/…`, `chore/…`, `docs/…` (e.g. `feat/12-esports-tables`).
