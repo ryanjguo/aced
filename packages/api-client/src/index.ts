@@ -1,4 +1,12 @@
-import type { ApiError, ApiErrorCode, HealthResponse } from '@aced/types'
+import type {
+  ApiError,
+  ApiErrorCode,
+  EventDetail,
+  HealthResponse,
+  SeriesDetail,
+  SeriesList,
+  SeriesStatus,
+} from '@aced/types'
 
 export class ApiClientError extends Error {
   constructor(
@@ -9,6 +17,13 @@ export class ApiClientError extends Error {
     super(message)
     this.name = 'ApiClientError'
   }
+}
+
+export interface SeriesQuery {
+  from?: string
+  to?: string
+  status?: SeriesStatus
+  eventId?: string
 }
 
 export interface ApiClientOptions {
@@ -32,6 +47,16 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
   return {
     // 503 still carries a health report saying what is down.
     health: (init?: RequestInit) => request<HealthResponse>('/health', init, [503]),
+    series: (query: SeriesQuery = {}, init?: RequestInit) => {
+      const params = new URLSearchParams(
+        Object.entries(query).filter((e): e is [string, string] => e[1] !== undefined),
+      )
+      return request<SeriesList>(`/series${params.size ? `?${params}` : ''}`, init)
+    },
+    seriesById: (id: string, init?: RequestInit) =>
+      request<SeriesDetail>(`/series/${encodeURIComponent(id)}`, init),
+    event: (slug: string, init?: RequestInit) =>
+      request<EventDetail>(`/events/${encodeURIComponent(slug)}`, init),
   }
 }
 

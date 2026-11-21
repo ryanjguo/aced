@@ -2,7 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { ApiClientError, createApiClient } from '../src/index.js'
 
 function mockFetch(status: number, body: unknown) {
-  return vi.fn(async () => new Response(JSON.stringify(body), { status }))
+  return vi.fn(
+    async (_url: string, _init?: RequestInit) => new Response(JSON.stringify(body), { status }),
+  )
 }
 
 describe('api client', () => {
@@ -39,5 +41,15 @@ describe('api client', () => {
     const fetch = vi.fn(async () => new Response('Bad Gateway', { status: 502 }))
     const api = createApiClient({ baseUrl: 'http://api', fetch })
     await expect(api.health()).rejects.toMatchObject({ status: 502, code: 'internal' })
+  })
+  it('builds series query strings', async () => {
+    const fetch = mockFetch(200, { items: [] })
+    const api = createApiClient({ baseUrl: 'http://api', fetch })
+    await api.series({ status: 'live', eventId: undefined })
+    await api.series()
+    expect(fetch.mock.calls.map((c) => c[0])).toEqual([
+      'http://api/series?status=live',
+      'http://api/series',
+    ])
   })
 })
