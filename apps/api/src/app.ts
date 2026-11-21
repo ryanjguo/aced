@@ -7,13 +7,16 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod'
+import { type Auth, type AuthOptions, createAuth } from './auth.js'
 import { registerErrorHandlers } from './errors.js'
+import { authRoutes } from './routes/auth.js'
 import { healthRoutes } from './routes/health.js'
 
 declare module 'fastify' {
   interface FastifyInstance {
     db: Db
     redis: Redis
+    auth: Auth
   }
 }
 
@@ -21,6 +24,7 @@ export interface AppOptions {
   databaseUrl: string
   redisUrl: string
   webOrigin: string
+  auth: Omit<AuthOptions, 'webOrigin'>
   logger?: boolean
 }
 
@@ -34,14 +38,16 @@ export function buildApp(options: AppOptions) {
   redis.on('error', (err) => app.log.warn({ err }, 'redis error'))
   app.decorate('db', db)
   app.decorate('redis', redis)
+  app.decorate('auth', createAuth(db, { ...options.auth, webOrigin: options.webOrigin }))
   app.addHook('onClose', async () => {
     redis.disconnect()
     await db.$client.end()
   })
 
   registerErrorHandlers(app)
-  app.register(cors, { origin: options.webOrigin })
+  app.register(cors, { origin: options.webOrigin, credentials: true })
   app.register(healthRoutes)
+  app.register(authRoutes)
 
   return app
 }
