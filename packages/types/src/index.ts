@@ -144,6 +144,7 @@ export interface Post {
   myVote: VoteValue
   createdAt: string
   editedAt: string | null
+  tags: PostTag[]
 }
 
 export interface Comment {
@@ -185,14 +186,22 @@ export interface BoardList {
 export type PostSort = 'hot' | 'new' | 'top'
 export type TopWindow = 'day' | 'week' | 'all'
 
-export type CreatePostInput =
+export interface TagRef {
+  type: TagEntityType
+  id: string
+}
+
+export type CreatePostInput = (
   | { kind: 'thread'; boardId: string; title: string; body?: string }
   | { kind: 'link'; boardId: string; title: string; url: string; body?: string }
   | { kind: 'take'; body: string; boardId?: string }
+) & { tags?: TagRef[] }
 
 export interface UpdatePostInput {
   title?: string
   body?: string
+  /** Replaces all tags when present. */
+  tags?: TagRef[]
 }
 
 export interface CommentNode extends Comment {
