@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Aced is dark only, so shadcn's `dark:` styles always apply. */
+@custom-variant dark (&);
+
 @theme {
   --color-bg: #0b0d10;
   --color-surface: #13161b;
@@ -22,7 +25,6 @@
   --color-secondary: var(--color-border);
   --color-secondary-foreground: var(--color-fg);
   --color-muted-foreground: var(--color-muted);
-  --color-accent-foreground: var(--color-bg);
   --color-destructive: var(--color-live);
   --color-input: var(--color-border);
   --color-ring: var(--color-accent);
