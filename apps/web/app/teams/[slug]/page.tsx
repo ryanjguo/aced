@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
+import { FollowButton } from '@/components/FollowButton'
 import { api } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
 import { Discussion } from '../../_components/Discussion'
@@ -47,9 +48,12 @@ export default async function TeamPage({ params }: Props) {
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight">{team.name}</h1>
-        <p className="text-sm text-muted">{[team.tag, region].filter(Boolean).join(' · ')}</p>
+      <header className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold tracking-tight">{team.name}</h1>
+          <p className="text-sm text-muted">{[team.tag, region].filter(Boolean).join(' · ')}</p>
+        </div>
+        <FollowButton type="team" id={team.id} />
       </header>
 
       <section aria-labelledby="roster">
