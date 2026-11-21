@@ -15,6 +15,9 @@ export function SiteHeader() {
         <Link href="/boards" className="text-sm text-muted hover:text-fg">
           Boards
         </Link>
+        <Link href="/rumors" className="hidden text-sm text-muted hover:text-fg sm:inline">
+          Rumors
+        </Link>
         <div className="ml-auto flex items-center gap-3">
           <search className="hidden sm:block">
             <form action="/search">
