@@ -20,6 +20,9 @@ importers:
       '@aced/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@aced/jobs':
+        specifier: workspace:*
+        version: link:../../packages/jobs
       '@aced/moderation':
         specifier: workspace:*
         version: link:../../packages/moderation
