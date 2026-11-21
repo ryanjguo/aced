@@ -1,13 +1,18 @@
+import { hotScore } from '@aced/ranking'
 import { inArray, sql } from 'drizzle-orm'
 import { createDb } from './client.js'
 import {
+  boards,
+  comments,
   events,
   maps,
   playerMapStats,
   players,
+  posts,
   rosterStints,
   series,
   teams,
+  users,
 } from './schema/index.js'
 
 try {
@@ -310,7 +315,138 @@ for (const [i, plan] of SERIES.entries()) {
   }
 }
 
+// Community: a few users, posts across boards and some comments.
+const SEED_USERS = ['frag_queen', 'eco_round', 'op_main', 'lurker_42', 'igl_brain']
+await db
+  .insert(users)
+  .values(
+    SEED_USERS.map((handle) => ({
+      name: handle,
+      email: `${handle}@seed.aced.invalid`,
+      handle,
+      emailVerified: true,
+      createdAt: at(-24 * 60),
+    })),
+  )
+  .onConflictDoNothing()
+const userRows = await db.select().from(users).where(inArray(users.handle, SEED_USERS))
+const author = (i: number) => userRows[i % userRows.length]?.id
+
+const boardRows = await db.select().from(boards)
+const board = (slug: string) => boardRows.find((b) => b.slug === slug)?.id
+
+const POSTS: {
+  kind: 'thread' | 'link' | 'take'
+  board?: string
+  title?: string
+  body?: string
+  url?: string
+  hoursAgo: number
+  score: number
+  comments?: string[]
+}[] = [
+  {
+    kind: 'thread',
+    board: 'general',
+    title: 'Who is the best duelist right now?',
+    body: 'Kestrel has been unreal this split. Change my mind.',
+    hoursAgo: 3,
+    score: 42,
+    comments: [
+      'Vexa clears.',
+      'Kestrel on Ascent is a different game.',
+      'Ask me again after playoffs.',
+    ],
+  },
+  {
+    kind: 'link',
+    board: 'transfers',
+    title: 'Report: Northwind in talks with Driftwood IGL',
+    url: 'https://example.com/northwind-igl',
+    hoursAgo: 6,
+    score: 88,
+    comments: ['Source?', 'This would fix their mid-round calls.'],
+  },
+  {
+    kind: 'take',
+    body: 'Bo1 group stages should be illegal.',
+    hoursAgo: 1,
+    score: 15,
+    comments: ['Agreed, too much variance.'],
+  },
+  {
+    kind: 'thread',
+    board: 'americas',
+    title: 'Stage 1 power rankings, week 2',
+    body: '1. Halcyon\n2. Vanguard\n3. Northwind\n\nThoughts?',
+    hoursAgo: 20,
+    score: 120,
+    comments: ['Exhale way too low.', 'Vanguard at 2 is generous.', 'Solid list.'],
+  },
+  {
+    kind: 'take',
+    board: 'general',
+    body: 'Sunset is the best map in the pool.',
+    hoursAgo: 30,
+    score: -4,
+  },
+  {
+    kind: 'link',
+    board: 'clips',
+    title: 'Ozzy 1v4 clutch on Lotus',
+    url: 'https://example.com/clip/ozzy-1v4',
+    hoursAgo: 9,
+    score: 64,
+  },
+  {
+    kind: 'thread',
+    board: 'general',
+    title: 'New to watching pro play, where do I start?',
+    body: 'Any channels or VOD reviews you recommend?',
+    hoursAgo: 50,
+    score: 9,
+    comments: ['Watch the Kickoff finals first.'],
+  },
+]
+
+for (const [i, p] of POSTS.entries()) {
+  const createdAt = at(-p.hoursAgo)
+  const [post] = await db
+    .insert(posts)
+    .values({
+      kind: p.kind,
+      boardId: p.board ? board(p.board) : null,
+      authorId: author(i),
+      title: p.title ?? null,
+      body: p.body ?? '',
+      url: p.url ?? null,
+      score: p.score,
+      hotScore: hotScore(p.score, createdAt),
+      commentCount: p.comments?.length ?? 0,
+      sourceKey: `seed:post:${i + 1}`,
+      createdAt,
+    })
+    .onConflictDoNothing()
+    .returning()
+  // Comments have no natural key, so only add them alongside a newly created post.
+  if (post && p.comments?.length) {
+    await db.insert(comments).values(
+      p.comments.map((body, j) => ({
+        postId: post.id,
+        authorId: author(i + j + 1),
+        body,
+        score: p.comments ? p.comments.length - j : 0,
+        createdAt: at(-p.hoursAgo + (j + 1) / 4),
+      })),
+    )
+  }
+}
+const seedPosts = await db
+  .select({ id: posts.id })
+  .from(posts)
+  .where(sql`${posts.sourceKey} like 'seed:post:%'`)
+
 console.log(
-  `Seeded ${eventRows.length} events, ${teamRows.length} teams, ${playerRows.length} players, ${SERIES.length} series`,
+  `Seeded ${eventRows.length} events, ${teamRows.length} teams, ${playerRows.length} players, ${SERIES.length} series, ${userRows.length} users, ${seedPosts.length} posts`,
 )
 await db.$client.end()
