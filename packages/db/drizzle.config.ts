@@ -2,9 +2,7 @@ import { defineConfig } from 'drizzle-kit'
 
 try {
   process.loadEnvFile('../../.env')
-} catch {
-  // No root .env (e.g. CI); rely on the environment.
-}
+} catch {}
 
 const url = process.env.DATABASE_URL
 if (!url) throw new Error('DATABASE_URL is not set')
