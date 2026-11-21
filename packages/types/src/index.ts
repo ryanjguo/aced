@@ -344,4 +344,26 @@ export interface ResultCardData {
   maps: { name: string; score: [number, number] }[]
 }
 
-export type PostData = ResultCardData
+export interface StatCardData {
+  type: 'stat_card'
+  seriesId: string
+  mapName: string
+  event: { name: string; slug: string }
+  player: { handle: string; slug: string }
+  team: { name: string; tag: string; slug: string }
+  opponent: { name: string; tag: string; slug: string } | null
+  won: boolean | null
+  line: {
+    agent: string | null
+    kills: number
+    deaths: number
+    assists: number
+    acs: number | null
+    adr: number | null
+    firstKills: number | null
+  }
+  /** Why the performance stood out, e.g. "30+ kills". */
+  highlight: string
+}
+
+export type PostData = ResultCardData | StatCardData
