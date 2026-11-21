@@ -1,11 +1,18 @@
+'use client'
+
+import type { HealthResponse } from '@aced/types'
+import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 
-function getHealth() {
-  return api.health({ cache: 'no-store', signal: AbortSignal.timeout(3000) }).catch(() => null)
-}
+/** Checked from the browser so static pages don't show a status frozen at build time. */
+export function ApiStatus() {
+  const [health, setHealth] = useState<HealthResponse | null | undefined>(undefined)
 
-export async function ApiStatus() {
-  const health = await getHealth()
+  useEffect(() => {
+    api.health({ signal: AbortSignal.timeout(3000) }).then(setHealth, () => setHealth(null))
+  }, [])
+
+  if (health === undefined) return <p className="h-4" />
   const label = !health ? 'API unreachable' : health.status === 'ok' ? 'All systems ok' : 'Degraded'
   const color = health?.status === 'ok' ? 'bg-accent' : 'bg-muted'
 
