@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@aced/db": "workspace:*",
+    "@aced/moderation": "workspace:*",
     "@aced/ranking": "workspace:*",
     "@aced/redis": "workspace:*",
     "@aced/types": "workspace:*",
