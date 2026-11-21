@@ -122,6 +122,8 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
       params: BoardPostsQuery = {},
       init?: RequestInit,
     ) => request<Page<Post>>(`/posts${query({ entityType, entityId, ...params })}`, init),
+    feed: (kind: 'following' | 'for-you', cursor?: string, init?: RequestInit) =>
+      request<Page<Post>>(`/feed/${kind}${query({ cursor })}`, init),
     follows: (init?: RequestInit) => request<{ items: Follow[] }>('/me/follows', init),
     follow: (type: FollowTargetType, id: string) =>
       request<null>(`/follows/${type}/${encodeURIComponent(id)}`, { method: 'PUT' }),
