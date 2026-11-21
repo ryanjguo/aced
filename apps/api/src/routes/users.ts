@@ -6,6 +6,7 @@ import { HttpError } from '../errors.js'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
 import { toComment, toPost } from '../mappers/social.js'
 import { loadPostExtras } from '../post-extras.js'
+import { rumorStats } from '../rumors.js'
 import { toUserSummary } from '../user.js'
 import { myVotes } from '../votes.js'
 
@@ -37,6 +38,7 @@ export const userRoutes: FastifyPluginAsyncZod = async (app) => {
       bio: user.bio,
       karma: user.karma,
       createdAt: user.createdAt.toISOString(),
+      rumors: await rumorStats(app.db, user.id),
     }
   })
 
