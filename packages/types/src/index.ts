@@ -145,6 +145,8 @@ export interface Post {
   createdAt: string
   editedAt: string | null
   tags: PostTag[]
+  /** Structured data for generated cards; null for user posts. */
+  data: PostData | null
 }
 
 export interface Comment {
@@ -330,3 +332,16 @@ export interface Follow {
   name: string
   slug: string
 }
+
+export interface ResultCardData {
+  type: 'result'
+  seriesId: string
+  event: { name: string; slug: string }
+  teamA: { name: string; tag: string; slug: string }
+  teamB: { name: string; tag: string; slug: string }
+  score: [number, number]
+  winner: 'a' | 'b' | null
+  maps: { name: string; score: [number, number] }[]
+}
+
+export type PostData = ResultCardData

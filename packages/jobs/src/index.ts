@@ -6,7 +6,8 @@ export type { Job }
 /** A job module in `apps/worker/src/jobs`. Each job name is also its queue name. */
 export interface JobDefinition<Data = unknown> {
   name: string
-  handler: (job: Job<Data>) => Promise<unknown>
+  // Method syntax so typed jobs fit in a JobDefinition[] list.
+  handler(job: Job<Data>): Promise<unknown>
   repeat?: Pick<RepeatOptions, 'every' | 'pattern'>
 }
 

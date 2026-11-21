@@ -6,6 +6,7 @@ import {
   doublePrecision,
   index,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   primaryKey,
@@ -52,6 +53,8 @@ export const posts = pgTable(
     body: text().notNull().default(''),
     url: text(),
     seriesId: uuid().references(() => series.id, { onDelete: 'set null' }),
+    // Structured data for generated cards (results, stat cards, transfers).
+    data: jsonb(),
     // Deterministic key that makes generated posts idempotent.
     sourceKey: text().unique(),
     score: integer().notNull().default(0),
