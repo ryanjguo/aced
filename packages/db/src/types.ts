@@ -4,6 +4,7 @@ import type {
   comments,
   events,
   maps,
+  modActions,
   playerMapStats,
   players,
   posts,
@@ -31,3 +32,4 @@ export type PostRow = typeof posts.$inferSelect
 export type CommentRow = typeof comments.$inferSelect
 export type VoteRow = typeof votes.$inferSelect
 export type ReportRow = typeof reports.$inferSelect
+export type ModActionRow = typeof modActions.$inferSelect
