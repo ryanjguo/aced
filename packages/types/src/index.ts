@@ -289,3 +289,34 @@ export interface EntityResult {
   /** Player's current team tag, team tag or event region. */
   detail: string | null
 }
+
+export interface PlayerAverages {
+  /** Maps played in the window. */
+  maps: number
+  acs: number | null
+  kd: number | null
+  adr: number | null
+  firstKillsPerMap: number | null
+}
+
+export interface PlayerRecentMap {
+  seriesId: string
+  mapName: string
+  playedAt: string | null
+  opponent: Team | null
+  won: boolean | null
+  stat: Omit<PlayerMapStat, 'player' | 'teamId'>
+}
+
+export interface PlayerDetail extends Player {
+  /** Last 30 days; null when no maps were played. */
+  averages: PlayerAverages | null
+  recentMaps: PlayerRecentMap[]
+}
+
+export interface TeamDetail {
+  team: Team
+  roster: Pick<Player, 'id' | 'handle' | 'slug' | 'realName' | 'country'>[]
+  recent: Series[]
+  upcoming: Series[]
+}
