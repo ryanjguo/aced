@@ -2,9 +2,12 @@
 
 @theme {
   --color-bg: #0b0d10;
+  --color-surface: #13161b;
+  --color-border: #232831;
   --color-fg: #f2f4f7;
   --color-muted: #8a93a3;
   --color-accent: #c6f432;
+  --color-live: #ff5a5f;
 }
 
 body {
