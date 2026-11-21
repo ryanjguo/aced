@@ -1,5 +1,5 @@
 import type { BoardRow, CommentRow, PostRow, UserRow } from '@aced/db'
-import type { Board, Comment, Post, VoteValue } from '@aced/types'
+import type { Board, Comment, Post, PostTag, VoteValue } from '@aced/types'
 import { toUserSummary } from '../user.js'
 
 export function toBoard(row: BoardRow): Board {
@@ -11,6 +11,7 @@ export function toPost(
   author: UserRow | null,
   board: BoardRow | null,
   myVote: VoteValue = 0,
+  tags: PostTag[] = [],
 ): Post {
   return {
     id: row.id,
@@ -29,6 +30,7 @@ export function toPost(
     myVote,
     createdAt: row.createdAt.toISOString(),
     editedAt: row.editedAt?.toISOString() ?? null,
+    tags,
   }
 }
 
