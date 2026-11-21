@@ -1,5 +1,6 @@
 import type { BoardRow, CommentRow, PostRow, UserRow } from '@aced/db'
-import type { Board, Comment, Post, PostData, PostTag, VoteValue } from '@aced/types'
+import type { Board, Comment, Post, PostData, VoteValue } from '@aced/types'
+import type { PostExtras } from '../post-extras.js'
 import { toUserSummary } from '../user.js'
 
 export function toBoard(row: BoardRow): Board {
@@ -10,8 +11,7 @@ export function toPost(
   row: PostRow,
   author: UserRow | null,
   board: BoardRow | null,
-  myVote: VoteValue = 0,
-  tags: PostTag[] = [],
+  extras: PostExtras = {},
 ): Post {
   return {
     id: row.id,
@@ -27,10 +27,11 @@ export function toPost(
     commentCount: row.commentCount,
     isLocked: row.isLocked,
     isRemoved: row.isRemoved,
-    myVote,
+    myVote: extras.myVote ?? 0,
     createdAt: row.createdAt.toISOString(),
     editedAt: row.editedAt?.toISOString() ?? null,
-    tags,
+    tags: extras.tags ?? [],
+    rumorStatus: extras.rumorStatus ?? null,
     // Written only by the worker in the PostData shapes.
     data: row.isRemoved ? null : (row.data as PostData | null),
   }

@@ -7,9 +7,9 @@ import { HttpError } from '../errors.js'
 import { listPosts, listQuery } from '../lib/post-list.js'
 import { toPost } from '../mappers/social.js'
 import { assertClean, rateLimit } from '../moderation.js'
-import { loadTags, saveTags, tagsInput } from '../tags.js'
+import { loadPostExtras } from '../post-extras.js'
+import { saveTags, tagsInput } from '../tags.js'
 import { currentUser, requireUser } from '../user.js'
-import { myVotes } from '../votes.js'
 
 const { posts, users, boards } = schema
 
@@ -58,11 +58,8 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
       .leftJoin(boards, eq(boards.id, posts.boardId))
       .where(eq(posts.id, id))
     if (!row) throw new HttpError(404, 'not_found', 'Post not found')
-    const [votes, tags] = await Promise.all([
-      myVotes(app.db, userId, 'post', [id]),
-      loadTags(app.db, [id]),
-    ])
-    return toPost(row.post, row.author, row.board, votes.get(id), tags.get(id))
+    const extras = await loadPostExtras(app.db, userId, [id])
+    return toPost(row.post, row.author, row.board, extras(id))
   }
 
   async function ownPost(id: string, userId: string): Promise<PostRow> {
