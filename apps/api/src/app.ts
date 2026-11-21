@@ -48,7 +48,11 @@ export function buildApp(options: AppOptions) {
 
   registerErrorHandlers(app)
   registerCurrentUser(app)
-  app.register(cors, { origin: options.webOrigin, credentials: true })
+  app.register(cors, {
+    origin: options.webOrigin,
+    credentials: true,
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  })
   app.register(healthRoutes)
   app.register(authRoutes)
   app.register(meRoutes)
