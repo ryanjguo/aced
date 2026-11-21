@@ -4,6 +4,7 @@ import type {
   BoardList,
   CommentNode,
   CreatePostInput,
+  CreateReportInput,
   EntityResult,
   EventDetail,
   Follow,
@@ -149,6 +150,7 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
         `/users/${encodeURIComponent(handle)}/comments${query({ cursor })}`,
         init,
       ),
+    report: (input: CreateReportInput) => request<{ id: string }>('/reports', json('POST', input)),
     vote: (targetType: 'post' | 'comment', targetId: string, value: VoteValue) =>
       request<VoteResult>('/votes', json('PUT', { targetType, targetId, value })),
     createComment: (postId: string, input: { body: string; parentId?: string }) =>
