@@ -12,4 +12,5 @@ export const env = {
   port: Number(process.env.PORT ?? 4000),
   databaseUrl: required('DATABASE_URL'),
   redisUrl: required('REDIS_URL'),
+  webOrigin: process.env.WEB_ORIGIN ?? 'http://localhost:3000',
 }
