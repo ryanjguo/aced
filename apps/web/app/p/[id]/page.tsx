@@ -6,7 +6,8 @@ import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { Markdown } from '@/components/Markdown'
 import { Badge } from '@/components/ui/badge'
-import { api } from '@/lib/api'
+import { VoteButtons } from '@/components/VoteButtons'
+import { serverApi } from '@/lib/server-api'
 import { timeAgo } from '@/lib/time-ago'
 import { AuthorActions } from './_components/AuthorActions'
 import { CommentThread } from './_components/CommentThread'
@@ -15,7 +16,7 @@ type Props = { params: Promise<{ id: string }> }
 
 const getPost = cache(async (id: string): Promise<Post | 'not_found' | null> => {
   try {
-    return await api.post(id, { cache: 'no-store' })
+    return await (await serverApi()).post(id, { cache: 'no-store' })
   } catch (err) {
     if (err instanceof ApiClientError && (err.status === 404 || err.status === 400)) {
       return 'not_found'
@@ -42,7 +43,9 @@ export default async function PostPage({ params }: Props) {
   const { id } = await params
   const [post, comments] = await Promise.all([
     getPost(id),
-    api.postComments(id, undefined, { cache: 'no-store' }).catch(() => null),
+    serverApi()
+      .then((a) => a.postComments(id, undefined, { cache: 'no-store' }))
+      .catch(() => null),
   ])
   if (post === 'not_found') notFound()
   if (!post) {
@@ -99,15 +102,23 @@ export default async function PostPage({ params }: Props) {
               ))}
           </>
         )}
-        <p className="flex gap-3 text-xs text-muted">
+        <div className="flex items-center gap-3 text-xs text-muted">
+          {!post.isRemoved && (
+            <VoteButtons
+              targetType="post"
+              targetId={post.id}
+              score={post.score}
+              myVote={post.myVote}
+              layout="row"
+            />
+          )}
           <span>
-            {post.score} point{post.score === 1 ? '' : 's'} · {post.commentCount} comment
-            {post.commentCount === 1 ? '' : 's'}
+            {post.commentCount} comment{post.commentCount === 1 ? '' : 's'}
           </span>
           {post.author && !post.isRemoved && (
             <AuthorActions postId={post.id} authorId={post.author.id} />
           )}
-        </p>
+        </div>
       </article>
 
       <section aria-label="Comments">

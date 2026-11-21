@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
+import { serverApi } from '@/lib/server-api'
 import { cn } from '@/lib/utils'
 import { PostFeed } from './_components/PostFeed'
 
@@ -33,7 +34,9 @@ export default async function BoardPage({ params, searchParams }: Props) {
 
   const [boards, page] = await Promise.all([
     getBoards().catch(() => null),
-    api.boardPosts(slug, query, { cache: 'no-store' }).catch(() => null),
+    serverApi()
+      .then((a) => a.boardPosts(slug, query, { cache: 'no-store' }))
+      .catch(() => null),
   ])
   const board = boards?.items.find((b) => b.slug === slug)
   if (boards && !board) notFound()
