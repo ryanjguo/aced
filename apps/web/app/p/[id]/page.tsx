@@ -112,7 +112,7 @@ export default async function PostPage({ params }: Props) {
 
       <section aria-label="Comments">
         {comments ? (
-          <CommentThread postId={post.id} initial={comments} />
+          <CommentThread postId={post.id} locked={post.isLocked} initial={comments} />
         ) : (
           <p role="alert" className="py-8 text-center text-sm text-muted">
             Couldn't load comments.
