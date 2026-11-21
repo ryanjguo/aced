@@ -6,6 +6,8 @@ import type {
   CreatePostInput,
   EntityResult,
   EventDetail,
+  Follow,
+  FollowTargetType,
   HealthResponse,
   Me,
   ModActionInput,
@@ -120,6 +122,11 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
       params: BoardPostsQuery = {},
       init?: RequestInit,
     ) => request<Page<Post>>(`/posts${query({ entityType, entityId, ...params })}`, init),
+    follows: (init?: RequestInit) => request<{ items: Follow[] }>('/me/follows', init),
+    follow: (type: FollowTargetType, id: string) =>
+      request<null>(`/follows/${type}/${encodeURIComponent(id)}`, { method: 'PUT' }),
+    unfollow: (type: FollowTargetType, id: string) =>
+      request<null>(`/follows/${type}/${encodeURIComponent(id)}`, { method: 'DELETE' }),
     searchPosts: (q: string, cursor?: string, init?: RequestInit) =>
       request<Page<Post>>(`/search/posts${query({ q, cursor })}`, init),
     searchEntities: (q: string, types?: TagEntityType[], init?: RequestInit) =>
