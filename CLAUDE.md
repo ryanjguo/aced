@@ -24,6 +24,7 @@ pnpm lint       # Biome lint + format check
 pnpm format     # fix lint + formatting
 pnpm typecheck
 pnpm build
+pnpm test        # tests (db tests need DATABASE_URL and migrations applied)
 pnpm db:up       # local Postgres + Redis via Docker Compose
 pnpm db:generate # generate a migration after editing packages/db/src/schema
 pnpm db:migrate  # apply migrations
@@ -40,6 +41,7 @@ Run `pnpm lint && pnpm typecheck && pnpm build` before every push. CI runs the s
 - Only `apps/worker` talks to GRID. Store GRID ids in mapping columns; use our own UUIDs everywhere else.
 - Generated posts (stat cards, results, transfers) must be idempotent via a deterministic `source_key`.
 - Cursor pagination only, never offsets.
+- DB row types come from `@aced/db` (`TeamRow`, `SeriesRow`, …); API response shapes from `@aced/types`. Map between them in the API.
 - Schema changes go through Drizzle migrations: edit `packages/db/src/schema`, run `pnpm db:generate`, commit the generated SQL. Never edit an applied migration.
 - No secrets in code. Add new env vars to `.env.example`.
 
