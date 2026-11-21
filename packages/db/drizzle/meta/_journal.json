@@ -92,6 +92,13 @@
       "when": 1795261298463,
       "tag": "0012_posts_search",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1795261462227,
+      "tag": "0013_follows",
+      "breakpoints": true
     }
   ]
 }
