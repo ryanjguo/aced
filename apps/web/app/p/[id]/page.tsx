@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { PostCard } from '@/components/cards/PostCard'
 import { Markdown } from '@/components/Markdown'
+import { ReportButton } from '@/components/ReportButton'
 import { RumorBadge } from '@/components/RumorBadge'
 import { TagChips } from '@/components/TagChips'
 import { Badge } from '@/components/ui/badge'
@@ -137,6 +138,14 @@ export default async function PostPage({ params }: Props) {
           </span>
           {post.author && !post.isRemoved && (
             <AuthorActions postId={post.id} authorId={post.author.id} />
+          )}
+          {!post.isRemoved && (
+            <ReportButton
+              targetType="post"
+              targetId={post.id}
+              ownerId={post.author?.id}
+              className="h-auto px-0 text-xs text-muted hover:text-fg"
+            />
           )}
         </div>
       </article>

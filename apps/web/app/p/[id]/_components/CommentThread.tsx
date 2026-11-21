@@ -4,6 +4,7 @@ import type { CommentNode, Page, UserSummary } from '@aced/types'
 import Link from 'next/link'
 import { createContext, type FormEvent, useContext, useState } from 'react'
 import { Markdown } from '@/components/Markdown'
+import { ReportButton } from '@/components/ReportButton'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { VoteButtons } from '@/components/VoteButtons'
@@ -253,6 +254,14 @@ function Comment({ comment }: { comment: CommentNode }) {
                       Delete
                     </Button>
                   </>
+                )}
+                {!mine && (
+                  <ReportButton
+                    targetType="comment"
+                    targetId={comment.id}
+                    ownerId={comment.author?.id}
+                    className={action}
+                  />
                 )}
                 {mode === 'confirm-delete' && (
                   <span className="flex gap-3 text-xs">
