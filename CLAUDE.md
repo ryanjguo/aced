@@ -45,7 +45,8 @@ Run `pnpm lint && pnpm typecheck && pnpm build` before every push. CI runs the s
 
 ## Workflow
 
-- One issue → one branch → one PR. Small PRs.
+- One issue → one branch → one PR. PRs are atomic: one concern, ideally under ~400 changed lines excluding generated files. Split bigger tickets into stacked PRs.
+- Micro commits: one small logical step each.
 - Branches: `feat/<issue>-<slug>`, `fix/…`, `chore/…`, `docs/…` (e.g. `feat/12-esports-tables`).
 - Commits: short imperative subject ("Add series endpoints"), body only when needed.
 - PR description starts with `Closes #<issue>`, then: What does this do? / Why is this important? / How was it tested? Keep each short and plain. Squash-merge.
