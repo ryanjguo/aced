@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm'
 import {
+  type AnyPgColumn,
   boolean,
   check,
   doublePrecision,
@@ -7,6 +8,7 @@ import {
   integer,
   pgEnum,
   pgTable,
+  primaryKey,
   smallint,
   text,
   timestamp,
@@ -66,5 +68,49 @@ export const posts = pgTable(
     index().on(t.authorId, t.createdAt.desc()),
     index().on(t.createdAt.desc()),
     check('posts_body_length', sql`char_length(${t.body}) <= 40000`),
+  ],
+)
+
+export const comments = pgTable(
+  'comments',
+  {
+    id: id(),
+    postId: uuid()
+      .notNull()
+      .references(() => posts.id, { onDelete: 'cascade' }),
+    parentId: uuid().references((): AnyPgColumn => comments.id, { onDelete: 'cascade' }),
+    authorId: uuid().references(() => users.id, { onDelete: 'set null' }),
+    body: text().notNull(),
+    score: integer().notNull().default(0),
+    depth: smallint().notNull().default(0),
+    isRemoved: boolean().notNull().default(false),
+    ...timestamps,
+    editedAt: timestamp({ withTimezone: true }),
+  },
+  (t) => [
+    index().on(t.postId, t.createdAt),
+    check('comments_body_length', sql`char_length(${t.body}) between 1 and 10000`),
+    check('comments_depth_range', sql`${t.depth} between 0 and 6`),
+  ],
+)
+
+export const voteTarget = pgEnum('vote_target', ['post', 'comment'])
+
+export const votes = pgTable(
+  'votes',
+  {
+    userId: uuid()
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    targetType: voteTarget().notNull(),
+    // Polymorphic (post or comment), so no foreign key.
+    targetId: uuid().notNull(),
+    value: smallint().notNull(),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.targetType, t.targetId] }),
+    index().on(t.targetType, t.targetId),
+    check('votes_value', sql`${t.value} in (-1, 1)`),
   ],
 )
