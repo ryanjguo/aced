@@ -1,7 +1,7 @@
 'use client'
 
 import type { Series } from '@aced/types'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { MatchRow } from './MatchRow'
 
@@ -37,11 +37,8 @@ function timeLabel(iso: string, timeZone: string) {
   )
 }
 
-export function MatchList({ series }: { series: Series[] }) {
+export function MatchList({ series, timeZone }: { series: Series[]; timeZone: string }) {
   const [tab, setTab] = useState<Tab>('upcoming')
-  // Render in UTC on the server, then switch to the viewer's time zone after mount.
-  const [timeZone, setTimeZone] = useState('UTC')
-  useEffect(() => setTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone), [])
 
   const groups = useMemo(() => {
     const now = new Date()
