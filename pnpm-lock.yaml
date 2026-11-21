@@ -184,6 +184,9 @@ importers:
         specifier: ^3.4.9
         version: 3.4.9
     devDependencies:
+      '@aced/ranking':
+        specifier: workspace:*
+        version: link:../ranking
       '@aced/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
