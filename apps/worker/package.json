@@ -9,7 +9,8 @@
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "cards:enqueue": "tsx src/scripts/enqueue-completed.ts"
+    "cards:enqueue": "tsx src/scripts/enqueue-completed.ts",
+    "roster:simulate": "tsx src/scripts/simulate-transfer.ts"
   },
   "dependencies": {
     "@aced/db": "workspace:*",
