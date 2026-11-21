@@ -132,6 +132,7 @@ export interface Post {
   score: number
   commentCount: number
   isLocked: boolean
+  isRemoved: boolean
   createdAt: string
   editedAt: string | null
 }
@@ -171,3 +172,13 @@ export interface BoardList {
 
 export type PostSort = 'hot' | 'new' | 'top'
 export type TopWindow = 'day' | 'week' | 'all'
+
+export type CreatePostInput =
+  | { kind: 'thread'; boardId: string; title: string; body?: string }
+  | { kind: 'link'; boardId: string; title: string; url: string; body?: string }
+  | { kind: 'take'; body: string; boardId?: string }
+
+export interface UpdatePostInput {
+  title?: string
+  body?: string
+}
