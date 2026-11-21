@@ -10,7 +10,7 @@ export async function ApiStatus() {
   const color = health?.status === 'ok' ? 'bg-accent' : 'bg-muted'
 
   return (
-    <p className="flex items-center gap-2 text-sm text-muted">
+    <p className="flex items-center justify-center gap-2 text-xs text-muted">
       <span className={`inline-block size-2 rounded-full ${color}`} />
       {label}
       {health && health.status !== 'ok' && (
