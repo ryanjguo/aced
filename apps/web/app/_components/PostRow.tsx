@@ -1,5 +1,6 @@
 import type { Post } from '@aced/types'
 import Link from 'next/link'
+import { PostCard } from '@/components/cards/PostCard'
 import { TagChips } from '@/components/TagChips'
 import { Badge } from '@/components/ui/badge'
 import { VoteButtons } from '@/components/VoteButtons'
@@ -31,15 +32,27 @@ export function PostRow({ post, showBoard = true }: { post: Post; showBoard?: bo
     <li className="flex gap-3 border-b border-border px-4 py-3 last:border-b-0">
       <VoteButtons targetType="post" targetId={post.id} score={post.score} myVote={post.myVote} />
       <div className="min-w-0 flex-1">
-        <Link
-          href={`/p/${post.id}`}
-          className="line-clamp-3 font-medium break-words hover:underline"
-        >
-          {post.title ?? post.body}
-        </Link>
+        {post.data ? (
+          // Stretched link to the post; links inside the card sit above it.
+          <div className="relative">
+            <Link
+              href={`/p/${post.id}`}
+              aria-label={post.title ?? 'Open post'}
+              className="absolute inset-0"
+            />
+            <PostCard data={post.data} />
+          </div>
+        ) : (
+          <Link
+            href={`/p/${post.id}`}
+            className="line-clamp-3 font-medium break-words hover:underline"
+          >
+            {post.title ?? post.body}
+          </Link>
+        )}
         {site && <span className="text-xs text-muted"> ({site})</span>}
         <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
-          {label && <Badge variant="secondary">{label}</Badge>}
+          {label && !post.data && <Badge variant="secondary">{label}</Badge>}
           {showBoard && post.board && (
             <Link href={`/b/${post.board.slug}`} className="hover:text-fg">
               {post.board.name}
