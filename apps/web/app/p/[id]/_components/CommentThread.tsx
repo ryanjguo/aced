@@ -6,6 +6,7 @@ import { createContext, type FormEvent, useContext, useState } from 'react'
 import { Markdown } from '@/components/Markdown'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { VoteButtons } from '@/components/VoteButtons'
 import { api } from '@/lib/api'
 import { apiErrorMessage } from '@/lib/api-error'
 import { authClient } from '@/lib/auth-client'
@@ -191,7 +192,6 @@ function Comment({ comment }: { comment: CommentNode }) {
             {comment.author && !removed ? `@${comment.author.handle}` : '[removed]'}
           </span>
           {' · '}
-          {comment.score} point{comment.score === 1 ? '' : 's'} ·{' '}
           <time dateTime={comment.createdAt}>{timeAgo(comment.createdAt)}</time>
           {edited && ' · edited'}
           {!saved && ' · posting…'}
@@ -216,7 +216,14 @@ function Comment({ comment }: { comment: CommentNode }) {
             </div>
 
             {saved && !removed && mode !== 'edit' && (
-              <div className="mt-1 flex gap-3">
+              <div className="mt-1 flex items-center gap-3">
+                <VoteButtons
+                  targetType="comment"
+                  targetId={comment.id}
+                  score={comment.score}
+                  myVote={comment.myVote}
+                  layout="row"
+                />
                 {viewer && !locked && comment.depth < MAX_DEPTH && (
                   <Button
                     variant="link"
