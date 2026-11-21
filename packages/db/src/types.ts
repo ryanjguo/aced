@@ -7,6 +7,7 @@ import type {
   playerMapStats,
   players,
   posts,
+  reports,
   rosterStints,
   series,
   sessions,
@@ -29,3 +30,4 @@ export type BoardRow = typeof boards.$inferSelect
 export type PostRow = typeof posts.$inferSelect
 export type CommentRow = typeof comments.$inferSelect
 export type VoteRow = typeof votes.$inferSelect
+export type ReportRow = typeof reports.$inferSelect
