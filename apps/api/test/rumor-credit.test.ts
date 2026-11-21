@@ -122,4 +122,29 @@ describe('rumor resolution and credit', () => {
       credit: 0,
     })
   })
+  it('lists open rumors flagged by a matching transfer', async () => {
+    const r = await rumor('b', otherTeam)
+    const [transfer] = await app.db
+      .insert(posts)
+      .values({ kind: 'transfer', title: 't' })
+      .returning()
+    await app.db
+      .update(schema.rumorStatus)
+      .set({ matchedTransferId: transfer?.id })
+      .where(eq(schema.rumorStatus.postId, r.id))
+    const res = await app.inject({
+      method: 'GET',
+      url: '/mod/rumors/matched',
+      headers: { cookie: people.mod.cookie },
+    })
+    const items = res.json<{ items: { rumor: Post; transferId: string }[] }>().items
+    expect(items.find((i) => i.rumor.id === r.id)?.transferId).toBe(transfer?.id)
+    await app.db.delete(posts).where(eq(posts.id, transfer?.id ?? ''))
+    const forbidden = await app.inject({
+      method: 'GET',
+      url: '/mod/rumors/matched',
+      headers: { cookie: people.a.cookie },
+    })
+    expect(forbidden.statusCode).toBe(403)
+  })
 })
