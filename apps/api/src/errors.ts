@@ -7,6 +7,7 @@ export class HttpError extends Error {
     readonly statusCode: number,
     readonly code: ApiErrorCode,
     message: string,
+    readonly extra: { retryAfter?: number } = {},
   ) {
     super(message)
   }
@@ -29,8 +30,12 @@ export function registerErrorHandlers(app: FastifyInstance) {
   })
 
   app.setErrorHandler((err, req, reply) => {
-    if (err instanceof HttpError)
-      return reply.code(err.statusCode).send(apiError(err.code, err.message))
+    if (err instanceof HttpError) {
+      if (err.extra.retryAfter) reply.header('retry-after', err.extra.retryAfter)
+      return reply
+        .code(err.statusCode)
+        .send({ error: { code: err.code, message: err.message, ...err.extra } })
+    }
     if (hasZodFastifySchemaValidationErrors(err)) {
       return reply.code(400).send(apiError('bad_request', err.message))
     }
