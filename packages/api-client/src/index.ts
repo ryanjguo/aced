@@ -12,6 +12,8 @@ import type {
   Page,
   Post,
   PostSort,
+  Profile,
+  ProfileComment,
   SeriesDetail,
   SeriesList,
   SeriesStatus,
@@ -102,6 +104,15 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
     postComments: (id: string, cursor?: string, init?: RequestInit) =>
       request<Page<CommentNode>>(
         `/posts/${encodeURIComponent(id)}/comments${query({ cursor })}`,
+        init,
+      ),
+    user: (handle: string, init?: RequestInit) =>
+      request<Profile>(`/users/${encodeURIComponent(handle)}`, init),
+    userPosts: (handle: string, cursor?: string, init?: RequestInit) =>
+      request<Page<Post>>(`/users/${encodeURIComponent(handle)}/posts${query({ cursor })}`, init),
+    userComments: (handle: string, cursor?: string, init?: RequestInit) =>
+      request<Page<ProfileComment>>(
+        `/users/${encodeURIComponent(handle)}/comments${query({ cursor })}`,
         init,
       ),
     vote: (targetType: 'post' | 'comment', targetId: string, value: VoteValue) =>
