@@ -11,6 +11,7 @@ import type {
   ModActionInput,
   ModQueueItem,
   Page,
+  PlayerDetail,
   Post,
   PostSort,
   Profile,
@@ -19,6 +20,7 @@ import type {
   SeriesList,
   SeriesStatus,
   TagEntityType,
+  TeamDetail,
   TopWindow,
   UpdateMeInput,
   UpdatePostInput,
@@ -108,6 +110,10 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
         `/posts/${encodeURIComponent(id)}/comments${query({ cursor })}`,
         init,
       ),
+    player: (slug: string, init?: RequestInit) =>
+      request<PlayerDetail>(`/players/${encodeURIComponent(slug)}`, init),
+    team: (slug: string, init?: RequestInit) =>
+      request<TeamDetail>(`/teams/${encodeURIComponent(slug)}`, init),
     searchEntities: (q: string, types?: TagEntityType[], init?: RequestInit) =>
       request<{ items: EntityResult[] }>(
         `/search/entities${query({ q, types: types?.join(',') })}`,
