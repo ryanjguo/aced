@@ -28,6 +28,7 @@ pnpm test        # tests (db tests need DATABASE_URL and migrations applied)
 pnpm db:up       # local Postgres + Redis via Docker Compose
 pnpm db:generate # generate a migration after editing packages/db/src/schema
 pnpm db:migrate  # apply migrations
+pnpm db:seed     # fill the local DB with sample esports data (idempotent)
 ```
 
 Run `pnpm lint && pnpm typecheck && pnpm build` before every push. CI runs the same.
