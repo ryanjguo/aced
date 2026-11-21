@@ -127,6 +127,13 @@
       "when": 1795262754224,
       "tag": "0017_rumor_matches",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1795263121642,
+      "tag": "0018_admin_overrides",
+      "breakpoints": true
     }
   ]
 }

@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm'
 import {
+  boolean,
   check,
   index,
   pgEnum,
@@ -109,6 +110,8 @@ export const series = pgTable(
     scoreA: smallint().notNull().default(0),
     scoreB: smallint().notNull().default(0),
     winnerId: uuid().references(() => teams.id, { onDelete: 'set null' }),
+    // Set by an admin correction; the GRID sync must not overwrite score, status or winner.
+    manualOverride: boolean().notNull().default(false),
     ...timestamps,
   },
   (t) => [
