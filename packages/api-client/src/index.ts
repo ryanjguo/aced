@@ -120,6 +120,8 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
       params: BoardPostsQuery = {},
       init?: RequestInit,
     ) => request<Page<Post>>(`/posts${query({ entityType, entityId, ...params })}`, init),
+    searchPosts: (q: string, cursor?: string, init?: RequestInit) =>
+      request<Page<Post>>(`/search/posts${query({ q, cursor })}`, init),
     searchEntities: (q: string, types?: TagEntityType[], init?: RequestInit) =>
       request<{ items: EntityResult[] }>(
         `/search/entities${query({ q, types: types?.join(',') })}`,
