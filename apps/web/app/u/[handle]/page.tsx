@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { FollowButton } from '@/components/FollowButton'
+import { ReportButton } from '@/components/ReportButton'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { serverApi } from '@/lib/server-api'
 import { cn } from '@/lib/utils'
@@ -85,7 +86,14 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             </p>
           )}
         </div>
-        <FollowButton type="user" id={profile.id} />
+        <div className="flex flex-col items-end gap-1">
+          <FollowButton type="user" id={profile.id} />
+          <ReportButton
+            targetType="user"
+            targetId={profile.id}
+            className="h-auto px-0 text-xs text-muted hover:text-fg"
+          />
+        </div>
       </header>
 
       <nav
