@@ -21,6 +21,7 @@ export const env = {
   databaseUrl: required('DATABASE_URL'),
   redisUrl: required('REDIS_URL'),
   webOrigin: process.env.WEB_ORIGIN ?? 'http://localhost:3000',
+  sentryDsn: process.env.SENTRY_DSN || undefined,
   auth: {
     secret: process.env.BETTER_AUTH_SECRET || undefined,
     baseUrl: process.env.BETTER_AUTH_URL || `http://localhost:${port}`,

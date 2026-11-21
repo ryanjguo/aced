@@ -1,4 +1,5 @@
 import type { ApiError, ApiErrorCode } from '@aced/types'
+import * as Sentry from '@sentry/node'
 import type { FastifyInstance } from 'fastify'
 import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod'
 
@@ -48,6 +49,7 @@ export function registerErrorHandlers(app: FastifyInstance) {
         .send(apiError(status === 404 ? 'not_found' : 'bad_request', err.message))
     }
     req.log.error({ err }, 'unhandled error')
+    Sentry.captureException(err)
     return reply.code(500).send(apiError('internal', 'Internal server error'))
   })
 }
