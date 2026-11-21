@@ -3,8 +3,7 @@ import type { Page, Post, PostSort, TopWindow } from '@aced/types'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { toPost } from '../mappers/social.js'
-import { loadTags } from '../tags.js'
-import { myVotes } from '../votes.js'
+import { loadPostExtras } from '../post-extras.js'
 import { decodeCursor, encodeCursor } from './cursor.js'
 
 const PAGE_SIZE = 25
@@ -58,15 +57,10 @@ export async function listPosts(
 
   const page = rows.slice(0, PAGE_SIZE)
   const ids = page.map((r) => r.post.id)
-  const [votes, tags] = await Promise.all([
-    myVotes(db, opts.userId, 'post', ids),
-    loadTags(db, ids),
-  ])
+  const extras = await loadPostExtras(db, opts.userId, ids)
   const last = page.at(-1)
   return {
-    items: page.map((r) =>
-      toPost(r.post, r.author, r.board, votes.get(r.post.id), tags.get(r.post.id)),
-    ),
+    items: page.map((r) => toPost(r.post, r.author, r.board, extras(r.post.id))),
     nextCursor: rows.length > PAGE_SIZE && last ? encodeCursor([last.key, last.post.id]) : null,
   }
 }

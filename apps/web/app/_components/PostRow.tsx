@@ -1,6 +1,7 @@
 import type { Post } from '@aced/types'
 import Link from 'next/link'
 import { PostCard } from '@/components/cards/PostCard'
+import { RumorBadge } from '@/components/RumorBadge'
 import { TagChips } from '@/components/TagChips'
 import { Badge } from '@/components/ui/badge'
 import { VoteButtons } from '@/components/VoteButtons'
@@ -53,6 +54,7 @@ export function PostRow({ post, showBoard = true }: { post: Post; showBoard?: bo
         {site && <span className="text-xs text-muted"> ({site})</span>}
         <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
           {label && !post.data && <Badge variant="secondary">{label}</Badge>}
+          {post.rumorStatus && <RumorBadge status={post.rumorStatus} />}
           {showBoard && post.board && (
             <Link href={`/b/${post.board.slug}`} className="hover:text-fg">
               {post.board.name}
