@@ -229,7 +229,16 @@ export interface CreateReportInput {
   note?: string
 }
 
-export type ModActionType = 'remove' | 'restore' | 'lock' | 'unlock' | 'ban' | 'unban' | 'dismiss'
+export type ModActionType =
+  | 'remove'
+  | 'restore'
+  | 'lock'
+  | 'unlock'
+  | 'ban'
+  | 'unban'
+  | 'dismiss'
+  | 'confirm_rumor'
+  | 'deny_rumor'
 
 export interface ModQueueItem {
   targetType: 'post' | 'comment' | 'user'
@@ -267,10 +276,21 @@ export interface Me extends UserSummary {
   bio: string | null
 }
 
+export interface RumorStats {
+  posted: number
+  confirmed: number
+  denied: number
+  /** Confirmed share of resolved rumors; null until one is resolved. */
+  accuracy: number | null
+  /** 1 per confirmed rumor that called a move first, 0.5 per later one. */
+  credit: number
+}
+
 export interface Profile extends UserSummary {
   bio: string | null
   karma: number
   createdAt: string
+  rumors: RumorStats
 }
 
 export interface ProfileComment extends Comment {
