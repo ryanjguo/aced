@@ -11,6 +11,7 @@ export type FeedSource =
   | { board: string }
   | { entityType: TagEntityType; entityId: string }
   | { search: string }
+  | { feed: 'for-you' | 'following' }
 
 export function PostFeed({
   source,
@@ -42,7 +43,9 @@ export function PostFeed({
             ? await api.boardPosts(source.board, params)
             : 'search' in source
               ? await api.searchPosts(source.search, cursor)
-              : await api.entityPosts(source.entityType, source.entityId, params)
+              : 'feed' in source
+                ? await api.feed(source.feed, cursor)
+                : await api.entityPosts(source.entityType, source.entityId, params)
         setItems((prev) => [...prev, ...page.items])
         setCursor(page.nextCursor)
       } catch {
