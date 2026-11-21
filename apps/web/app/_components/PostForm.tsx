@@ -28,7 +28,9 @@ export function PostForm({
 }) {
   const router = useRouter()
   const { data: session, isPending } = authClient.useSession()
-  const [kind, setKind] = useState<'thread' | 'link'>(post?.kind === 'link' ? 'link' : 'thread')
+  const [kind, setKind] = useState<'thread' | 'link' | 'rumor'>(
+    post?.kind === 'link' ? 'link' : post?.kind === 'rumor' ? 'rumor' : 'thread',
+  )
   const [boardId, setBoardId] = useState(
     boards.find((b) => b.id === initialBoardId)?.id ?? boards[0]?.id ?? '',
   )
@@ -51,6 +53,11 @@ export function PostForm({
     setSaving(true)
     setError(null)
     const refs = tags.map(({ type, id }) => ({ type, id }))
+    if (kind === 'rumor' && !post && !refs.some((t) => t.type !== 'event')) {
+      setError('Tag the player or team the rumor is about.')
+      setSaving(false)
+      return
+    }
     try {
       const saved = post
         ? await api.updatePost(
@@ -58,9 +65,11 @@ export function PostForm({
             post.kind === 'take' ? { body, tags: refs } : { title, body, tags: refs },
           )
         : await api.createPost(
-            kind === 'link'
-              ? { kind, boardId, title, url, body, tags: refs }
-              : { kind, boardId, title, body, tags: refs },
+            kind === 'rumor'
+              ? { kind, title, url, body, tags: refs }
+              : kind === 'link'
+                ? { kind, boardId, title, url, body, tags: refs }
+                : { kind, boardId, title, body, tags: refs },
           )
       router.push(`/p/${saved.id}`)
       router.refresh()
@@ -76,7 +85,7 @@ export function PostForm({
         <div className="flex flex-wrap gap-4">
           <fieldset className="flex gap-1 rounded-lg border border-border bg-surface p-1">
             <legend className="sr-only">Post type</legend>
-            {(['thread', 'link'] as const).map((k) => (
+            {(['thread', 'link', 'rumor'] as const).map((k) => (
               <Button
                 key={k}
                 type="button"
@@ -90,7 +99,7 @@ export function PostForm({
               </Button>
             ))}
           </fieldset>
-          <div className="flex items-center gap-2">
+          <div className={`flex items-center gap-2 ${kind === 'rumor' ? 'hidden' : ''}`}>
             <label htmlFor="board" className={label}>
               Board
             </label>
@@ -126,10 +135,18 @@ export function PostForm({
         </div>
       )}
 
-      {!post && kind === 'link' && (
+      {!post && kind === 'rumor' && (
+        <p className="rounded-md border border-border bg-surface px-3 py-2 text-sm text-muted">
+          Rumors go to Transfers &amp; Rumors and show as <strong>Unconfirmed</strong> until a
+          moderator confirms or denies them. Link your source and tag the player or team.
+          Competitive moves only: no rumors about anyone's private life.
+        </p>
+      )}
+
+      {!post && (kind === 'link' || kind === 'rumor') && (
         <div className={field}>
           <label htmlFor="url" className={label}>
-            Link
+            {kind === 'rumor' ? 'Source' : 'Link'}
           </label>
           <Input
             id="url"
