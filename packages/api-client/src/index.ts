@@ -114,6 +114,12 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
       request<PlayerDetail>(`/players/${encodeURIComponent(slug)}`, init),
     team: (slug: string, init?: RequestInit) =>
       request<TeamDetail>(`/teams/${encodeURIComponent(slug)}`, init),
+    entityPosts: (
+      entityType: TagEntityType,
+      entityId: string,
+      params: BoardPostsQuery = {},
+      init?: RequestInit,
+    ) => request<Page<Post>>(`/posts${query({ entityType, entityId, ...params })}`, init),
     searchEntities: (q: string, types?: TagEntityType[], init?: RequestInit) =>
       request<{ items: EntityResult[] }>(
         `/search/entities${query({ q, types: types?.join(',') })}`,
