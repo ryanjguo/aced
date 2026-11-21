@@ -10,8 +10,11 @@ import {
 import { type Auth, type AuthOptions, createAuth } from './auth.js'
 import { registerErrorHandlers } from './errors.js'
 import { authRoutes } from './routes/auth.js'
+import { boardRoutes } from './routes/boards.js'
+import { eventRoutes } from './routes/events.js'
 import { healthRoutes } from './routes/health.js'
 import { meRoutes } from './routes/me.js'
+import { seriesRoutes } from './routes/series.js'
 import { registerCurrentUser } from './user.js'
 
 declare module 'fastify' {
@@ -56,6 +59,9 @@ export function buildApp(options: AppOptions) {
   app.register(healthRoutes)
   app.register(authRoutes)
   app.register(meRoutes)
+  app.register(seriesRoutes)
+  app.register(eventRoutes)
+  app.register(boardRoutes)
 
   return app
 }
