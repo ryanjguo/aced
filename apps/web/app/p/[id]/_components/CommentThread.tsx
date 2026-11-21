@@ -2,6 +2,7 @@
 
 import type { CommentNode, Page } from '@aced/types'
 import { useState } from 'react'
+import { Markdown } from '@/components/Markdown'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { timeAgo } from '@/lib/time-ago'
@@ -50,11 +51,13 @@ function Comment({ comment }: { comment: CommentNode }) {
         </p>
         {!collapsed && (
           <>
-            <p
-              className={`mt-1 text-sm break-words whitespace-pre-line ${comment.isRemoved ? 'text-muted italic' : ''}`}
-            >
-              {comment.isRemoved ? '[removed]' : comment.body}
-            </p>
+            <div className="mt-1">
+              {comment.isRemoved ? (
+                <p className="text-sm text-muted italic">[removed]</p>
+              ) : (
+                <Markdown>{comment.body}</Markdown>
+              )}
+            </div>
             {replies.length > 0 && (
               <ul className="mt-2 flex flex-col gap-2">
                 {replies.map((r) => (
