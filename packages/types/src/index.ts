@@ -241,3 +241,12 @@ export interface ModActionInput {
   /** Required for `ban`. */
   until?: string
 }
+
+export interface UpdateMeInput {
+  handle?: string
+  bio?: string | null
+}
+
+export interface Me extends UserSummary {
+  bio: string | null
+}
