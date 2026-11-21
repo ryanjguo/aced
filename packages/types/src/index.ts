@@ -145,6 +145,8 @@ export interface Post {
   createdAt: string
   editedAt: string | null
   tags: PostTag[]
+  /** Set for `rumor` posts. */
+  rumorStatus: RumorStatus | null
   /** Structured data for generated cards; null for user posts. */
   data: PostData | null
 }
@@ -193,10 +195,13 @@ export interface TagRef {
   id: string
 }
 
+export type RumorStatus = 'open' | 'confirmed' | 'denied'
+
 export type CreatePostInput = (
   | { kind: 'thread'; boardId: string; title: string; body?: string }
   | { kind: 'link'; boardId: string; title: string; url: string; body?: string }
   | { kind: 'take'; body: string; boardId?: string }
+  | { kind: 'rumor'; title: string; url: string; body?: string }
 ) & { tags?: TagRef[] }
 
 export interface UpdatePostInput {
