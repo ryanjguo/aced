@@ -250,3 +250,13 @@ export interface UpdateMeInput {
 export interface Me extends UserSummary {
   bio: string | null
 }
+
+export interface Profile extends UserSummary {
+  bio: string | null
+  karma: number
+  createdAt: string
+}
+
+export interface ProfileComment extends Comment {
+  post: { id: string; title: string | null }
+}
