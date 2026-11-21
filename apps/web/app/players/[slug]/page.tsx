@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { api } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
+import { Discussion } from '../../_components/Discussion'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -163,6 +164,7 @@ export default async function PlayerPage({ params }: Props) {
           </div>
         )}
       </section>
+      <Discussion type="player" id={player.id} />
     </main>
   )
 }
