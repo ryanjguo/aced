@@ -16,13 +16,11 @@ function dayKey(iso: string, timeZone: string) {
 }
 
 function dayLabel(iso: string, timeZone: string, now: Date) {
-  const key = dayKey(iso, timeZone)
-  const today = dayKey(now.toISOString(), timeZone)
-  const tomorrow = dayKey(new Date(now.getTime() + 864e5).toISOString(), timeZone)
-  const yesterday = dayKey(new Date(now.getTime() - 864e5).toISOString(), timeZone)
-  if (key === today) return 'Today'
-  if (key === tomorrow) return 'Tomorrow'
-  if (key === yesterday) return 'Yesterday'
+  const days =
+    (Date.parse(dayKey(iso, timeZone)) - Date.parse(dayKey(now.toISOString(), timeZone))) / 864e5
+  if (days === 0) return 'Today'
+  if (days === 1) return 'Tomorrow'
+  if (days === -1) return 'Yesterday'
   return new Intl.DateTimeFormat('en-US', {
     timeZone,
     weekday: 'short',
