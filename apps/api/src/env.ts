@@ -1,8 +1,6 @@
 try {
   process.loadEnvFile('../../.env')
-} catch {
-  // No root .env (e.g. production); rely on the environment.
-}
+} catch {}
 
 function required(name: string): string {
   const value = process.env[name]
