@@ -101,3 +101,37 @@ export interface UserSummary {
   avatarUrl: string | null
   role: UserRole
 }
+
+export interface Board {
+  id: string
+  slug: string
+  name: string
+  description: string
+}
+
+export type PostKind =
+  | 'take'
+  | 'thread'
+  | 'link'
+  | 'clip'
+  | 'rumor'
+  | 'match_thread'
+  | 'result'
+  | 'stat_card'
+  | 'transfer'
+
+export interface Post {
+  id: string
+  kind: PostKind
+  author: UserSummary | null
+  board: Pick<Board, 'id' | 'slug' | 'name'> | null
+  title: string | null
+  body: string
+  url: string | null
+  seriesId: string | null
+  score: number
+  commentCount: number
+  isLocked: boolean
+  createdAt: string
+  editedAt: string | null
+}
