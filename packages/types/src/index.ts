@@ -159,3 +159,15 @@ export interface EventDetail {
   event: Event
   series: Series[]
 }
+
+export interface Page<T> {
+  items: T[]
+  nextCursor: string | null
+}
+
+export interface BoardList {
+  items: Board[]
+}
+
+export type PostSort = 'hot' | 'new' | 'top'
+export type TopWindow = 'day' | 'week' | 'all'
