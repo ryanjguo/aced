@@ -5,11 +5,12 @@ import { env } from '../src/env.js'
 
 type App = ReturnType<typeof buildApp>
 
-export function buildTestApp() {
+export function buildTestApp(options: { rateLimits?: boolean } = {}) {
   return buildApp({
     ...env,
     auth: { ...env.auth, secret: 'test-secret-that-is-at-least-32-chars' },
     logger: false,
+    rateLimits: options.rateLimits ?? false,
   })
 }
 
