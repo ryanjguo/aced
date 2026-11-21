@@ -9,6 +9,7 @@ import {
   playerMapStats,
   players,
   posts,
+  postTags,
   rosterStints,
   series,
   teams,
@@ -441,6 +442,30 @@ for (const [i, p] of POSTS.entries()) {
     )
   }
 }
+// Tag a few posts so player, team and event pages have discussion.
+const SEED_TAGS: [number, 'player' | 'team' | 'event', string][] = [
+  [1, 'player', 'kestrel'],
+  [2, 'team', 'northwind'],
+  [2, 'team', 'driftwood'],
+  [4, 'event', 'stage-1-2027-americas'],
+]
+const taggedPosts = await db
+  .select({ id: posts.id, sourceKey: posts.sourceKey })
+  .from(posts)
+  .where(sql`${posts.sourceKey} like 'seed:post:%'`)
+const entityId = (type: 'player' | 'team' | 'event', slug: string) =>
+  ({ player: playerRows, team: teamRows, event: eventRows })[type].find((e) => e.slug === slug)?.id
+await db
+  .insert(postTags)
+  .values(
+    SEED_TAGS.flatMap(([n, type, slug]) => {
+      const postId = taggedPosts.find((p) => p.sourceKey === `seed:post:${n}`)?.id
+      const id = entityId(type, slug)
+      return postId && id ? [{ postId, entityType: type, entityId: id }] : []
+    }),
+  )
+  .onConflictDoNothing()
+
 const seedPosts = await db
   .select({ id: posts.id })
   .from(posts)
