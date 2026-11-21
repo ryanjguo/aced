@@ -1,6 +1,7 @@
 import type {
   accounts,
   boards,
+  comments,
   events,
   maps,
   playerMapStats,
@@ -11,6 +12,7 @@ import type {
   sessions,
   teams,
   users,
+  votes,
 } from './schema/index.js'
 
 export type EventRow = typeof events.$inferSelect
@@ -25,3 +27,5 @@ export type SessionRow = typeof sessions.$inferSelect
 export type AccountRow = typeof accounts.$inferSelect
 export type BoardRow = typeof boards.$inferSelect
 export type PostRow = typeof posts.$inferSelect
+export type CommentRow = typeof comments.$inferSelect
+export type VoteRow = typeof votes.$inferSelect
