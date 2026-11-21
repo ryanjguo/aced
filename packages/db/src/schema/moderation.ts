@@ -56,6 +56,8 @@ export const modActionType = pgEnum('mod_action_type', [
   'ban',
   'unban',
   'dismiss',
+  'confirm_rumor',
+  'deny_rumor',
 ])
 
 /** Audit log of every moderator action. */
