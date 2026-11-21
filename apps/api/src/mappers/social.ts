@@ -13,12 +13,14 @@ export function toPost(row: PostRow, author: UserRow | null, board: BoardRow | n
     author: author ? toUserSummary(author) : null,
     board: board ? { id: board.id, slug: board.slug, name: board.name } : null,
     title: row.title,
-    body: row.body,
-    url: row.url,
+    // Removed posts keep their place in threads but not their content.
+    body: row.isRemoved ? '' : row.body,
+    url: row.isRemoved ? null : row.url,
     seriesId: row.seriesId,
     score: row.score,
     commentCount: row.commentCount,
     isLocked: row.isLocked,
+    isRemoved: row.isRemoved,
     createdAt: row.createdAt.toISOString(),
     editedAt: row.editedAt?.toISOString() ?? null,
   }
