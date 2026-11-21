@@ -115,3 +115,21 @@ export const votes = pgTable(
     check('votes_value', sql`${t.value} in (-1, 1)`),
   ],
 )
+
+export const tagEntity = pgEnum('tag_entity', ['player', 'team', 'event'])
+
+export const postTags = pgTable(
+  'post_tags',
+  {
+    postId: uuid()
+      .notNull()
+      .references(() => posts.id, { onDelete: 'cascade' }),
+    entityType: tagEntity().notNull(),
+    // Polymorphic (player, team or event), so no foreign key.
+    entityId: uuid().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.postId, t.entityType, t.entityId] }),
+    index().on(t.entityType, t.entityId, t.postId),
+  ],
+)
