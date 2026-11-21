@@ -97,4 +97,30 @@ describe('post tags', () => {
     const after = await app.db.select().from(posts).where(eq(posts.authorId, userId))
     expect(after.some((p) => p.body === 'x')).toBe(false)
   })
+  it('lists posts tagged with an entity, newest first, without removed ones', async () => {
+    const tagged = async (body: string) =>
+      (await create({ kind: 'take', body, tags: [{ type: 'event', id: ref.event }] })).json<Post>()
+    const older = await tagged('event take one')
+    const newer = await tagged('event take two')
+    const removed = await tagged('event take removed')
+    await create({ kind: 'take', body: 'untagged take' })
+    await app.inject({ method: 'DELETE', url: `/posts/${removed.id}`, headers: { cookie } })
+
+    const res = await app.inject({
+      method: 'GET',
+      url: `/posts?entityType=event&entityId=${ref.event}&sort=new`,
+    })
+    const ids = res.json<Page<Post>>().items.map((p) => p.id)
+    expect(ids.indexOf(newer.id)).toBeLessThan(ids.indexOf(older.id))
+    expect(ids.indexOf(older.id)).toBeGreaterThanOrEqual(0)
+    expect(ids).not.toContain(removed.id)
+    const bodies = res.json<Page<Post>>().items.map((p) => p.body)
+    expect(bodies).not.toContain('untagged take')
+  })
+
+  it('requires an entity to list by', async () => {
+    expect((await app.inject({ method: 'GET', url: '/posts?entityType=event' })).statusCode).toBe(
+      400,
+    )
+  })
 })

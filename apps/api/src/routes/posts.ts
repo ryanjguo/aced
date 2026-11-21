@@ -1,9 +1,10 @@
-import { eq, type PostRow, schema } from '@aced/db'
+import { and, eq, type PostRow, schema, sql } from '@aced/db'
 import { hotScore } from '@aced/ranking'
-import type { Post } from '@aced/types'
+import type { Page, Post } from '@aced/types'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
+import { listPosts, listQuery } from '../lib/post-list.js'
 import { toPost } from '../mappers/social.js'
 import { assertClean, rateLimit } from '../moderation.js'
 import { loadTags, saveTags, tagsInput } from '../tags.js'
@@ -100,6 +101,28 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
       })
       reply.code(201)
       return loadPost(row.id, user.id)
+    },
+  )
+
+  app.get(
+    '/posts',
+    {
+      schema: {
+        querystring: listQuery.extend({
+          entityType: z.enum(['player', 'team', 'event']),
+          entityId: z.uuid(),
+        }),
+      },
+    },
+    async (req): Promise<Page<Post>> => {
+      const { entityType, entityId, ...query } = req.query
+      const { postTags } = schema
+      const tagged = sql`exists (select 1 from ${postTags} where ${and(
+        eq(postTags.postId, posts.id),
+        eq(postTags.entityType, entityType),
+        eq(postTags.entityId, entityId),
+      )})`
+      return listPosts(app.db, { ...query, where: tagged, userId: req.user?.id })
     },
   )
 

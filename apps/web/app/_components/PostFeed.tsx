@@ -1,18 +1,20 @@
 'use client'
 
 import type { BoardPostsQuery } from '@aced/api-client'
-import type { Post } from '@aced/types'
+import type { Post, TagEntityType } from '@aced/types'
 import { useEffect, useRef, useState } from 'react'
 import { PostRow } from '@/app/_components/PostRow'
 import { api } from '@/lib/api'
 
 /** Server-rendered first page, then loads more as the end of the list scrolls into view. */
+export type FeedSource = { board: string } | { entityType: TagEntityType; entityId: string }
+
 export function PostFeed({
-  slug,
+  source,
   query,
   initial,
 }: {
-  slug: string
+  source: FeedSource
   query: BoardPostsQuery
   initial: { items: Post[]; nextCursor: string | null }
 }) {
@@ -29,7 +31,11 @@ export function PostFeed({
       if (!entry?.isIntersecting || loading.current) return
       loading.current = true
       try {
-        const page = await api.boardPosts(slug, { ...query, cursor })
+        const params = { ...query, cursor }
+        const page =
+          'board' in source
+            ? await api.boardPosts(source.board, params)
+            : await api.entityPosts(source.entityType, source.entityId, params)
         setItems((prev) => [...prev, ...page.items])
         setCursor(page.nextCursor)
       } catch {
@@ -40,7 +46,7 @@ export function PostFeed({
     })
     observer.observe(el)
     return () => observer.disconnect()
-  }, [slug, query, cursor])
+  }, [source, query, cursor])
 
   if (items.length === 0) {
     return <p className="py-12 text-center text-sm text-muted">No posts yet.</p>
@@ -50,7 +56,7 @@ export function PostFeed({
     <>
       <ul className="overflow-hidden rounded-lg border border-border bg-surface">
         {items.map((post) => (
-          <PostRow key={post.id} post={post} showBoard={false} />
+          <PostRow key={post.id} post={post} showBoard={!('board' in source)} />
         ))}
       </ul>
       {cursor && !error && <div ref={sentinel} className="h-12" aria-hidden />}

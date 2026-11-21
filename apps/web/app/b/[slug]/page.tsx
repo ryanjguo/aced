@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { serverApi } from '@/lib/server-api'
 import { cn } from '@/lib/utils'
-import { PostFeed } from './_components/PostFeed'
+import { PostFeed } from '../../_components/PostFeed'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -92,7 +92,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
       </nav>
 
       {page ? (
-        <PostFeed key={`${sort}:${t}`} slug={slug} query={query} initial={page} />
+        <PostFeed key={`${sort}:${t}`} source={{ board: slug }} query={query} initial={page} />
       ) : (
         <p role="alert" className="py-12 text-center text-sm text-muted">
           Couldn't load posts. Try again in a moment.
