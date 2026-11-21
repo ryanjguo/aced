@@ -1,12 +1,17 @@
 import type { BoardRow, CommentRow, PostRow, UserRow } from '@aced/db'
-import type { Board, Comment, Post } from '@aced/types'
+import type { Board, Comment, Post, VoteValue } from '@aced/types'
 import { toUserSummary } from '../user.js'
 
 export function toBoard(row: BoardRow): Board {
   return { id: row.id, slug: row.slug, name: row.name, description: row.description }
 }
 
-export function toPost(row: PostRow, author: UserRow | null, board: BoardRow | null): Post {
+export function toPost(
+  row: PostRow,
+  author: UserRow | null,
+  board: BoardRow | null,
+  myVote: VoteValue = 0,
+): Post {
   return {
     id: row.id,
     kind: row.kind,
@@ -21,12 +26,18 @@ export function toPost(row: PostRow, author: UserRow | null, board: BoardRow | n
     commentCount: row.commentCount,
     isLocked: row.isLocked,
     isRemoved: row.isRemoved,
+    myVote,
     createdAt: row.createdAt.toISOString(),
     editedAt: row.editedAt?.toISOString() ?? null,
   }
 }
 
-export function toComment(row: CommentRow, author: UserRow | null, replyCount: number): Comment {
+export function toComment(
+  row: CommentRow,
+  author: UserRow | null,
+  replyCount: number,
+  myVote: VoteValue = 0,
+): Comment {
   return {
     id: row.id,
     postId: row.postId,
@@ -38,6 +49,7 @@ export function toComment(row: CommentRow, author: UserRow | null, replyCount: n
     depth: row.depth,
     replyCount,
     isRemoved: row.isRemoved,
+    myVote,
     createdAt: row.createdAt.toISOString(),
     editedAt: row.editedAt?.toISOString() ?? null,
   }

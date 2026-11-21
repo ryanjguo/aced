@@ -4,6 +4,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
 import { toBoard, toPost } from '../mappers/social.js'
+import { myVotes } from '../votes.js'
 
 const PAGE_SIZE = 25
 const DAY = 24 * 60 * 60 * 1000
@@ -68,8 +69,14 @@ export const boardRoutes: FastifyPluginAsyncZod = async (app) => {
 
       const page = rows.slice(0, PAGE_SIZE)
       const last = page.at(-1)
+      const votes = await myVotes(
+        app.db,
+        req.user?.id,
+        'post',
+        page.map((r) => r.post.id),
+      )
       return {
-        items: page.map((r) => toPost(r.post, r.author, board)),
+        items: page.map((r) => toPost(r.post, r.author, board, votes.get(r.post.id))),
         nextCursor: rows.length > PAGE_SIZE && last ? encodeCursor([last.key, last.post.id]) : null,
       }
     },
