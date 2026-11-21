@@ -134,6 +134,8 @@ export interface Post {
   commentCount: number
   isLocked: boolean
   isRemoved: boolean
+  /** The viewer's vote; 0 when signed out. */
+  myVote: VoteValue
   createdAt: string
   editedAt: string | null
 }
@@ -148,6 +150,8 @@ export interface Comment {
   depth: number
   replyCount: number
   isRemoved: boolean
+  /** The viewer's vote; 0 when signed out. */
+  myVote: VoteValue
   createdAt: string
   editedAt: string | null
 }
@@ -187,4 +191,9 @@ export interface UpdatePostInput {
 
 export interface CommentNode extends Comment {
   replies: CommentNode[]
+}
+
+export interface VoteResult {
+  score: number
+  myVote: VoteValue
 }

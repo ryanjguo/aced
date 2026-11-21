@@ -6,6 +6,7 @@ import { HttpError } from '../errors.js'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
 import { toComment } from '../mappers/social.js'
 import { currentUser, requireUser } from '../user.js'
+import { myVotes } from '../votes.js'
 
 const { comments, posts, users } = schema
 
@@ -23,6 +24,7 @@ export const commentRoutes: FastifyPluginAsyncZod = async (app) => {
   /** Loads replies under `roots` level by level (at most MAX_DEPTH queries) and nests them. */
   async function withReplies(
     roots: { comment: CommentRow; author: UserRow | null }[],
+    userId: string | undefined,
   ): Promise<CommentNode[]> {
     const all = [...roots]
     let frontier = roots.map((r) => r.comment.id)
@@ -51,11 +53,22 @@ export const commentRoutes: FastifyPluginAsyncZod = async (app) => {
           .groupBy(comments.parentId)
       : []
     const replyCount = new Map(counts.map((c) => [c.parentId, c.count]))
+    const votes = await myVotes(
+      app.db,
+      userId,
+      'comment',
+      all.map((r) => r.comment.id),
+    )
 
     const nodes = new Map<string, CommentNode>()
     for (const r of all) {
       nodes.set(r.comment.id, {
-        ...toComment(r.comment, r.author, replyCount.get(r.comment.id) ?? 0),
+        ...toComment(
+          r.comment,
+          r.author,
+          replyCount.get(r.comment.id) ?? 0,
+          votes.get(r.comment.id),
+        ),
         replies: [],
       })
     }
@@ -106,7 +119,7 @@ export const commentRoutes: FastifyPluginAsyncZod = async (app) => {
       const page = roots.slice(0, PAGE_SIZE)
       const last = page.at(-1)?.comment
       return {
-        items: await withReplies(page),
+        items: await withReplies(page, req.user?.id),
         nextCursor: roots.length > PAGE_SIZE && last ? encodeCursor([last.score, last.id]) : null,
       }
     },
@@ -122,7 +135,7 @@ export const commentRoutes: FastifyPluginAsyncZod = async (app) => {
         .leftJoin(users, eq(users.id, comments.authorId))
         .where(eq(comments.id, req.params.id))
       if (!root) throw new HttpError(404, 'not_found', 'Comment not found')
-      const [node] = await withReplies([root])
+      const [node] = await withReplies([root], req.user?.id)
       return { items: node?.replies ?? [] }
     },
   )
@@ -192,7 +205,7 @@ export const commentRoutes: FastifyPluginAsyncZod = async (app) => {
         .where(eq(comments.id, comment.id))
         .returning()
       if (!row) throw new Error('update returned no row')
-      const [node] = await withReplies([{ comment: row, author: user }])
+      const [node] = await withReplies([{ comment: row, author: user }], user.id)
       if (!node) throw new Error('unreachable')
       return node
     },

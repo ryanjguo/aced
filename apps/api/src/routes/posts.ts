@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { toPost } from '../mappers/social.js'
 import { currentUser, requireUser } from '../user.js'
+import { myVotes } from '../votes.js'
 
 const { posts, users, boards } = schema
 
@@ -29,7 +30,7 @@ const updateBody = z.object({ title: title.optional(), body: body.optional() })
 const idParams = z.object({ id: z.uuid() })
 
 export const postRoutes: FastifyPluginAsyncZod = async (app) => {
-  async function loadPost(id: string): Promise<Post> {
+  async function loadPost(id: string, userId: string | undefined): Promise<Post> {
     const [row] = await app.db
       .select({ post: posts, author: users, board: boards })
       .from(posts)
@@ -37,7 +38,8 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
       .leftJoin(boards, eq(boards.id, posts.boardId))
       .where(eq(posts.id, id))
     if (!row) throw new HttpError(404, 'not_found', 'Post not found')
-    return toPost(row.post, row.author, row.board)
+    const votes = await myVotes(app.db, userId, 'post', [id])
+    return toPost(row.post, row.author, row.board, votes.get(id))
   }
 
   async function ownPost(id: string, userId: string): Promise<PostRow> {
@@ -64,11 +66,13 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
         .returning({ id: posts.id })
       if (!row) throw new Error('insert returned no row')
       reply.code(201)
-      return loadPost(row.id)
+      return loadPost(row.id, user.id)
     },
   )
 
-  app.get('/posts/:id', { schema: { params: idParams } }, (req) => loadPost(req.params.id))
+  app.get('/posts/:id', { schema: { params: idParams } }, (req) =>
+    loadPost(req.params.id, req.user?.id),
+  )
 
   app.patch(
     '/posts/:id',
@@ -82,13 +86,14 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
           throw new HttpError(400, 'bad_request', 'Takes are 1–500 characters')
         }
       }
-      if (title === undefined && body === undefined) return loadPost(post.id)
+      if (title === undefined && body === undefined)
+        return loadPost(post.id, post.authorId ?? undefined)
       // #54: content filter runs here too.
       await app.db
         .update(posts)
         .set({ title, body, editedAt: new Date() })
         .where(eq(posts.id, post.id))
-      return loadPost(post.id)
+      return loadPost(post.id, post.authorId ?? undefined)
     },
   )
 
