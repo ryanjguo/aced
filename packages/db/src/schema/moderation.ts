@@ -12,7 +12,7 @@ import {
 import { users } from './auth.js'
 import { id } from './columns.js'
 
-export const reportTarget = pgEnum('report_target', ['post', 'comment', 'user'])
+export const reportTarget = pgEnum('report_target', ['post', 'comment', 'user', 'series'])
 export const reportReason = pgEnum('report_reason', [
   'spam',
   'harassment',
@@ -58,6 +58,8 @@ export const modActionType = pgEnum('mod_action_type', [
   'dismiss',
   'confirm_rumor',
   'deny_rumor',
+  'fix_series',
+  'regenerate_post',
 ])
 
 /** Audit log of every moderator action. */

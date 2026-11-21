@@ -90,7 +90,10 @@ export const modRoutes: FastifyPluginAsyncZod = async (app) => {
         .orderBy(desc(last), desc(reports.targetId))
         .limit(PAGE_SIZE + 1)
 
-      const page = groups.slice(0, PAGE_SIZE)
+      // Reports never target series (the enum is shared with mod_actions); narrow the type.
+      const page = groups
+        .slice(0, PAGE_SIZE)
+        .flatMap((g) => (g.targetType === 'series' ? [] : [{ ...g, targetType: g.targetType }]))
       const ids = (type: string) => page.filter((g) => g.targetType === type).map((g) => g.targetId)
       const [postRows, commentRows, userRows] = await Promise.all([
         ids('post').length

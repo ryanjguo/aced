@@ -1,11 +1,11 @@
 import { type Db, eq, inArray, schema, sql } from '@aced/db'
-import type { JobDefinition } from '@aced/jobs'
+import { JOBS, type JobDefinition } from '@aced/jobs'
 import { hotScore } from '@aced/ranking'
 import type { StatCardData } from '@aced/types'
 
 const { maps, series, teams, events, players, playerMapStats, posts, postTags } = schema
 
-export const MAP_COMPLETED = 'map-completed'
+export const MAP_COMPLETED = JOBS.mapCompleted
 
 /** What makes a performance card-worthy; checked in order, first match is the highlight. */
 export const STAT_CARD_RULES = {
