@@ -32,7 +32,6 @@ export interface Player {
 export interface Series {
   id: string
   event: Pick<Event, 'id' | 'name' | 'slug'>
-  /** Null while a bracket slot is TBD. */
   teamA: Team | null
   teamB: Team | null
   bestOf: 1 | 3 | 5

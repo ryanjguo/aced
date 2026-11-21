@@ -14,9 +14,6 @@ import {
 } from 'drizzle-orm/pg-core'
 import { citext, id, timestamps } from './columns.js'
 
-// Esports data is owned by the worker (synced from GRID). Every table keeps the
-// GRID id in `grid_id` so syncs can upsert; everything else uses our own UUIDs.
-
 export const region = pgEnum('region', ['americas', 'emea', 'pacific', 'china', 'international'])
 
 export const seriesStatus = pgEnum('series_status', ['scheduled', 'live', 'completed', 'cancelled'])
