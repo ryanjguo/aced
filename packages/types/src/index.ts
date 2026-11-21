@@ -86,3 +86,12 @@ export interface ApiError {
     message: string
   }
 }
+
+export interface SeriesList {
+  items: Series[]
+}
+
+export interface EventDetail {
+  event: Event
+  series: Series[]
+}
