@@ -15,6 +15,7 @@ import { commentRoutes } from './routes/comments.js'
 import { eventRoutes } from './routes/events.js'
 import { healthRoutes } from './routes/health.js'
 import { meRoutes } from './routes/me.js'
+import { modRoutes } from './routes/mod.js'
 import { postRoutes } from './routes/posts.js'
 import { reportRoutes } from './routes/reports.js'
 import { seriesRoutes } from './routes/series.js'
@@ -74,6 +75,7 @@ export function buildApp(options: AppOptions) {
   app.register(commentRoutes)
   app.register(voteRoutes)
   app.register(reportRoutes)
+  app.register(modRoutes)
 
   return app
 }
