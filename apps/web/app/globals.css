@@ -8,6 +8,24 @@
   --color-muted: #8a93a3;
   --color-accent: #c6f432;
   --color-live: #ff5a5f;
+
+  /* shadcn/ui tokens mapped to Aced colors. `muted` and `accent` keep their Aced meaning, so
+     components use `secondary` for hover and subtle backgrounds instead. */
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-fg);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-fg);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-fg);
+  --color-primary: var(--color-accent);
+  --color-primary-foreground: var(--color-bg);
+  --color-secondary: var(--color-border);
+  --color-secondary-foreground: var(--color-fg);
+  --color-muted-foreground: var(--color-muted);
+  --color-accent-foreground: var(--color-bg);
+  --color-destructive: var(--color-live);
+  --color-input: var(--color-border);
+  --color-ring: var(--color-accent);
 }
 
 body {
