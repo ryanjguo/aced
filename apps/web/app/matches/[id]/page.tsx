@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { api } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
+import { AdminSeriesFix } from './_components/AdminSeriesFix'
 import { LocalTime } from './_components/LocalTime'
 import { StatsTable } from './_components/StatsTable'
 
@@ -92,6 +93,8 @@ export default async function SeriesPage({ params }: Props) {
           </div>
         </div>
       </header>
+
+      <AdminSeriesFix series={series} />
 
       {series.maps.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted">

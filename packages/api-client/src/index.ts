@@ -168,6 +168,18 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
         body: JSON.stringify(input),
       }),
     matchedRumors: (init?: RequestInit) => request<Page<MatchedRumor>>('/mod/rumors/matched', init),
+    fixSeries: (
+      id: string,
+      fix: {
+        scoreA: number
+        scoreB: number
+        status: SeriesStatus
+        winner: 'a' | 'b' | null
+        reason: string
+      },
+    ) => request<null>(`/admin/series/${encodeURIComponent(id)}`, json('PATCH', fix)),
+    regeneratePost: (id: string) =>
+      request<null>(`/admin/posts/${encodeURIComponent(id)}/regenerate`, { method: 'POST' }),
     resolveRumor: (postId: string, status: 'confirmed' | 'denied') =>
       request<null>(`/mod/rumors/${encodeURIComponent(postId)}`, json('POST', { status })),
     me: (init?: RequestInit) => request<Me>('/me', init),
