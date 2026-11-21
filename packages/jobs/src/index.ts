@@ -10,6 +10,9 @@ export const JOBS = {
   rosterChanged: 'roster-changed',
 } as const
 
+/** ISO time of the last successful GRID sync; written by the sync job, read by API /health. */
+export const WORKER_LAST_SYNC_KEY = 'worker:last_sync_ok'
+
 /** A job module in `apps/worker/src/jobs`. Each job name is also its queue name. */
 export interface JobDefinition<Data = unknown> {
   name: string
