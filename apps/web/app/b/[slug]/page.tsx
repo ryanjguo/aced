@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
+import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { PostFeed } from './_components/PostFeed'
@@ -45,9 +46,14 @@ export default async function BoardPage({ params, searchParams }: Props) {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">{board?.name ?? slug}</h1>
-        {board?.description && <p className="text-sm text-muted">{board.description}</p>}
+      <header className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">{board?.name ?? slug}</h1>
+          {board?.description && <p className="text-sm text-muted">{board.description}</p>}
+        </div>
+        <Button asChild size="sm">
+          <Link href={board ? `/submit?board=${board.id}` : '/submit'}>New post</Link>
+        </Button>
       </header>
 
       <nav aria-label="Sort posts" className="mb-4 flex flex-wrap items-center gap-3">
