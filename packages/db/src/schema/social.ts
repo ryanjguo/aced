@@ -171,4 +171,6 @@ export const rumorStatus = pgTable('rumor_status', {
   status: rumorState().notNull().default('open'),
   resolvedBy: uuid().references(() => users.id, { onDelete: 'set null' }),
   resolvedAt: timestamp({ withTimezone: true }),
+  // Set when a confirmed transfer matches this rumor, so moderators can confirm it.
+  matchedTransferId: uuid().references((): AnyPgColumn => posts.id, { onDelete: 'set null' }),
 })

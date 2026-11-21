@@ -1,9 +1,10 @@
 import { and, desc, eq, inArray, schema, sql, type Tx } from '@aced/db'
-import type { ModQueueItem, Page, ReportReason } from '@aced/types'
+import type { MatchedRumor, ModQueueItem, Page, ReportReason } from '@aced/types'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
+import { listPosts } from '../lib/post-list.js'
 import { currentUser, requireRole, toUserSummary } from '../user.js'
 
 const { reports, posts, comments, users, modActions } = schema
@@ -265,6 +266,33 @@ export const modRoutes: FastifyPluginAsyncZod = async (app) => {
         })
       })
       return reply.code(204).send()
+    },
+  )
+
+  app.get(
+    '/mod/rumors/matched',
+    { schema: { querystring: z.object({ cursor: z.string().max(500).optional() }) } },
+    async (req): Promise<Page<MatchedRumor>> => {
+      const { rumorStatus } = schema
+      const page = await listPosts(app.db, {
+        where: sql`exists (select 1 from ${rumorStatus} where ${rumorStatus.postId} = ${posts.id}
+          and ${rumorStatus.status} = 'open' and ${rumorStatus.matchedTransferId} is not null)`,
+        sort: 'new',
+        t: 'all',
+        cursor: req.query.cursor,
+        userId: req.user?.id,
+      })
+      const ids = page.items.map((p) => p.id)
+      const matches = ids.length
+        ? await app.db.select().from(rumorStatus).where(inArray(rumorStatus.postId, ids))
+        : []
+      return {
+        items: page.items.flatMap((rumor) => {
+          const transferId = matches.find((m) => m.postId === rumor.id)?.matchedTransferId
+          return transferId ? [{ rumor, transferId }] : []
+        }),
+        nextCursor: page.nextCursor,
+      }
     },
   )
 }

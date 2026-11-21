@@ -399,3 +399,9 @@ export interface TransferCardData {
 }
 
 export type PostData = ResultCardData | StatCardData | TransferCardData
+
+export interface MatchedRumor {
+  rumor: Post
+  /** The transfer post that matched it. */
+  transferId: string
+}
