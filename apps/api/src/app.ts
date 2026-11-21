@@ -17,6 +17,7 @@ import { healthRoutes } from './routes/health.js'
 import { meRoutes } from './routes/me.js'
 import { postRoutes } from './routes/posts.js'
 import { seriesRoutes } from './routes/series.js'
+import { voteRoutes } from './routes/votes.js'
 import { registerCurrentUser } from './user.js'
 
 declare module 'fastify' {
@@ -66,6 +67,7 @@ export function buildApp(options: AppOptions) {
   app.register(boardRoutes)
   app.register(postRoutes)
   app.register(commentRoutes)
+  app.register(voteRoutes)
 
   return app
 }
