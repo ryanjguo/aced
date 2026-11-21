@@ -40,6 +40,16 @@ const createBody = z.discriminatedUnion('kind', [
     boardId: z.uuid().optional(),
     tags: tagsInput.default([]),
   }),
+  z.object({
+    kind: z.literal('rumor'),
+    title,
+    // Rumors must cite where they came from.
+    url: z.url({ protocol: /^https?$/ }).max(2000),
+    body: body.default(''),
+    tags: tagsInput.refine((t) => t.some((x) => x.type === 'player' || x.type === 'team'), {
+      message: 'Tag at least one player or team',
+    }),
+  }),
 ])
 
 const updateBody = z.object({
@@ -50,6 +60,12 @@ const updateBody = z.object({
 const idParams = z.object({ id: z.uuid() })
 
 export const postRoutes: FastifyPluginAsyncZod = async (app) => {
+  async function transfersBoardId() {
+    const [board] = await app.db.select().from(boards).where(eq(boards.slug, 'transfers'))
+    if (!board) throw new Error('Transfers board missing (migration 0004)')
+    return board.id
+  }
+
   async function loadPost(id: string, userId: string | undefined): Promise<Post> {
     const [row] = await app.db
       .select({ post: posts, author: users, board: boards })
@@ -74,7 +90,8 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireUser, schema: { body: createBody } },
     async (req, reply): Promise<Post> => {
       const user = currentUser(req)
-      const input = req.body
+      const input =
+        req.body.kind === 'rumor' ? { ...req.body, boardId: await transfersBoardId() } : req.body
       if (input.boardId) {
         const [board] = await app.db.select().from(boards).where(eq(boards.id, input.boardId))
         if (!board) throw new HttpError(400, 'bad_request', 'Unknown board')
@@ -94,6 +111,8 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
           .returning({ id: posts.id })
         if (!created) throw new Error('insert returned no row')
         await saveTags(tx, created.id, tags)
+        if (values.kind === 'rumor')
+          await tx.insert(schema.rumorStatus).values({ postId: created.id })
         return created
       })
       reply.code(201)
