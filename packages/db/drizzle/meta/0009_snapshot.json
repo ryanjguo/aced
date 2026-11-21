@@ -112,12 +112,8 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -206,12 +202,8 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -221,9 +213,7 @@
         "sessions_token_unique": {
           "name": "sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -321,16 +311,12 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         },
         "users_handle_unique": {
           "name": "users_handle_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "handle"
-          ]
+          "columns": ["handle"]
         }
       },
       "policies": {},
@@ -496,16 +482,12 @@
         "events_gridId_unique": {
           "name": "events_gridId_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "grid_id"
-          ]
+          "columns": ["grid_id"]
         },
         "events_slug_unique": {
           "name": "events_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -594,12 +576,8 @@
           "name": "maps_series_id_series_id_fk",
           "tableFrom": "maps",
           "tableTo": "series",
-          "columnsFrom": [
-            "series_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["series_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -607,12 +585,8 @@
           "name": "maps_winner_id_teams_id_fk",
           "tableFrom": "maps",
           "tableTo": "teams",
-          "columnsFrom": [
-            "winner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["winner_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -622,17 +596,12 @@
         "maps_gridId_unique": {
           "name": "maps_gridId_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "grid_id"
-          ]
+          "columns": ["grid_id"]
         },
         "maps_seriesId_order_unique": {
           "name": "maps_seriesId_order_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "series_id",
-            "order"
-          ]
+          "columns": ["series_id", "order"]
         }
       },
       "policies": {},
@@ -752,12 +721,8 @@
           "name": "player_map_stats_map_id_maps_id_fk",
           "tableFrom": "player_map_stats",
           "tableTo": "maps",
-          "columnsFrom": [
-            "map_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["map_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -765,12 +730,8 @@
           "name": "player_map_stats_player_id_players_id_fk",
           "tableFrom": "player_map_stats",
           "tableTo": "players",
-          "columnsFrom": [
-            "player_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["player_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -778,12 +739,8 @@
           "name": "player_map_stats_team_id_teams_id_fk",
           "tableFrom": "player_map_stats",
           "tableTo": "teams",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -791,10 +748,7 @@
       "compositePrimaryKeys": {
         "player_map_stats_map_id_player_id_pk": {
           "name": "player_map_stats_map_id_player_id_pk",
-          "columns": [
-            "map_id",
-            "player_id"
-          ]
+          "columns": ["map_id", "player_id"]
         }
       },
       "uniqueConstraints": {},
@@ -886,12 +840,8 @@
           "name": "players_current_team_id_teams_id_fk",
           "tableFrom": "players",
           "tableTo": "teams",
-          "columnsFrom": [
-            "current_team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["current_team_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -901,16 +851,12 @@
         "players_gridId_unique": {
           "name": "players_gridId_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "grid_id"
-          ]
+          "columns": ["grid_id"]
         },
         "players_slug_unique": {
           "name": "players_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -1010,12 +956,8 @@
           "name": "roster_stints_player_id_players_id_fk",
           "tableFrom": "roster_stints",
           "tableTo": "players",
-          "columnsFrom": [
-            "player_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["player_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1023,12 +965,8 @@
           "name": "roster_stints_team_id_teams_id_fk",
           "tableFrom": "roster_stints",
           "tableTo": "teams",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1172,12 +1110,8 @@
           "name": "series_event_id_events_id_fk",
           "tableFrom": "series",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1185,12 +1119,8 @@
           "name": "series_team_a_id_teams_id_fk",
           "tableFrom": "series",
           "tableTo": "teams",
-          "columnsFrom": [
-            "team_a_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_a_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1198,12 +1128,8 @@
           "name": "series_team_b_id_teams_id_fk",
           "tableFrom": "series",
           "tableTo": "teams",
-          "columnsFrom": [
-            "team_b_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_b_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1211,12 +1137,8 @@
           "name": "series_winner_id_teams_id_fk",
           "tableFrom": "series",
           "tableTo": "teams",
-          "columnsFrom": [
-            "winner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["winner_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1226,9 +1148,7 @@
         "series_gridId_unique": {
           "name": "series_gridId_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "grid_id"
-          ]
+          "columns": ["grid_id"]
         }
       },
       "policies": {},
@@ -1310,16 +1230,12 @@
         "teams_gridId_unique": {
           "name": "teams_gridId_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "grid_id"
-          ]
+          "columns": ["grid_id"]
         },
         "teams_slug_unique": {
           "name": "teams_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -1420,12 +1336,8 @@
           "name": "mod_actions_actor_id_users_id_fk",
           "tableFrom": "mod_actions",
           "tableTo": "users",
-          "columnsFrom": [
-            "actor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["actor_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1578,12 +1490,8 @@
           "name": "reports_reporter_id_users_id_fk",
           "tableFrom": "reports",
           "tableTo": "users",
-          "columnsFrom": [
-            "reporter_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["reporter_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1658,9 +1566,7 @@
         "boards_slug_unique": {
           "name": "boards_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -1787,12 +1693,8 @@
           "name": "comments_post_id_posts_id_fk",
           "tableFrom": "comments",
           "tableTo": "posts",
-          "columnsFrom": [
-            "post_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["post_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1800,12 +1702,8 @@
           "name": "comments_parent_id_comments_id_fk",
           "tableFrom": "comments",
           "tableTo": "comments",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1813,12 +1711,8 @@
           "name": "comments_author_id_users_id_fk",
           "tableFrom": "comments",
           "tableTo": "users",
-          "columnsFrom": [
-            "author_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["author_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1896,12 +1790,8 @@
           "name": "post_tags_post_id_posts_id_fk",
           "tableFrom": "post_tags",
           "tableTo": "posts",
-          "columnsFrom": [
-            "post_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["post_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1909,11 +1799,7 @@
       "compositePrimaryKeys": {
         "post_tags_post_id_entity_type_entity_id_pk": {
           "name": "post_tags_post_id_entity_type_entity_id_pk",
-          "columns": [
-            "post_id",
-            "entity_type",
-            "entity_id"
-          ]
+          "columns": ["post_id", "entity_type", "entity_id"]
         }
       },
       "uniqueConstraints": {},
@@ -2123,12 +2009,8 @@
           "name": "posts_author_id_users_id_fk",
           "tableFrom": "posts",
           "tableTo": "users",
-          "columnsFrom": [
-            "author_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["author_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -2136,12 +2018,8 @@
           "name": "posts_board_id_boards_id_fk",
           "tableFrom": "posts",
           "tableTo": "boards",
-          "columnsFrom": [
-            "board_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["board_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -2149,12 +2027,8 @@
           "name": "posts_series_id_series_id_fk",
           "tableFrom": "posts",
           "tableTo": "series",
-          "columnsFrom": [
-            "series_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["series_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -2164,9 +2038,7 @@
         "posts_sourceKey_unique": {
           "name": "posts_sourceKey_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "source_key"
-          ]
+          "columns": ["source_key"]
         }
       },
       "policies": {},
@@ -2243,12 +2115,8 @@
           "name": "votes_user_id_users_id_fk",
           "tableFrom": "votes",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2256,11 +2124,7 @@
       "compositePrimaryKeys": {
         "votes_user_id_target_type_target_id_pk": {
           "name": "votes_user_id_target_type_target_id_pk",
-          "columns": [
-            "user_id",
-            "target_type",
-            "target_id"
-          ]
+          "columns": ["user_id", "target_type", "target_id"]
         }
       },
       "uniqueConstraints": {},
@@ -2278,74 +2142,37 @@
     "public.user_role": {
       "name": "user_role",
       "schema": "public",
-      "values": [
-        "user",
-        "moderator",
-        "admin"
-      ]
+      "values": ["user", "moderator", "admin"]
     },
     "public.region": {
       "name": "region",
       "schema": "public",
-      "values": [
-        "americas",
-        "emea",
-        "pacific",
-        "china",
-        "international"
-      ]
+      "values": ["americas", "emea", "pacific", "china", "international"]
     },
     "public.series_status": {
       "name": "series_status",
       "schema": "public",
-      "values": [
-        "scheduled",
-        "live",
-        "completed",
-        "cancelled"
-      ]
+      "values": ["scheduled", "live", "completed", "cancelled"]
     },
     "public.mod_action_type": {
       "name": "mod_action_type",
       "schema": "public",
-      "values": [
-        "remove",
-        "restore",
-        "lock",
-        "unlock",
-        "ban",
-        "unban",
-        "dismiss"
-      ]
+      "values": ["remove", "restore", "lock", "unlock", "ban", "unban", "dismiss"]
     },
     "public.report_reason": {
       "name": "report_reason",
       "schema": "public",
-      "values": [
-        "spam",
-        "harassment",
-        "misinformation",
-        "rumor_no_source",
-        "other"
-      ]
+      "values": ["spam", "harassment", "misinformation", "rumor_no_source", "other"]
     },
     "public.report_status": {
       "name": "report_status",
       "schema": "public",
-      "values": [
-        "open",
-        "actioned",
-        "dismissed"
-      ]
+      "values": ["open", "actioned", "dismissed"]
     },
     "public.report_target": {
       "name": "report_target",
       "schema": "public",
-      "values": [
-        "post",
-        "comment",
-        "user"
-      ]
+      "values": ["post", "comment", "user"]
     },
     "public.post_kind": {
       "name": "post_kind",
@@ -2365,19 +2192,12 @@
     "public.tag_entity": {
       "name": "tag_entity",
       "schema": "public",
-      "values": [
-        "player",
-        "team",
-        "event"
-      ]
+      "values": ["player", "team", "event"]
     },
     "public.vote_target": {
       "name": "vote_target",
       "schema": "public",
-      "values": [
-        "post",
-        "comment"
-      ]
+      "values": ["post", "comment"]
     }
   },
   "schemas": {},
