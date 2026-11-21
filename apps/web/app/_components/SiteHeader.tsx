@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react'
 import Link from 'next/link'
 import { AccountMenu } from './AccountMenu'
 
@@ -14,7 +15,21 @@ export function SiteHeader() {
         <Link href="/boards" className="text-sm text-muted hover:text-fg">
           Boards
         </Link>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-3">
+          <search className="hidden sm:block">
+            <form action="/search">
+              <input
+                type="search"
+                name="q"
+                aria-label="Search"
+                placeholder="Search"
+                className="h-8 w-44 rounded-md border border-input bg-surface px-3 text-sm placeholder:text-muted"
+              />
+            </form>
+          </search>
+          <Link href="/search" aria-label="Search" className="text-muted hover:text-fg sm:hidden">
+            <Search className="size-5" />
+          </Link>
           <AccountMenu />
         </div>
       </nav>
