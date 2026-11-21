@@ -78,7 +78,13 @@ export interface HealthResponse {
   }
 }
 
-export type ApiErrorCode = 'bad_request' | 'not_found' | 'internal'
+export type ApiErrorCode =
+  | 'bad_request'
+  | 'unauthorized'
+  | 'forbidden'
+  | 'not_found'
+  | 'handle_taken'
+  | 'internal'
 
 export interface ApiError {
   error: {
