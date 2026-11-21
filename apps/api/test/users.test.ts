@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { eq, schema } from '@aced/db'
+import { and, eq, schema } from '@aced/db'
 import type { Page, Post, Profile, ProfileComment } from '@aced/types'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { buildTestApp, signIn } from './build-test-app.js'
@@ -32,14 +32,21 @@ describe('user profiles', () => {
         payload: { kind: 'take', body: `take ${i}` },
       })
     }
-    const first = (await app.db.select().from(posts).where(eq(posts.authorId, userId)))[0]
+    // Comment on a post that stays visible (take 26 is removed below).
+    const [first] = await app.db
+      .select()
+      .from(posts)
+      .where(and(eq(posts.authorId, userId), eq(posts.body, 'take 0')))
     await app.inject({
       method: 'POST',
       url: `/posts/${first?.id}/comments`,
       headers: { cookie },
       payload: { body: 'my comment' },
     })
-    await app.db.update(posts).set({ isRemoved: true }).where(eq(posts.body, 'take 26'))
+    await app.db
+      .update(posts)
+      .set({ isRemoved: true })
+      .where(and(eq(posts.authorId, userId), eq(posts.body, 'take 26')))
   })
 
   afterAll(async () => {
