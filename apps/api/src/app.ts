@@ -8,7 +8,9 @@ import {
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod'
 import { registerErrorHandlers } from './errors.js'
+import { eventRoutes } from './routes/events.js'
 import { healthRoutes } from './routes/health.js'
+import { seriesRoutes } from './routes/series.js'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -42,6 +44,8 @@ export function buildApp(options: AppOptions) {
   registerErrorHandlers(app)
   app.register(cors, { origin: options.webOrigin })
   app.register(healthRoutes)
+  app.register(seriesRoutes)
+  app.register(eventRoutes)
 
   return app
 }
