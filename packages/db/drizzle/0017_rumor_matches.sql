@@ -1,0 +1,2 @@
+ALTER TABLE "rumor_status" ADD COLUMN "matched_transfer_id" uuid;--> statement-breakpoint
+ALTER TABLE "rumor_status" ADD CONSTRAINT "rumor_status_matched_transfer_id_posts_id_fk" FOREIGN KEY ("matched_transfer_id") REFERENCES "public"."posts"("id") ON DELETE set null ON UPDATE no action;
