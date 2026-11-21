@@ -260,3 +260,13 @@ export interface Profile extends UserSummary {
 export interface ProfileComment extends Comment {
   post: { id: string; title: string | null }
 }
+
+export type TagEntityType = 'player' | 'team' | 'event'
+
+export interface PostTag {
+  type: TagEntityType
+  id: string
+  /** Display name: player handle, team name or event name. */
+  name: string
+  slug: string
+}
