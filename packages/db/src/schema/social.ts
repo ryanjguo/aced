@@ -89,6 +89,7 @@ export const comments = pgTable(
   },
   (t) => [
     index().on(t.postId, t.createdAt),
+    index().on(t.parentId),
     check('comments_body_length', sql`char_length(${t.body}) between 1 and 10000`),
     check('comments_depth_range', sql`${t.depth} between 0 and 6`),
   ],

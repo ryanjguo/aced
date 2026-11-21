@@ -84,6 +84,7 @@ export type ApiErrorCode =
   | 'forbidden'
   | 'not_found'
   | 'handle_taken'
+  | 'locked'
   | 'internal'
 
 export interface ApiError {
@@ -145,6 +146,7 @@ export interface Comment {
   body: string
   score: number
   depth: number
+  replyCount: number
   isRemoved: boolean
   createdAt: string
   editedAt: string | null
@@ -181,4 +183,8 @@ export type CreatePostInput =
 export interface UpdatePostInput {
   title?: string
   body?: string
+}
+
+export interface CommentNode extends Comment {
+  replies: CommentNode[]
 }
