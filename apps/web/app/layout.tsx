@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { SiteFooter } from './_components/SiteFooter'
 import { SiteHeader } from './_components/SiteHeader'
+import { TimeZoneCookie } from './_components/TimeZoneCookie'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <SiteHeader />
           <div className="flex-1">{children}</div>
           <SiteFooter />
+          <TimeZoneCookie />
         </TooltipProvider>
       </body>
     </html>
