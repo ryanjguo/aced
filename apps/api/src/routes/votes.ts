@@ -3,6 +3,7 @@ import type { VoteResult } from '@aced/types'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
+import { rateLimit } from '../moderation.js'
 import { currentUser, requireUser } from '../user.js'
 
 const { votes, posts, comments } = schema
@@ -18,7 +19,9 @@ export const voteRoutes: FastifyPluginAsyncZod = async (app) => {
     '/votes',
     { preHandler: requireUser, schema: { body: voteBody } },
     async (req): Promise<VoteResult> => {
-      const userId = currentUser(req).id
+      const user = currentUser(req)
+      const userId = user.id
+      await rateLimit(app, user, 'vote')
       const { targetType, targetId, value } = req.body
       const table = targetType === 'post' ? posts : comments
 

@@ -5,6 +5,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { toPost } from '../mappers/social.js'
+import { assertClean, rateLimit } from '../moderation.js'
 import { currentUser, requireUser } from '../user.js'
 import { myVotes } from '../votes.js'
 
@@ -60,7 +61,12 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
         const [board] = await app.db.select().from(boards).where(eq(boards.id, input.boardId))
         if (!board) throw new HttpError(400, 'bad_request', 'Unknown board')
       }
-      // #54: content filter and rate limits run here, before the insert.
+      assertClean(
+        input.body,
+        'title' in input ? input.title : null,
+        'url' in input ? input.url : null,
+      )
+      await rateLimit(app, user, 'post')
       const createdAt = new Date()
       const [row] = await app.db
         .insert(posts)
@@ -90,7 +96,7 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
       }
       if (title === undefined && body === undefined)
         return loadPost(post.id, post.authorId ?? undefined)
-      // #54: content filter runs here too.
+      assertClean(title, body)
       await app.db
         .update(posts)
         .set({ title, body, editedAt: new Date() })

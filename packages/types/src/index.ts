@@ -85,12 +85,16 @@ export type ApiErrorCode =
   | 'not_found'
   | 'handle_taken'
   | 'locked'
+  | 'content_blocked'
+  | 'rate_limited'
   | 'internal'
 
 export interface ApiError {
   error: {
     code: ApiErrorCode
     message: string
+    /** Seconds until a rate-limited request may be retried. */
+    retryAfter?: number
   }
 }
 
