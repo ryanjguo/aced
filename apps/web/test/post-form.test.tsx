@@ -12,6 +12,8 @@ vi.mock('@/lib/auth-client', () => ({
 }))
 const createPost = vi.hoisted(() => vi.fn())
 vi.mock('@/lib/api', () => ({ api: { createPost } }))
+const track = vi.hoisted(() => vi.fn())
+vi.mock('@vercel/analytics', () => ({ track }))
 
 const boards: Board[] = [{ id: 'b1', slug: 'general', name: 'General', description: '' }]
 const kind = (name: string) => userEvent.click(screen.getByRole('button', { name }))
@@ -64,5 +66,6 @@ describe('PostForm', () => {
       tags: [],
     })
     expect(router.push).toHaveBeenCalledWith('/p/p9')
+    expect(track).toHaveBeenCalledWith('post_created', { kind: 'thread' })
   })
 })

@@ -32,7 +32,11 @@ export default function PrivacyPage() {
         <h2>What we don't do</h2>
         <ul>
           <li>We don't sell your data or share it with advertisers.</li>
-          <li>We don't use tracking cookies. Any analytics we add will be cookieless.</li>
+          <li>
+            We don't use tracking cookies. We count page views, a few actions (posting, commenting,
+            following) and page speed with Vercel's cookieless analytics, which doesn't identify you
+            or follow you across sites.
+          </li>
           <li>We never show your email address to other users.</li>
         </ul>
         <h2>Deleting your account</h2>

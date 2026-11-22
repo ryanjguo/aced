@@ -22,7 +22,11 @@ const getBoards = cache(() => api.boards({ cache: 'no-store' }))
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const board = (await getBoards().catch(() => null))?.items.find((b) => b.slug === slug)
-  return { title: board?.name ?? 'Board', description: board?.description }
+  return {
+    title: board?.name ?? 'Board',
+    description: board?.description,
+    alternates: board && { canonical: `/b/${board.slug}` },
+  }
 }
 
 export default async function BoardPage({ params, searchParams }: Props) {

@@ -1,6 +1,7 @@
 'use client'
 
 import type { Board, Post } from '@aced/types'
+import { track } from '@vercel/analytics'
 import { useRouter } from 'next/navigation'
 import { type FormEvent, useEffect, useState } from 'react'
 import { Markdown } from '@/components/Markdown'
@@ -71,6 +72,7 @@ export function PostForm({
                 ? { kind, boardId, title, url, body, tags: refs }
                 : { kind, boardId, title, body, tags: refs },
           )
+      if (!post) track('post_created', { kind })
       router.push(`/p/${saved.id}`)
       router.refresh()
     } catch (err) {

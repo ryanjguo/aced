@@ -61,6 +61,17 @@ Run `pnpm lint && pnpm typecheck && pnpm build` before every push. CI runs the s
 - Issues use the template: What does this do? / Why is this important? / Additional context / How do we test this? / Acceptance criteria.
 - Labels: one type (`feature`, `bug`, `chore`, `docs`) plus areas (`web`, `api`, `worker`, `infra`, `data`).
 
+## Avoid
+
+- Abstractions, options or config nobody asked for; helpers used once.
+- Rewriting what the stack already gives you (zod, Drizzle, Better Auth, Next.js caching, `packages/*` helpers). Search before writing a utility.
+- Error handling for cases that can't happen; retries without a reason.
+- Touching unrelated code, reformatting, drive-by renames.
+- Comments that restate the code.
+- UI: raw colors or spacing outside the tokens, decorative motion, marketing-style copy.
+
+When the same review comment comes up twice, add it here.
+
 ## Don't
 
 - Don't commit `.env` files or GRID payloads containing keys.

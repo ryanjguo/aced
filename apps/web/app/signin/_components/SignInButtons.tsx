@@ -1,5 +1,6 @@
 'use client'
 
+import { track } from '@vercel/analytics'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
@@ -15,6 +16,8 @@ export function SignInButtons({ callbackPath }: { callbackPath: string }) {
 
   async function signIn(provider: (typeof providers)[number]['id']) {
     setPending(provider)
+    // New vs returning isn't known until the OAuth round trip; this counts sign-in starts.
+    track('sign_in_started', { provider })
     setError(null)
     const { error } = await authClient.signIn.social({
       provider,

@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${detail.team.name} (${detail.team.tag})`,
     description: `${detail.team.name} roster, results and upcoming matches.`,
+    alternates: { canonical: `/teams/${detail.team.slug}` },
   }
 }
 
