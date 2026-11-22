@@ -18,6 +18,7 @@
     "db:seed": "pnpm --filter @aced/db db:seed",
     "test": "turbo test",
     "test:coverage": "turbo test:coverage",
+    "e2e": "pnpm --filter @aced/e2e e2e",
     "knip": "DATABASE_URL=${DATABASE_URL:-postgres://localhost/knip} knip"
   },
   "devDependencies": {
