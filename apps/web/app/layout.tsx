@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import type { ReactNode } from 'react'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { MobileTabBar } from './_components/MobileTabBar'
 import { SiteFooter } from './_components/SiteFooter'
 import { SiteHeader } from './_components/SiteHeader'
 import { TimeZoneCookie } from './_components/TimeZoneCookie'
@@ -22,7 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${GeistSans.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="flex min-h-dvh flex-col antialiased">
+      <body className="flex min-h-dvh flex-col pb-16 antialiased md:pb-0">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <SiteHeader />
             <div className="flex-1">{children}</div>
             <SiteFooter />
+            <MobileTabBar />
             <TimeZoneCookie />
           </TooltipProvider>
         </ThemeProvider>
