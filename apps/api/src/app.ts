@@ -67,10 +67,10 @@ export function buildApp(options: AppOptions) {
     methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
   })
   app.register(healthRoutes)
-  app.register(authRoutes)
-  app.register(meRoutes)
   app.register(seriesRoutes)
   app.register(eventRoutes)
+  app.register(authRoutes)
+  app.register(meRoutes)
   app.register(boardRoutes)
   app.register(postRoutes)
   app.register(commentRoutes)
