@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { AccountMenu } from './AccountMenu'
 
 export function SiteHeader() {
   return (
@@ -10,6 +11,9 @@ export function SiteHeader() {
         <Link href="/matches" className="text-sm text-muted hover:text-fg">
           Matches
         </Link>
+        <div className="ml-auto">
+          <AccountMenu />
+        </div>
       </nav>
     </header>
   )
