@@ -11,6 +11,8 @@ import { loadPostExtras } from '../post-extras.js'
 const { players, teams, events, posts, users, boards } = schema
 
 const POST_PAGE = 25
+// shortcut: older matches of very common words drop out of results; raise or add filters if missed.
+const RANKED_MATCHES = 2000
 
 const LIMIT = 8
 const ALL_TYPES: TagEntityType[] = ['player', 'team', 'event']
@@ -131,6 +133,12 @@ export const searchRoutes: FastifyPluginAsyncZod = async (app) => {
 
       const tsquery = sql`websearch_to_tsquery('english', ${q})`
       // Rounded so the cursor round-trips exactly through JSON.
+      // Ranking reads every match's search vector, so a common word (most posts) gets slow.
+      // Only the newest matches are ranked: plenty for search, and cheap to find. `nulls last`
+      // matches posts_created_at_index, so common words walk the index and stop early.
+      const candidates = sql`select ${posts.id} from ${posts}
+        where ${posts.searchVector} @@ ${tsquery} and not ${posts.isRemoved}
+        order by ${posts.createdAt} desc nulls last limit ${RANKED_MATCHES}`
       const rank = sql<number>`round(ts_rank(${posts.searchVector}, ${tsquery})::numeric, 6)::float`
       const rows = await app.db
         .select({ post: postColumns, author: users, board: boards, rank })
@@ -138,7 +146,7 @@ export const searchRoutes: FastifyPluginAsyncZod = async (app) => {
         .leftJoin(users, eq(users.id, posts.authorId))
         .leftJoin(boards, eq(boards.id, posts.boardId))
         .where(
-          sql`${posts.searchVector} @@ ${tsquery} and not ${posts.isRemoved} ${
+          sql`${posts.id} in (${candidates}) ${
             after ? sql`and (${rank}, ${posts.id}) < (${after[0]}, ${after[1]})` : sql``
           }`,
         )
