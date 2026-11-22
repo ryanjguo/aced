@@ -68,4 +68,18 @@ describe('follows', () => {
     expect((await call('PUT', 'coach', teamId)).statusCode).toBe(400)
     expect((await call('PUT', 'team', teamId, '')).statusCode).toBe(401)
   })
+
+  it('says whether you follow one target', async () => {
+    const check = (cookie?: string) =>
+      app.inject({
+        method: 'GET',
+        url: `/follows/user/${other.id}`,
+        headers: cookie ? { cookie } : {},
+      })
+    await call('DELETE', 'user', other.id)
+    expect((await check(me.cookie)).json()).toEqual({ following: false })
+    await call('PUT', 'user', other.id)
+    expect((await check(me.cookie)).json()).toEqual({ following: true })
+    expect((await check()).statusCode).toBe(401)
+  })
 })

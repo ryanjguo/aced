@@ -16,8 +16,8 @@ export function FollowButton({ type, id }: { type: FollowTargetType; id: string 
 
   useEffect(() => {
     if (!session) return
-    api.follows().then(
-      ({ items }) => setFollowing(items.some((f) => f.type === type && f.id === id)),
+    api.isFollowing(type, id).then(
+      (res) => setFollowing(res.following),
       () => setFollowing(false),
     )
   }, [session, type, id])
