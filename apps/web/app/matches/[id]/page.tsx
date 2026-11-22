@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { api } from '@/lib/api'
+import { getTimeZone } from '@/lib/time-zone'
 import { LocalTime } from './_components/LocalTime'
 import { StatsTable } from './_components/StatsTable'
 
@@ -74,7 +75,7 @@ export default async function SeriesPage({ params }: Props) {
               LIVE
             </span>
           ) : (
-            <LocalTime iso={series.scheduledAt} />
+            <LocalTime iso={series.scheduledAt} timeZone={await getTimeZone()} />
           )}
         </div>
         <div className="flex items-center gap-4">
