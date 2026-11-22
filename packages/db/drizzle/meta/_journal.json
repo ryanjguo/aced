@@ -141,6 +141,13 @@
       "when": 1795355806180,
       "tag": "0019_lucky_longshot",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1795356899536,
+      "tag": "0020_tricky_randall",
+      "breakpoints": true
     }
   ]
 }
