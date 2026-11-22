@@ -22,6 +22,7 @@ export const env = {
   redisUrl: required('REDIS_URL'),
   webOrigin: process.env.WEB_ORIGIN ?? 'http://localhost:3000',
   sentryDsn: process.env.SENTRY_DSN || undefined,
+  testLogin: process.env.NODE_ENV === 'test',
   auth: {
     secret: process.env.BETTER_AUTH_SECRET || undefined,
     baseUrl: process.env.BETTER_AUTH_URL || `http://localhost:${port}`,
