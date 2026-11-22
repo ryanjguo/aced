@@ -5,6 +5,7 @@ import { FollowingFeed } from './_components/FollowingFeed'
 import { LeftRail } from './_components/LeftRail'
 import { PostFeed } from './_components/PostFeed'
 import { TakeComposer } from './_components/TakeComposer'
+import { TodayStrip } from './_components/TodayStrip'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,6 +31,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
       <LeftRail />
       <main className="flex min-w-0 flex-[999_1_520px] flex-col gap-4">
         <h1 className="sr-only">Home</h1>
+        <TodayStrip />
         <TakeComposer />
         <nav aria-label="Feeds" className="flex gap-5 border-b border-border">
           <Link
