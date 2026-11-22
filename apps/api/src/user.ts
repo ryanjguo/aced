@@ -35,6 +35,9 @@ export async function requireUser(req: FastifyRequest) {
 
 const rank: Record<UserRole, number> = { user: 0, moderator: 1, admin: 2 }
 
+/** Whether role `a` is strictly above role `b`. */
+export const outranks = (a: UserRole, b: UserRole) => rank[a] > rank[b]
+
 export function requireRole(role: Exclude<UserRole, 'user'>) {
   return async (req: FastifyRequest) => {
     if (rank[currentUser(req).role] < rank[role]) {

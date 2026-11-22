@@ -179,4 +179,22 @@ describe('moderation', () => {
     const [r] = await app.db.select().from(reports).where(eq(reports.targetId, post.id))
     expect(r?.status).toBe('dismissed')
   })
+
+  it('only bans users below the actor, and never yourself', async () => {
+    const until = new Date(Date.now() + 86_400_000).toISOString()
+    const ban = (targetId: string, cookie = mod) =>
+      act({ action: 'ban', targetType: 'user', targetId, reason: 'test', until }, cookie)
+    const otherMod = await newUser('moderator')
+    const admin = await newUser('admin')
+    const user = await newUser()
+    const self = await newUser('moderator')
+
+    expect((await ban(user.id)).statusCode).toBe(201)
+    expect((await ban(otherMod.id)).statusCode).toBe(403)
+    expect((await ban(admin.id)).statusCode).toBe(403)
+    expect((await ban(otherMod.id, admin.cookie)).statusCode).toBe(201)
+    expect((await ban(self.id, self.cookie)).statusCode).toBe(403)
+    const [adminRow] = await app.db.select().from(users).where(eq(users.id, admin.id))
+    expect(adminRow?.bannedUntil).toBeNull()
+  })
 })
