@@ -86,3 +86,12 @@ export interface ApiError {
     message: string
   }
 }
+
+export type UserRole = 'user' | 'moderator' | 'admin'
+
+export interface UserSummary {
+  id: string
+  handle: string
+  avatarUrl: string | null
+  role: UserRole
+}
