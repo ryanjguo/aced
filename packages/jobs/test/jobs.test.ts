@@ -3,7 +3,7 @@ import { once } from 'node:events'
 import { createQueueConnection } from '@aced/redis'
 import { Worker } from 'bullmq'
 import { afterAll, describe, expect, it } from 'vitest'
-import { createJobQueues, isFinalFailure, type Job } from '../src/index.js'
+import { createJobQueues, isFinalFailure, type Job, KEEP } from '../src/index.js'
 
 const url = process.env.REDIS_URL
 
@@ -43,6 +43,24 @@ describe.skipIf(!url)('job queues', () => {
     await worker.close()
     expect(calls).toBe(2)
   }, 15_000)
+
+  it('trims finished runs of scheduled jobs', async () => {
+    const sched = `${name}-sched`
+    const queue = jobs.queue(sched)
+    let runs = 0
+    const worker = new Worker(sched, async () => void runs++, { connection })
+    // Same template the worker uses, with a tiny limit so the test is quick.
+    await queue.upsertJobScheduler(
+      sched,
+      { every: 100 },
+      { opts: { ...KEEP.scheduled, removeOnComplete: 2 } },
+    )
+    while (runs < 5) await new Promise((r) => setTimeout(r, 100))
+    await queue.removeJobScheduler(sched)
+    await worker.close()
+    expect(await queue.getCompletedCount()).toBeLessThanOrEqual(2)
+    await queue.obliterate({ force: true })
+  }, 10_000)
 })
 
 describe('isFinalFailure', () => {

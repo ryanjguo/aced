@@ -1,5 +1,5 @@
 import { createDb } from '@aced/db'
-import { createJobQueues, isFinalFailure } from '@aced/jobs'
+import { createJobQueues, isFinalFailure, KEEP } from '@aced/jobs'
 import { createQueueConnection } from '@aced/redis'
 import * as Sentry from '@sentry/node'
 import { Worker } from 'bullmq'
@@ -24,7 +24,9 @@ const workers = jobs.map((job) => {
 })
 
 for (const job of jobs) {
-  if (job.repeat) await queues.queue(job.name).upsertJobScheduler(job.name, job.repeat)
+  if (job.repeat) {
+    await queues.queue(job.name).upsertJobScheduler(job.name, job.repeat, { opts: KEEP.scheduled })
+  }
 }
 console.log(`[worker] running ${jobs.map((j) => j.name).join(', ')}`)
 
