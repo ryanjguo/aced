@@ -1,5 +1,5 @@
-import type { BoardRow, PostRow, UserRow } from '@aced/db'
-import type { Board, Post } from '@aced/types'
+import type { BoardRow, CommentRow, PostRow, UserRow } from '@aced/db'
+import type { Board, Comment, Post } from '@aced/types'
 import { toUserSummary } from '../user.js'
 
 export function toBoard(row: BoardRow): Board {
@@ -20,6 +20,23 @@ export function toPost(row: PostRow, author: UserRow | null, board: BoardRow | n
     score: row.score,
     commentCount: row.commentCount,
     isLocked: row.isLocked,
+    isRemoved: row.isRemoved,
+    createdAt: row.createdAt.toISOString(),
+    editedAt: row.editedAt?.toISOString() ?? null,
+  }
+}
+
+export function toComment(row: CommentRow, author: UserRow | null, replyCount: number): Comment {
+  return {
+    id: row.id,
+    postId: row.postId,
+    parentId: row.parentId,
+    // Removed comments stay in the tree as placeholders.
+    author: row.isRemoved || !author ? null : toUserSummary(author),
+    body: row.isRemoved ? '' : row.body,
+    score: row.score,
+    depth: row.depth,
+    replyCount,
     isRemoved: row.isRemoved,
     createdAt: row.createdAt.toISOString(),
     editedAt: row.editedAt?.toISOString() ?? null,
