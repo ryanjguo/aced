@@ -1,33 +1,68 @@
 @import "tailwindcss";
 
-/* Aced is dark only, so shadcn's `dark:` styles always apply. */
-@custom-variant dark (&);
+@custom-variant dark (&:where(.dark, .dark *));
 
-@theme {
-  --color-bg: #0b0d10;
-  --color-surface: #13161b;
-  --color-border: #232831;
-  --color-fg: #f2f4f7;
-  --color-muted: #8a93a3;
-  --color-accent: #c6f432;
-  --color-live: #ff5a5f;
+/* Design tokens (docs/design-system.md). Light on :root, dark on .dark. */
+:root {
+  --bg: #ffffff;
+  --surface: #f7f8f9;
+  --surface-2: #eef0f2;
+  --border: #e3e5e8;
+  --fg: #121418;
+  --muted: #5d646e;
+  --accent: #c42f45;
+  --accent-tint: rgb(196 47 69 / 0.1);
+  --btn: #121418;
+  --on-btn: #ffffff;
+  --success: #166534;
+  --danger: #c42f45;
+}
 
-  /* shadcn/ui tokens mapped to Aced colors. `muted` and `accent` keep their Aced meaning, so
+.dark {
+  --bg: #0c0d0f;
+  --surface: #141619;
+  --surface-2: #1c1f23;
+  --border: #25282d;
+  --fg: #eceef1;
+  --muted: #8b919b;
+  --accent: #f06a7c;
+  --accent-tint: rgb(224 69 90 / 0.16);
+  --btn: #eceef1;
+  --on-btn: #0c0d0f;
+  --success: #4ade80;
+  --danger: #f06a7c;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-tint: var(--accent-tint);
+  --color-btn: var(--btn);
+  --color-on-btn: var(--on-btn);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+
+  /* shadcn/ui tokens mapped to Aced's. `muted` and `accent` keep their Aced meaning, so
      components use `secondary` for hover and subtle backgrounds instead. */
-  --color-background: var(--color-bg);
-  --color-foreground: var(--color-fg);
-  --color-card: var(--color-surface);
-  --color-card-foreground: var(--color-fg);
-  --color-popover: var(--color-surface);
-  --color-popover-foreground: var(--color-fg);
-  --color-primary: var(--color-accent);
-  --color-primary-foreground: var(--color-bg);
-  --color-secondary: var(--color-border);
-  --color-secondary-foreground: var(--color-fg);
-  --color-muted-foreground: var(--color-muted);
-  --color-destructive: var(--color-live);
-  --color-input: var(--color-border);
-  --color-ring: var(--color-accent);
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--fg);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--fg);
+  --color-primary: var(--btn);
+  --color-primary-foreground: var(--on-btn);
+  --color-secondary: var(--surface-2);
+  --color-secondary-foreground: var(--fg);
+  --color-muted-foreground: var(--muted);
+  --color-destructive: var(--danger);
+  --color-input: var(--border);
+  --color-ring: var(--fg);
 }
 
 @layer base {
@@ -62,7 +97,7 @@ body {
   color: var(--color-muted);
 }
 .prose-aced code {
-  background: var(--color-border);
+  background: var(--color-surface-2);
   border-radius: 0.25rem;
   padding: 0.1em 0.3em;
   font-size: 0.9em;
