@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { LinkTabs } from '@/components/LinkTabs'
 import { serverApi } from '@/lib/server-api'
 import { cn } from '@/lib/utils'
 import { FollowingFeed } from './_components/FollowingFeed'
@@ -22,13 +23,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
           .catch(() => null)
       : null
 
-  // Text tabs (doc: Tabs): the selected feed is fg with a crimson underline.
-  const tabClass = (active: boolean) =>
-    cn(
-      '-mb-px border-b-2 pt-1 pb-2 text-[13px] transition-colors',
-      active ? 'border-accent font-medium text-fg' : 'border-transparent text-muted hover:text-fg',
-    )
-
   return (
     // Three columns (doc: Layout); rails wrap under the feed below ~1024px.
     <div className="mx-auto flex max-w-[1240px] flex-wrap items-start gap-5 px-4 py-5 md:px-5">
@@ -37,22 +31,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
         <h1 className="sr-only">Home</h1>
         <TodayStrip />
         <TakeComposer />
-        <nav aria-label="Feeds" className="flex gap-5 border-b border-border">
-          <Link
-            href="/"
-            aria-current={tab === 'for-you' ? 'page' : undefined}
-            className={tabClass(tab === 'for-you')}
-          >
-            For you
-          </Link>
-          <Link
-            href="/?tab=following"
-            aria-current={tab === 'following' ? 'page' : undefined}
-            className={tabClass(tab === 'following')}
-          >
-            Following
-          </Link>
-        </nav>
+        <LinkTabs
+          label="Feeds"
+          items={[
+            { href: '/', label: 'For you', current: tab === 'for-you' },
+            { href: '/?tab=following', label: 'Following', current: tab === 'following' },
+          ]}
+        />
         {tab === 'following' ? (
           <FollowingFeed />
         ) : forYou ? (

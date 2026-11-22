@@ -76,18 +76,21 @@ export default async function PostPage({ params }: Props) {
             </Badge>
           )}
           {post.rumorStatus && <RumorBadge status={post.rumorStatus} />}
-          {post.board && (
-            <Link href={`/b/${post.board.slug}`} className="hover:text-fg">
-              {post.board.name}
-            </Link>
-          )}
-          {post.isRemoved ? (
-            <span>[removed]</span>
-          ) : (
-            post.author && <span>@{post.author.handle}</span>
-          )}
-          <time dateTime={post.createdAt}>{timeAgo(post.createdAt)}</time>
-          {post.editedAt && <span>edited</span>}
+          {/* Board · author · age · edited, separated like feed rows. */}
+          <span className="flex flex-wrap items-center [&>*+*]:before:mx-1.5 [&>*+*]:before:content-['·']">
+            {post.board && (
+              <Link href={`/b/${post.board.slug}`} className="hover:text-fg">
+                {post.board.name}
+              </Link>
+            )}
+            {post.isRemoved ? (
+              <span>[removed]</span>
+            ) : (
+              post.author && <span>@{post.author.handle}</span>
+            )}
+            <time dateTime={post.createdAt}>{timeAgo(post.createdAt)}</time>
+            {post.editedAt && <span>edited</span>}
+          </span>
           {post.isLocked && <Badge variant="outline">Locked</Badge>}
         </p>
         {post.data && !post.isRemoved && <PostCard data={post.data} />}
