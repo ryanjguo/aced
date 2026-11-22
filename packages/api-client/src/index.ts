@@ -3,6 +3,7 @@ import type {
   ApiErrorCode,
   BoardList,
   CommentNode,
+  CreatePostInput,
   EventDetail,
   HealthResponse,
   Me,
@@ -16,6 +17,7 @@ import type {
   SeriesStatus,
   TopWindow,
   UpdateMeInput,
+  UpdatePostInput,
 } from '@aced/types'
 
 export class ApiClientError extends Error {
@@ -23,6 +25,7 @@ export class ApiClientError extends Error {
     readonly status: number,
     readonly code: ApiErrorCode,
     message: string,
+    readonly retryAfter?: number,
   ) {
     super(message)
     this.name = 'ApiClientError'
@@ -41,6 +44,12 @@ export interface BoardPostsQuery {
   t?: TopWindow
   cursor?: string
 }
+
+const json = (method: string, body: unknown): RequestInit => ({
+  method,
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify(body),
+})
 
 const query = (params: object) => {
   const search = new URLSearchParams(
@@ -64,7 +73,10 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
     const res = await fetchFn(`${baseUrl}${path}`, { credentials: 'include', ...init })
     const body: unknown = await res.json().catch(() => null)
     if (res.ok || okStatuses.includes(res.status)) return body as T
-    if (isApiError(body)) throw new ApiClientError(res.status, body.error.code, body.error.message)
+    if (isApiError(body)) {
+      const { code, message, retryAfter } = body.error
+      throw new ApiClientError(res.status, code, message, retryAfter)
+    }
     throw new ApiClientError(res.status, 'internal', `Request failed with status ${res.status}`)
   }
 
@@ -77,6 +89,9 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
       request<SeriesDetail>(`/series/${encodeURIComponent(id)}`, init),
     event: (slug: string, init?: RequestInit) =>
       request<EventDetail>(`/events/${encodeURIComponent(slug)}`, init),
+    createPost: (input: CreatePostInput) => request<Post>('/posts', json('POST', input)),
+    updatePost: (id: string, input: UpdatePostInput) =>
+      request<Post>(`/posts/${encodeURIComponent(id)}`, json('PATCH', input)),
     post: (id: string, init?: RequestInit) =>
       request<Post>(`/posts/${encodeURIComponent(id)}`, init),
     postComments: (id: string, cursor?: string, init?: RequestInit) =>

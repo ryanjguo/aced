@@ -4,9 +4,11 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
+import { Markdown } from '@/components/Markdown'
 import { Badge } from '@/components/ui/badge'
 import { api } from '@/lib/api'
 import { timeAgo } from '@/lib/time-ago'
+import { AuthorActions } from './_components/AuthorActions'
 import { CommentThread } from './_components/CommentThread'
 
 type Props = { params: Promise<{ id: string }> }
@@ -89,18 +91,22 @@ export default async function PostPage({ params }: Props) {
                 {post.url}
               </a>
             )}
-            {post.body && (
-              <p
-                className={`break-words whitespace-pre-line ${post.title ? 'text-sm' : 'text-lg'}`}
-              >
-                {post.body}
-              </p>
-            )}
+            {post.body &&
+              (post.title ? (
+                <Markdown>{post.body}</Markdown>
+              ) : (
+                <p className="text-lg break-words whitespace-pre-line">{post.body}</p>
+              ))}
           </>
         )}
-        <p className="text-xs text-muted">
-          {post.score} point{post.score === 1 ? '' : 's'} · {post.commentCount} comment
-          {post.commentCount === 1 ? '' : 's'}
+        <p className="flex gap-3 text-xs text-muted">
+          <span>
+            {post.score} point{post.score === 1 ? '' : 's'} · {post.commentCount} comment
+            {post.commentCount === 1 ? '' : 's'}
+          </span>
+          {post.author && !post.isRemoved && (
+            <AuthorActions postId={post.id} authorId={post.author.id} />
+          )}
         </p>
       </article>
 
