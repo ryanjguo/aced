@@ -45,7 +45,7 @@ export function MatchRow({ series, time }: { series: Series; time: string }) {
       <div className="w-14 shrink-0 text-xs text-muted">
         {status === 'live' ? (
           <span className="inline-flex items-center gap-1 font-semibold text-accent">
-            <span className="size-1.5 animate-pulse rounded-full bg-accent" />
+            <span className="size-1.5 motion-safe:animate-pulse rounded-full bg-accent" />
             LIVE
           </span>
         ) : (
