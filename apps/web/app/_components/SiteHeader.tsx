@@ -29,6 +29,8 @@ export function SiteHeader() {
               <input
                 type="search"
                 name="q"
+                // No browser history dropdown under the box.
+                autoComplete="off"
                 aria-label="Search"
                 placeholder="Search"
                 className="h-8 w-44 rounded-md border border-input bg-surface px-3 text-sm placeholder:text-muted"

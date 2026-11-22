@@ -38,6 +38,8 @@ export default async function SearchPage({ searchParams }: Props) {
           <Input
             type="search"
             name="q"
+            // No browser history dropdown under the box.
+            autoComplete="off"
             defaultValue={q}
             aria-label="Search"
             placeholder="Players, teams, events and posts"
