@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { SignInButtons } from './_components/SignInButtons'
 
-export const metadata: Metadata = { title: 'Sign in' }
+export const metadata: Metadata = { title: 'Sign in', robots: { index: false } }
 
 export default async function SignInPage({
   searchParams,

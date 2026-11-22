@@ -28,7 +28,11 @@ const getProfile = cache(async (handle: string): Promise<Profile | 'not_found' |
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const profile = await getProfile((await params).handle)
   if (!profile || profile === 'not_found') return { title: 'Profile' }
-  return { title: `@${profile.handle}`, description: profile.bio ?? undefined }
+  return {
+    title: `@${profile.handle}`,
+    description: profile.bio ?? `@${profile.handle}'s posts on Aced.`,
+    alternates: { canonical: `/u/${profile.handle}` },
+  }
 }
 
 const joined = (iso: string) =>

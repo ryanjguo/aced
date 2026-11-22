@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: player.team ? `${player.handle} (${player.team.tag})` : player.handle,
     description: `${player.handle}'s recent maps and stats.`,
+    alternates: { canonical: `/players/${player.slug}` },
   }
 }
 
