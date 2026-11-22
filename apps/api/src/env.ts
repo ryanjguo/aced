@@ -23,6 +23,7 @@ export const env = {
   webOrigin: process.env.WEB_ORIGIN ?? 'http://localhost:3000',
   sentryDsn: process.env.SENTRY_DSN || undefined,
   testLogin: process.env.NODE_ENV === 'test',
+  internalApiSecret: process.env.INTERNAL_API_SECRET || undefined,
   auth: {
     secret: process.env.BETTER_AUTH_SECRET || undefined,
     baseUrl: process.env.BETTER_AUTH_URL || `http://localhost:${port}`,

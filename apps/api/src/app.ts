@@ -2,6 +2,8 @@ import { createDb, type Db } from '@aced/db'
 import { createJobQueues, type JobQueues } from '@aced/jobs'
 import { createQueueConnection, createRedis, type Redis } from '@aced/redis'
 import cors from '@fastify/cors'
+import helmet from '@fastify/helmet'
+import rateLimit from '@fastify/rate-limit'
 import Fastify from 'fastify'
 import {
   serializerCompiler,
@@ -9,7 +11,7 @@ import {
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod'
 import { type Auth, type AuthOptions, createAuth } from './auth.js'
-import { registerErrorHandlers } from './errors.js'
+import { HttpError, registerErrorHandlers } from './errors.js'
 import { adminRoutes } from './routes/admin.js'
 import { authRoutes } from './routes/auth.js'
 import { boardRoutes } from './routes/boards.js'
@@ -51,6 +53,11 @@ export interface AppOptions {
   rateLimits?: boolean
   /** Registers POST /auth/test-login; never on in production. */
   testLogin?: boolean
+  /**
+   * Shared with the web server, whose page renders all come from its own IPs. Requests carrying it
+   * skip the per-IP limit; without it set, per-IP limiting stays off so renders aren't throttled.
+   */
+  internalApiSecret?: string
 }
 
 export function buildApp(options: AppOptions) {
@@ -58,6 +65,11 @@ export function buildApp(options: AppOptions) {
     logger: options.logger ?? true,
     // Idle keep-alive sockets would otherwise hold close() open until they time out.
     forceCloseConnections: 'idle',
+    // One proxy hop (Railway's edge): the client IP is the address it saw, which can't be spoofed
+    // by adding X-Forwarded-For entries.
+    trustProxy: (_address, hop) => hop === 0,
+    // Posts max out at 40k characters; this leaves room for JSON and tags.
+    bodyLimit: 256 * 1024,
   }).withTypeProvider<ZodTypeProvider>()
   app.setValidatorCompiler(validatorCompiler)
   app.setSerializerCompiler(serializerCompiler)
@@ -82,6 +94,23 @@ export function buildApp(options: AppOptions) {
 
   registerErrorHandlers(app)
   registerCurrentUser(app)
+  // A JSON API serves no HTML, so a content security policy adds nothing here.
+  app.register(helmet, { contentSecurityPolicy: false })
+  const internal = options.internalApiSecret
+  if ((options.rateLimits ?? true) && internal) {
+    // Per-IP limit for all traffic, signed in or not; search and auth set stricter ones.
+    app.register(rateLimit, {
+      max: 300,
+      timeWindow: '1 minute',
+      redis,
+      skipOnError: true,
+      allowList: (req) => req.url === '/health' || req.headers['x-aced-internal'] === internal,
+      errorResponseBuilder: (_req, ctx) =>
+        new HttpError(429, 'rate_limited', 'Too many requests. Try again shortly.', {
+          retryAfter: Math.ceil(ctx.ttl / 1000),
+        }),
+    })
+  }
   app.register(cors, {
     origin: options.webOrigin,
     credentials: true,
