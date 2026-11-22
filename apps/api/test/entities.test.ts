@@ -54,4 +54,17 @@ describe('player and team endpoints', () => {
     expect((await app.inject({ method: 'GET', url: '/players/nobody' })).statusCode).toBe(404)
     expect((await app.inject({ method: 'GET', url: '/teams/nobody' })).statusCode).toBe(404)
   })
+  it('lists sitemap entries', async () => {
+    const res = await app.inject({ method: 'GET', url: '/sitemap/entries' })
+    const entries = res.json<{
+      boards: string[]
+      teams: string[]
+      players: string[]
+      posts: unknown[]
+    }>()
+    expect(entries.boards).toContain('general')
+    expect(entries.teams).toContain('northwind')
+    expect(entries.players).toContain('kestrel')
+    expect(entries.posts.length).toBeLessThanOrEqual(5000)
+  })
 })

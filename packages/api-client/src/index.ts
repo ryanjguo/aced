@@ -4,6 +4,7 @@ import type {
   BoardList,
   CommentNode,
   CreatePostInput,
+  CreateReportInput,
   EntityResult,
   EventDetail,
   Follow,
@@ -23,6 +24,7 @@ import type {
   SeriesDetail,
   SeriesList,
   SeriesStatus,
+  SitemapEntries,
   TagEntityType,
   TeamDetail,
   TopWindow,
@@ -101,9 +103,12 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
       request<SeriesDetail>(`/series/${encodeURIComponent(id)}`, init),
     event: (slug: string, init?: RequestInit) =>
       request<EventDetail>(`/events/${encodeURIComponent(slug)}`, init),
+    sitemapEntries: (init?: RequestInit) => request<SitemapEntries>('/sitemap/entries', init),
     createPost: (input: CreatePostInput) => request<Post>('/posts', json('POST', input)),
     updatePost: (id: string, input: UpdatePostInput) =>
       request<Post>(`/posts/${encodeURIComponent(id)}`, json('PATCH', input)),
+    deletePost: (id: string) =>
+      request<null>(`/posts/${encodeURIComponent(id)}`, { method: 'DELETE' }),
     post: (id: string, init?: RequestInit) =>
       request<Post>(`/posts/${encodeURIComponent(id)}`, init),
     postComments: (id: string, cursor?: string, init?: RequestInit) =>
@@ -146,6 +151,7 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
         `/users/${encodeURIComponent(handle)}/comments${query({ cursor })}`,
         init,
       ),
+    report: (input: CreateReportInput) => request<{ id: string }>('/reports', json('POST', input)),
     vote: (targetType: 'post' | 'comment', targetId: string, value: VoteValue) =>
       request<VoteResult>('/votes', json('PUT', { targetType, targetId, value })),
     createComment: (postId: string, input: { body: string; parentId?: string }) =>

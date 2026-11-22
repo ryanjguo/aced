@@ -75,6 +75,8 @@ export interface HealthResponse {
   checks: {
     postgres: boolean
     redis: boolean
+    /** Synced in the last 30 minutes; null until the first sync has ever run. */
+    worker: boolean | null
   }
 }
 
@@ -402,4 +404,13 @@ export interface MatchedRumor {
   rumor: Post
   /** The transfer post that matched it. */
   transferId: string
+}
+
+export interface SitemapEntries {
+  boards: string[]
+  events: string[]
+  teams: string[]
+  players: string[]
+  /** Newest visible posts first. */
+  posts: { id: string; updatedAt: string }[]
 }
