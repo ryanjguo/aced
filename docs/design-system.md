@@ -13,7 +13,7 @@ Reference: the [home page POC](https://claude.ai/artifact/EV8Wty61sdmXkZ3RhDqQtV
 
 ## Color tokens
 
-CSS variables on `:root` (light) and `.dark` (dark). Components only use these names, never raw hex.
+CSS variables on `:root` (light) and `.dark` (dark). Components only use these names, never raw hex. The one exception is generated images (`opengraph-image.tsx`), which can't read CSS: they import the dark values from a shared `apps/web/lib/theme-colors.ts`, which mirrors this table.
 
 | Token | Dark | Light | Use |
 | --- | --- | --- | --- |
@@ -42,7 +42,7 @@ Use `--accent` **only** for:
 - Your own upvotes (arrow + score in crimson on `--accent-tint`)
 - Errors and destructive actions (as `--danger`)
 
-Never for: primary buttons (those are monochrome `--btn`), links (underline on hover instead), headings, decoration, or charts other than a single highlighted value.
+Never for: primary buttons (those are monochrome `--btn`), links (see Links below), headings, decoration, or charts other than a single highlighted value.
 
 ## Themes
 
@@ -100,13 +100,18 @@ Sentence case everywhere ("Live and upcoming", not "Live And Upcoming"), except 
 | Secondary button | Transparent, 1px `--border`, `--fg` text. |
 | Ghost / icon button | Transparent; hover `--surface-2`. Icon-only needs `aria-label`. |
 | Tabs | Text tabs, 13px; selected = `--fg`, 500, 2px `--accent` underline; others `--muted`. |
-| Badge (post kind) | 11px, `--surface-2` background, `--muted` text, 5px radius. "Unconfirmed": border only. |
+| Badge (post kind) | 11px, `--surface-2` background, `--muted` text, 5px radius. |
+| Rumor badge | "Unconfirmed": 1px `--border`, `--muted` text. "Confirmed": `--success` text and border. "Denied": 1px `--border`, `--muted` text, struck through. |
 | Chip (tags, Today matches) | Geist Mono 12px, `--surface-2` or `--surface` with border. |
 | Feed row | Vote column 36px (arrow + score in mono), then badge + title, metadata line in `--muted` 12.5px. Divider between rows, `--surface` on hover. |
 | Stat card | `--surface-2` block, 10px radius: "Stat line · map", player name 16px/600 + team tag, then K/D/A, ACS, opponent in mono columns. Labelled "Auto-generated". |
 | Rail card | 1px border, 12px radius, 12px heading in `--muted`, items separated by 1px borders. |
 | Live badge | Crimson dot + "LIVE" 11px 600 in `--accent`. |
-| Vote | Up arrow `--muted`; your vote: `--accent` on `--accent-tint`, score in `--accent`. |
+| Vote | Arrows `--muted`. Your upvote: `--accent` on `--accent-tint`, score in `--accent`. Your downvote: `--fg` arrow on `--surface-2`, score unchanged in color. |
+
+### Links
+
+Links are never colored. Inside running text (post and comment bodies, "Sign in to comment"): `--fg` with an always-visible underline in `--muted`, so they stand out without color. Elsewhere (nav, metadata, rows): no underline, underline on hover.
 
 Icons: Lucide (shadcn default), 16px in rows, 18–20px in navigation, 2px stroke.
 
