@@ -1,11 +1,13 @@
-import { afterAll, describe, expect, it } from 'vitest'
-import { buildTestApp } from './build-test-app.js'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { buildTestApp, redisReady } from './build-test-app.js'
 
 // Random client IPs (read from X-Forwarded-For) so reruns don't share Redis counters.
 const ip = () => `10.${[0, 0, 0].map(() => Math.floor(Math.random() * 255)).join('.')}`
 
 describe('API hardening', () => {
   const app = buildTestApp({ rateLimits: true, internalApiSecret: 'web-secret' })
+  // The limiter skips counting while Redis is down (skipOnError), so start once it's connected.
+  beforeAll(() => redisReady(app))
   afterAll(() => app.close())
 
   const search = (from: string) =>
