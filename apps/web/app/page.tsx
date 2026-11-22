@@ -3,9 +3,11 @@ import { serverApi } from '@/lib/server-api'
 import { cn } from '@/lib/utils'
 import { FollowingFeed } from './_components/FollowingFeed'
 import { LeftRail } from './_components/LeftRail'
+import { LiveUpcoming } from './_components/LiveUpcoming'
 import { PostFeed } from './_components/PostFeed'
 import { TakeComposer } from './_components/TakeComposer'
 import { TodayStrip } from './_components/TodayStrip'
+import { TransferTracker } from './_components/TransferTracker'
 
 export const dynamic = 'force-dynamic'
 
@@ -64,11 +66,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
           </p>
         )}
       </main>
-      {/* Right rail: live matches, transfers, trending and top ACS (#187, #188). */}
-      <aside
-        aria-label="Highlights"
-        className="flex max-w-[280px] flex-[1_1_240px] flex-col gap-4 empty:hidden"
-      />
+      {/* Right rail; trending and top ACS come in #188. */}
+      <aside aria-label="Highlights" className="flex max-w-[280px] flex-[1_1_240px] flex-col gap-4">
+        <LiveUpcoming />
+        <TransferTracker />
+      </aside>
     </div>
   )
 }
