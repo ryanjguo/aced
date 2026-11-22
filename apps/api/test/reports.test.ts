@@ -12,8 +12,10 @@ describe('reports', () => {
   const cookies: string[] = []
 
   beforeAll(async () => {
+    // Established accounts: auto-hide only counts reporters older than 7 days.
+    const createdAt = new Date(Date.now() - 8 * 86_400_000)
     for (let i = 0; i < 6; i++) {
-      const user = await createUser(app, 'r')
+      const user = await createUser(app, 'r', { createdAt })
       userIds.push(user.id)
       cookies.push(user.cookie)
     }
@@ -79,5 +81,63 @@ describe('reports', () => {
     const post = await newPost()
     expect((await report('post', post.id, cookies[1], 'boring')).statusCode).toBe(400)
     expect((await report('post', post.id, '')).statusCode).toBe(401)
+  })
+
+  it("doesn't let brand-new accounts auto-hide a post", async () => {
+    const post = await newPost()
+    for (let i = 0; i < 5; i++) {
+      const fresh = await createUser(app, 'rn')
+      userIds.push(fresh.id)
+      expect((await report('post', post.id, fresh.cookie)).statusCode).toBe(201)
+    }
+    const [row] = await app.db.select().from(posts).where(eq(posts.id, post.id))
+    expect(row?.isRemoved).toBe(false)
+  })
+})
+
+describe('report and follow rate limits', () => {
+  const app = buildTestApp({ rateLimits: true })
+  const userIds: string[] = []
+
+  afterAll(async () => {
+    await app.db.delete(posts).where(inArray(posts.authorId, userIds))
+    await app.db.delete(users).where(inArray(users.id, userIds))
+    await app.close()
+  })
+
+  it('limits reports to 5 an hour for new accounts', async () => {
+    const reporter = await createUser(app, 'rl')
+    const author = await createUser(app, 'rl')
+    userIds.push(reporter.id, author.id)
+    const codes: number[] = []
+    for (let i = 0; i < 6; i++) {
+      // Inserted directly: the author's own post limit isn't under test here.
+      const [post] = await app.db
+        .insert(posts)
+        .values({ kind: 'take', body: `post ${i}`, authorId: author.id })
+        .returning()
+      const res = await app.inject({
+        method: 'POST',
+        url: '/reports',
+        headers: { cookie: reporter.cookie },
+        payload: { targetType: 'post', targetId: post?.id, reason: 'spam' },
+      })
+      codes.push(res.statusCode)
+    }
+    expect(codes).toEqual([201, 201, 201, 201, 201, 429])
+  })
+
+  it('limits follow changes to 30 an hour for new accounts', async () => {
+    const fan = await createUser(app, 'rl')
+    const star = await createUser(app, 'rl')
+    userIds.push(fan.id, star.id)
+    const follow = () =>
+      app.inject({
+        method: 'PUT',
+        url: `/follows/user/${star.id}`,
+        headers: { cookie: fan.cookie },
+      })
+    for (let i = 0; i < 30; i++) expect((await follow()).statusCode).toBe(204)
+    expect((await follow()).statusCode).toBe(429)
   })
 })
