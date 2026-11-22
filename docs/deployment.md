@@ -30,6 +30,8 @@ Postgres, Redis, api and worker must be in the same Railway project and environm
 
 Railway sets `PORT` for the API automatically.
 
+Database connections: the API pool holds `DB_POOL_MAX` connections (default 10) and the worker 5. Keep their sum, plus a few for migrations and `psql`, under the Postgres plan's connection limit. Queries time out after 5s in the API and 30s in the worker; requests over 500ms are logged as `slow request` with the route pattern only.
+
 ## Vercel
 
 | Setting | Value |
