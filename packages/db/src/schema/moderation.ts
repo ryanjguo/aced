@@ -60,6 +60,7 @@ export const modActionType = pgEnum('mod_action_type', [
   'deny_rumor',
   'fix_series',
   'regenerate_post',
+  'self_delete',
 ])
 
 /** Audit log of every moderator action. */
