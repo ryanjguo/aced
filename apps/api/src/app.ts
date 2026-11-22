@@ -14,6 +14,7 @@ import { boardRoutes } from './routes/boards.js'
 import { eventRoutes } from './routes/events.js'
 import { healthRoutes } from './routes/health.js'
 import { meRoutes } from './routes/me.js'
+import { postRoutes } from './routes/posts.js'
 import { seriesRoutes } from './routes/series.js'
 import { registerCurrentUser } from './user.js'
 
@@ -62,6 +63,7 @@ export function buildApp(options: AppOptions) {
   app.register(authRoutes)
   app.register(meRoutes)
   app.register(boardRoutes)
+  app.register(postRoutes)
 
   return app
 }
