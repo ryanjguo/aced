@@ -62,6 +62,14 @@ describe('MatchList', () => {
 
   it('says when there is nothing to show', () => {
     render(<MatchList series={[]} timeZone="UTC" />)
-    expect(screen.getByText('No upcoming matches.')).toBeInTheDocument()
+    expect(screen.getByText('No results yet.')).toBeInTheDocument()
+  })
+
+  it('opens on results when nothing is upcoming, like a finished event', () => {
+    render(<MatchList series={[series('done', -24, 'completed')]} timeZone="UTC" />)
+    expect(screen.getByRole('tab', { name: 'results' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)).toEqual([
+      'Yesterday',
+    ])
   })
 })

@@ -117,7 +117,7 @@ export default async function SeriesPage({ params }: Props) {
           <section
             key={map.id}
             aria-label={`Map ${map.order}: ${map.mapName}`}
-            className="overflow-hidden rounded-lg border border-border bg-surface"
+            className="overflow-hidden rounded-lg border border-border"
           >
             <h2 className="flex items-center justify-between border-b border-border px-4 py-3 text-sm">
               <span>
@@ -126,7 +126,9 @@ export default async function SeriesPage({ params }: Props) {
               </span>
               <span className="font-mono tabular-nums">
                 {map.score[0]} : {map.score[1]}
-                {map.winnerId === null && <span className="ml-2 text-xs text-accent">LIVE</span>}
+                {map.winnerId === null && (
+                  <span className="ml-2 text-[11px] font-semibold text-accent">LIVE</span>
+                )}
               </span>
             </h2>
             {map.stats.length === 0 ? (

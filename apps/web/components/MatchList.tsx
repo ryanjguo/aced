@@ -38,7 +38,10 @@ function timeLabel(iso: string, timeZone: string) {
 }
 
 export function MatchList({ series, timeZone }: { series: Series[]; timeZone: string }) {
-  const [tab, setTab] = useState<Tab>('upcoming')
+  // Finished events have nothing upcoming, so they open on their results.
+  const [tab, setTab] = useState<Tab>(() =>
+    series.some((s) => s.status === 'scheduled' || s.status === 'live') ? 'upcoming' : 'results',
+  )
 
   const groups = useMemo(() => {
     const now = new Date()
