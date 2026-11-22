@@ -87,6 +87,7 @@ export type ApiErrorCode =
   | 'locked'
   | 'content_blocked'
   | 'rate_limited'
+  | 'already_reported'
   | 'internal'
 
 export interface ApiError {
@@ -208,4 +209,13 @@ export interface CommentNode extends Comment {
 export interface VoteResult {
   score: number
   myVote: VoteValue
+}
+
+export type ReportReason = 'spam' | 'harassment' | 'misinformation' | 'rumor_no_source' | 'other'
+
+export interface CreateReportInput {
+  targetType: 'post' | 'comment' | 'user'
+  targetId: string
+  reason: ReportReason
+  note?: string
 }

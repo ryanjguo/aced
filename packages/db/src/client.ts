@@ -3,6 +3,7 @@ import postgres from 'postgres'
 import * as schema from './schema/index.js'
 
 export type Db = ReturnType<typeof createDb>
+export type Tx = Parameters<Parameters<Db['transaction']>[0]>[0]
 
 export function createDb(url: string, options: { max?: number } = {}) {
   const sql = postgres(url, { max: options.max ?? 10 })
