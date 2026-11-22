@@ -1,5 +1,5 @@
 import type { BoardRow, CommentRow, PostRow, UserRow } from '@aced/db'
-import type { Board, Comment, Post, PostTag, VoteValue } from '@aced/types'
+import type { Board, Comment, Post, PostData, PostTag, VoteValue } from '@aced/types'
 import { toUserSummary } from '../user.js'
 
 export function toBoard(row: BoardRow): Board {
@@ -31,6 +31,8 @@ export function toPost(
     createdAt: row.createdAt.toISOString(),
     editedAt: row.editedAt?.toISOString() ?? null,
     tags,
+    // Written only by the worker in the PostData shapes.
+    data: row.isRemoved ? null : (row.data as PostData | null),
   }
 }
 

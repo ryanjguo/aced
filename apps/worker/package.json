@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "cards:enqueue": "tsx src/scripts/enqueue-completed.ts"
   },
   "dependencies": {
     "@aced/db": "workspace:*",

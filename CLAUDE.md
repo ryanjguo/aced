@@ -29,6 +29,7 @@ pnpm db:up       # local Postgres + Redis via Docker Compose
 pnpm db:generate # generate a migration after editing packages/db/src/schema
 pnpm db:migrate  # apply migrations
 pnpm db:seed     # fill the local DB with sample esports data (idempotent)
+pnpm --filter @aced/worker cards:enqueue  # queue result cards and match threads for completed series (worker must be running)
 ```
 
 Run `pnpm lint && pnpm typecheck && pnpm build` before every push. CI runs the same.
