@@ -14,7 +14,7 @@
     "dev": "tsc --watch --preserveWatchOutput",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage --coverage.include='src/**' --coverage.reporter=text-summary --coverage.reporter=json-summary"
+    "test:coverage": "vitest run --coverage --coverage.include='src/**' --coverage.reporter=text-summary --coverage.reporter=json-summary --coverage.thresholds.lines=95 --coverage.thresholds.branches=95"
   },
   "devDependencies": {
     "@aced/tsconfig": "workspace:*",
