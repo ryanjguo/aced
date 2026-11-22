@@ -1,5 +1,4 @@
 import type { PlayerMapStat, Team } from '@aced/types'
-import Link from 'next/link'
 
 const num = (n: number | null) => (n === null ? '–' : String(Math.round(n)))
 
@@ -35,9 +34,7 @@ export function StatsTable({ team, stats }: { team: Team; stats: PlayerMapStat[]
           {rows.map((s) => (
             <tr key={s.player.id} className="border-b border-border last:border-b-0">
               <th scope="row" className="truncate px-4 py-2 text-left font-medium">
-                <Link href={`/players/${s.player.slug}`} className="hover:underline">
-                  {s.player.handle}
-                </Link>
+                {s.player.handle}
               </th>
               <td className="px-2 py-2 text-muted">{s.agent ?? '–'}</td>
               <td className="px-2 py-2 text-right">
