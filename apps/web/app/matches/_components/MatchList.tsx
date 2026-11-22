@@ -72,9 +72,7 @@ export function MatchList({ series, timeZone }: { series: Series[]; timeZone: st
       <div className="flex flex-col gap-6">
         {groups.map((g) => (
           <section key={g.label}>
-            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-              {g.label}
-            </h2>
+            <h2 className="mb-2 text-rail-heading">{g.label}</h2>
             <ul className="overflow-hidden rounded-lg border border-border bg-surface">
               {g.items.map((s) => (
                 <MatchRow key={s.id} series={s} time={timeLabel(s.scheduledAt, timeZone)} />

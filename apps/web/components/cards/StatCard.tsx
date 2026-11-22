@@ -26,7 +26,7 @@ export function StatCard({ data }: { data: StatCardData }) {
         >
           {data.player.handle}
         </Link>{' '}
-        <span className="text-muted">
+        <span className="font-mono text-muted">
           {data.team.tag}
           {line.agent && ` · ${line.agent}`}
         </span>

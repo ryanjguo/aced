@@ -14,7 +14,7 @@ export default async function MatchesPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">Matches</h1>
+      <h1 className="mb-6 text-page-title">Matches</h1>
       {result ? (
         <MatchList series={result.items} timeZone={timeZone} />
       ) : (

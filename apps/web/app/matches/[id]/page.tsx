@@ -38,7 +38,7 @@ function TeamName({ team, won }: { team: Team | null; won: boolean }) {
     <p className={`min-w-0 flex-1 truncate text-lg font-semibold ${won ? '' : 'text-fg/80'}`}>
       {team ? (
         <Link href={`/teams/${team.slug}`} className="hover:underline">
-          <span className="sm:hidden">{team.tag}</span>
+          <span className="font-mono sm:hidden">{team.tag}</span>
           <span className="hidden sm:inline">{team.name}</span>
         </Link>
       ) : (

@@ -18,7 +18,7 @@ function TeamCell({
       {team ? (
         // Sits above the row's series link so the name opens the team instead.
         <Link href={`/teams/${team.slug}`} className="relative z-10 hover:underline">
-          <span className="sm:hidden">{team.tag}</span>
+          <span className="font-mono sm:hidden">{team.tag}</span>
           <span className="hidden sm:inline">{team.name}</span>
         </Link>
       ) : (

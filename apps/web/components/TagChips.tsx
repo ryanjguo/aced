@@ -14,7 +14,7 @@ export function TagChips({ tags }: { tags: PostTag[] }) {
         <li key={`${tag.type}:${tag.id}`}>
           <Link
             href={href(tag)}
-            className="rounded-full border border-border px-2 py-0.5 text-xs text-muted transition-colors hover:border-muted hover:text-fg"
+            className="rounded-full border border-border px-2 py-0.5 font-mono text-xs text-muted transition-colors hover:border-muted hover:text-fg"
           >
             {tag.type === 'player' ? '@' : '#'}
             {tag.name}
