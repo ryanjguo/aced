@@ -187,6 +187,8 @@ export interface UpdateMeInput {
 
 export interface Me extends UserSummary {
   bio: string | null
+  /** Null until first-run onboarding is finished or skipped. */
+  onboardedAt: string | null
 }
 
 export interface Page<T> {
