@@ -27,6 +27,7 @@ import type {
   SeriesStatus,
   SitemapEntries,
   TagEntityType,
+  Team,
   TeamDetail,
   TopWindow,
   TrendingEntity,
@@ -137,6 +138,8 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch, timeoutMs }: 
     acsLeaders: (init?: RequestInit) =>
       request<{ items: AcsLeader[] }>('/leaderboards/acs?days=7&limit=5', init),
     follows: (init?: RequestInit) => request<{ items: Follow[] }>('/me/follows', init),
+    teams: (init?: RequestInit) => request<{ items: Team[] }>('/teams', init),
+    finishOnboarding: (teams: string[]) => request<null>('/me/follows', json('PUT', { teams })),
     isFollowing: (type: FollowTargetType, id: string) =>
       request<{ following: boolean }>(`/follows/${type}/${encodeURIComponent(id)}`),
     follow: (type: FollowTargetType, id: string) =>

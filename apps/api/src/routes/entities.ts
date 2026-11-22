@@ -1,5 +1,5 @@
 import { and, asc, desc, eq, gte, inArray, or, schema, sql } from '@aced/db'
-import type { PlayerDetail, TeamDetail } from '@aced/types'
+import type { PlayerDetail, Team, TeamDetail } from '@aced/types'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
@@ -85,6 +85,12 @@ export const entityRoutes: FastifyPluginAsyncZod = async (app) => {
         }
       }),
     }
+  })
+
+  // Every team, for pickers like onboarding. A few hundred rows at most, so no pagination.
+  app.get('/teams', async (): Promise<{ items: Team[] }> => {
+    const rows = await app.db.select().from(schema.teams).orderBy(asc(schema.teams.name))
+    return { items: rows.map(toTeam) }
   })
 
   app.get('/teams/:slug', { schema: { params } }, async (req): Promise<TeamDetail> => {

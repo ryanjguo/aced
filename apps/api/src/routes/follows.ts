@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, schema } from '@aced/db'
+import { and, desc, eq, inArray, schema, sql } from '@aced/db'
 import type { Follow, FollowTargetType } from '@aced/types'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
@@ -75,6 +75,33 @@ export const followRoutes: FastifyPluginAsyncZod = async (app) => {
           ),
         )
       return { following: row !== undefined }
+    },
+  )
+
+  // Onboarding: follow the picked teams in one request and mark onboarding done ([] = skip).
+  app.put(
+    '/me/follows',
+    {
+      preHandler: requireUser,
+      schema: { body: z.object({ teams: z.array(z.uuid()).max(100) }) },
+    },
+    async (req, reply) => {
+      const user = currentUser(req)
+      await app.db.transaction(async (tx) => {
+        const found = req.body.teams.length
+          ? await tx.select({ id: teams.id }).from(teams).where(inArray(teams.id, req.body.teams))
+          : []
+        if (found.length) {
+          await tx
+            .insert(follows)
+            .values(
+              found.map((t) => ({ userId: user.id, targetType: 'team' as const, targetId: t.id })),
+            )
+            .onConflictDoNothing()
+        }
+        await tx.update(users).set({ onboardedAt: sql`now()` }).where(eq(users.id, user.id))
+      })
+      return reply.code(204).send()
     },
   )
 

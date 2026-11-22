@@ -17,7 +17,11 @@ const patchBody = z.object({
 })
 
 function toMe(user: UserRow): Me {
-  return { ...toUserSummary(user), bio: user.bio }
+  return {
+    ...toUserSummary(user),
+    bio: user.bio,
+    onboardedAt: user.onboardedAt?.toISOString() ?? null,
+  }
 }
 
 export const meRoutes: FastifyPluginAsyncZod = async (app) => {
