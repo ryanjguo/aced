@@ -13,7 +13,8 @@
     "build": "tsc",
     "dev": "tsc --watch --preserveWatchOutput",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage --coverage.include='src/**' --coverage.reporter=text-summary --coverage.reporter=json-summary"
   },
   "dependencies": {
     "@aced/redis": "workspace:*",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@aced/tsconfig": "workspace:*",
     "@types/node": "^22",
+    "@vitest/coverage-v8": "5.1.1",
     "typescript": "^5",
     "vitest": "^5.1.1"
   }

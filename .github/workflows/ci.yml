@@ -12,6 +12,9 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     services:
       postgres:
         image: postgres:17
@@ -50,7 +53,13 @@ jobs:
       - run: pnpm build
       - run: pnpm db:migrate
       - run: pnpm db:seed
-      - run: pnpm test
+      - run: pnpm test:coverage
+      - name: Post coverage summary
+        if: github.event_name == 'pull_request'
+        run: node scripts/coverage-comment.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
       - name: Check migrations match schema
         run: |
           pnpm db:generate

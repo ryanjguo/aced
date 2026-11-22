@@ -16,6 +16,11 @@
     "test": {
       "dependsOn": ["^build"],
       "env": ["DATABASE_URL", "REDIS_URL", "WEB_ORIGIN"]
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "env": ["DATABASE_URL", "REDIS_URL", "WEB_ORIGIN"],
+      "outputs": ["coverage/**"]
     }
   }
 }

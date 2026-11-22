@@ -17,6 +17,7 @@
     "db:studio": "pnpm --filter @aced/db db:studio",
     "db:seed": "pnpm --filter @aced/db db:seed",
     "test": "turbo test",
+    "test:coverage": "turbo test:coverage",
     "knip": "DATABASE_URL=${DATABASE_URL:-postgres://localhost/knip} knip"
   },
   "devDependencies": {
