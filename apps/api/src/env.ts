@@ -30,5 +30,6 @@ export const env = {
     baseUrl: process.env.BETTER_AUTH_URL || `http://localhost:${port}`,
     google: oauth('GOOGLE'),
     discord: oauth('DISCORD'),
+    cookieDomain: process.env.COOKIE_DOMAIN || undefined,
   },
 }
