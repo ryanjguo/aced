@@ -29,3 +29,21 @@ Local production build of the API (`node dist/index.js`, pool of 10 connections)
 - **The data is tiny.** The seed has a few hundred posts, so every query is cheap. Slow plans and missing indexes only show with volume: https://github.com/ryanjguo/aced/issues/276 reruns this against production-sized data.
 - **Production differs:** network latency between Railway services, a smaller Postgres plan, and the web tier (Vercel) in front. Since #169 the web caches esports API responses for 60 seconds, so a spike of page views reaches the API far less than this test does.
 - Votes are the slowest endpoint (a transaction with a row lock per target); still well under budget.
+
+### At production volume, November 2026 (#276)
+
+`scripts/load/scale.sql` fills a throwaway database (`aced_load`, never the dev one) after `pnpm db:migrate` and `pnpm db:seed`: 2,000 users, 200k posts over 60 days, 500k comments, 2M votes and 60k tags, in about four minutes.
+
+Same test, same machine: 60,771 requests (286/s), 0 errors, overall p95 7.3 ms. Per endpoint p95: feed 2.2 ms, live series 5.1 ms, series page 7.6 ms, post 6.2 ms, comments 6.8 ms, trending 1.8 ms, entity search 4.5 ms, votes 15.2 ms. Volume barely moved the numbers: indexes cover the hot paths, and the feed and trending are cached in Redis.
+
+Cold, uncached timings of the heavier queries at this volume:
+
+| Request | Cold |
+| --- | --- |
+| `GET /feed/for-you` (then cached) | 154 ms |
+| `GET /search/posts?q=meta` (133k matches) | 125 ms |
+| `GET /search/posts?q=clutch` (few matches) | 3 ms |
+| `GET /boards/general/posts?sort=hot` | 54 ms |
+| Comments on the busiest post | 10 ms |
+
+**Bottleneck:** post search for very common terms ranks every match before cutting the page, and isn't cached. #288 caps that cost.
