@@ -1,9 +1,9 @@
 import type { RumorStatus } from '@aced/types'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { LinkTabs } from '@/components/LinkTabs'
 import { Button } from '@/components/ui/button'
 import { serverApi } from '@/lib/server-api'
-import { cn } from '@/lib/utils'
 import { PostFeed } from '../_components/PostFeed'
 
 export const metadata: Metadata = {
@@ -39,24 +39,14 @@ export default async function RumorsPage({
           <Link href="/submit">Post a rumor</Link>
         </Button>
       </header>
-      <nav
-        aria-label="Rumor status"
-        className="flex gap-1 rounded-lg border border-border bg-surface p-1"
-      >
-        {TABS.map(([s, label]) => (
-          <Link
-            key={s}
-            href={s === 'open' ? '/rumors' : `/rumors?status=${s}`}
-            aria-current={s === status ? 'page' : undefined}
-            className={cn(
-              'flex-1 rounded-md px-3 py-1.5 text-center text-sm transition-colors',
-              s === status ? 'bg-bg text-fg' : 'text-muted hover:text-fg',
-            )}
-          >
-            {label}
-          </Link>
-        ))}
-      </nav>
+      <LinkTabs
+        label="Rumor status"
+        items={TABS.map(([s, label]) => ({
+          href: s === 'open' ? '/rumors' : `/rumors?status=${s}`,
+          label,
+          current: s === status,
+        }))}
+      />
       {page ? (
         <PostFeed
           key={status}
