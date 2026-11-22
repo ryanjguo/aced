@@ -78,7 +78,13 @@ export interface HealthResponse {
   }
 }
 
-export type ApiErrorCode = 'bad_request' | 'not_found' | 'internal'
+export type ApiErrorCode =
+  | 'bad_request'
+  | 'unauthorized'
+  | 'forbidden'
+  | 'not_found'
+  | 'handle_taken'
+  | 'internal'
 
 export interface ApiError {
   error: {
@@ -94,4 +100,22 @@ export interface SeriesList {
 export interface EventDetail {
   event: Event
   series: Series[]
+}
+
+export type UserRole = 'user' | 'moderator' | 'admin'
+
+export interface UserSummary {
+  id: string
+  handle: string
+  avatarUrl: string | null
+  role: UserRole
+}
+
+export interface UpdateMeInput {
+  handle?: string
+  bio?: string | null
+}
+
+export interface Me extends UserSummary {
+  bio: string | null
 }
