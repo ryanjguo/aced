@@ -249,3 +249,13 @@ export interface ModActionInput {
   /** Required for `ban`. */
   until?: string
 }
+
+export interface Profile extends UserSummary {
+  bio: string | null
+  karma: number
+  createdAt: string
+}
+
+export interface ProfileComment extends Comment {
+  post: { id: string; title: string | null }
+}
