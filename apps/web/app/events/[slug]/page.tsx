@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { api } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
+import { Discussion } from '../../_components/Discussion'
 import { MatchList } from '../../matches/_components/MatchList'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -54,6 +55,9 @@ export default async function EventPage({ params }: Props) {
             </p>
           </header>
           <MatchList series={detail.series} timeZone={timeZone} />
+          <div className="mt-8">
+            <Discussion type="event" id={detail.event.id} />
+          </div>
         </>
       ) : (
         <p role="alert" className="py-12 text-center text-sm text-muted">
