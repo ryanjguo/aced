@@ -65,7 +65,7 @@ export function VoteButtons({
       </button>
       <span
         className={cn(
-          'min-w-6 text-center font-mono text-xs tabular-nums',
+          'min-w-6 text-center font-mono text-xs font-medium tabular-nums',
           state.myVote === 1 && 'text-accent',
           error && 'text-danger',
         )}
