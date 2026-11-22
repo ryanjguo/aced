@@ -81,14 +81,21 @@ describe('rumors', () => {
     expect(res.json<Post>().rumorStatus).toBeNull()
   })
   it('lists rumors by status, newest first', async () => {
-    const res = await app.inject({ method: 'GET', url: '/rumors?status=open' })
-    const items = res.json<Page<Post>>().items
-    expect(items.length).toBeGreaterThan(0)
-    expect(items.every((p) => p.kind === 'rumor' && p.rumorStatus === 'open')).toBe(true)
-    const confirmed = await app.inject({ method: 'GET', url: '/rumors?status=confirmed' })
-    expect(confirmed.json<Page<Post>>().items.every((p) => p.rumorStatus === 'confirmed')).toBe(
-      true,
-    )
+    // Other test files resolve rumors in parallel, so only assert on the one created here.
+    const mine = (await rumor({ tags: [{ type: 'player', id: playerId }] })).json<Post>()
+    const open = (await app.inject({ method: 'GET', url: '/rumors?status=open' })).json<
+      Page<Post>
+    >()
+    expect(open.items.find((p) => p.id === mine.id)).toMatchObject({
+      kind: 'rumor',
+      rumorStatus: 'open',
+    })
+    const times = open.items.map((p) => Date.parse(p.createdAt))
+    expect(times).toEqual([...times].sort((x, y) => y - x))
+    const confirmed = (await app.inject({ method: 'GET', url: '/rumors?status=confirmed' })).json<
+      Page<Post>
+    >()
+    expect(confirmed.items.some((p) => p.id === mine.id)).toBe(false)
     expect((await app.inject({ method: 'GET', url: '/rumors?status=maybe' })).statusCode).toBe(400)
   })
 })
