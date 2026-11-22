@@ -1,5 +1,5 @@
 import { createDb } from '@aced/db'
-import { createJobQueues } from '@aced/jobs'
+import { createJobQueues, isFinalFailure } from '@aced/jobs'
 import { createQueueConnection } from '@aced/redis'
 import * as Sentry from '@sentry/node'
 import { Worker } from 'bullmq'
@@ -17,7 +17,8 @@ const workers = jobs.map((job) => {
   const worker = new Worker(job.name, job.handler, { connection })
   worker.on('failed', (j, err) => {
     console.error(`[worker] ${job.name} failed`, j?.id, err)
-    Sentry.captureException(err, { tags: { job: job.name } })
+    // Earlier attempts are retried; only report the one that gives up.
+    if (isFinalFailure(j)) Sentry.captureException(err, { tags: { job: job.name } })
   })
   return worker
 })

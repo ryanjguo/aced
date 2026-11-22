@@ -33,6 +33,7 @@ export function CommentActions({
         score={comment.score}
         myVote={comment.myVote}
         layout="row"
+        ownerId={comment.author?.id}
       />
       {canReply && (
         <Button variant="link" size="sm" className={action} onClick={() => setMode('reply')}>

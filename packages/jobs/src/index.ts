@@ -21,6 +21,13 @@ export interface JobDefinition<Data = unknown> {
   repeat?: Pick<RepeatOptions, 'every' | 'pattern'>
 }
 
+/** Retries for one-off jobs. Handlers are idempotent (deterministic source keys), so retrying is safe. */
+export const RETRY = { attempts: 5, backoff: { type: 'exponential', delay: 5000 } } as const
+
+/** Whether this failure used the job's last attempt; earlier failures will be retried. */
+export const isFinalFailure = (job: Job | undefined) =>
+  !job || job.attemptsMade >= (job.opts.attempts ?? 1)
+
 /** Enqueues one-off jobs from any app. Reuses one Queue per job name. */
 export function createJobQueues(connection: Redis) {
   const queues = new Map<string, Queue>()
@@ -36,7 +43,7 @@ export function createJobQueues(connection: Redis) {
   return {
     queue,
     enqueue: (name: string, data: unknown = {}) =>
-      queue(name).add(name, data, { removeOnComplete: 1000, removeOnFail: 5000 }),
+      queue(name).add(name, data, { ...RETRY, removeOnComplete: 1000, removeOnFail: 5000 }),
     close: () => Promise.all([...queues.values()].map((q) => q.close())),
   }
 }

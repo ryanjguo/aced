@@ -28,12 +28,15 @@ export const voteRoutes: FastifyPluginAsyncZod = async (app) => {
       return app.db.transaction(async (tx) => {
         // Locking the target serializes concurrent votes on it, keeping the cached score exact.
         const [target] = await tx
-          .select({ isRemoved: table.isRemoved })
+          .select({ isRemoved: table.isRemoved, authorId: table.authorId })
           .from(table)
           .where(eq(table.id, targetId))
           .for('update')
         if (!target) throw new HttpError(404, 'not_found', `${targetType} not found`)
         if (target.isRemoved) throw new HttpError(403, 'forbidden', "Can't vote on removed content")
+        // Karma reflects what others think, so your own votes don't count.
+        if (target.authorId === userId)
+          throw new HttpError(403, 'forbidden', "Can't vote on your own content")
 
         const key = and(
           eq(votes.userId, userId),

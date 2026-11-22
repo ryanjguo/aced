@@ -14,18 +14,22 @@ export function VoteButtons({
   score: initialScore,
   myVote: initialVote,
   layout = 'column',
+  ownerId,
 }: {
   targetType: 'post' | 'comment'
   targetId: string
   score: number
   myVote: VoteValue
   layout?: 'column' | 'row'
+  /** The author; voting is disabled on your own content. */
+  ownerId?: string | null
 }) {
   const router = useRouter()
   const pathname = usePathname()
   const { data: session } = authClient.useSession()
   const [state, setState] = useState({ score: initialScore, myVote: initialVote })
   const [error, setError] = useState(false)
+  const own = session != null && session.user.id === ownerId
 
   async function vote(value: 1 | -1) {
     if (!session) {
@@ -45,12 +49,14 @@ export function VoteButtons({
     }
   }
 
-  const button = 'rounded p-0.5 text-muted transition-colors hover:bg-surface-2 hover:text-fg'
+  const button =
+    'rounded p-0.5 text-muted transition-colors hover:bg-surface-2 hover:text-fg disabled:pointer-events-none disabled:opacity-40'
   return (
     <div className={cn('flex items-center', layout === 'column' ? 'flex-col' : 'flex-row gap-1')}>
       <button
         type="button"
         aria-label="Upvote"
+        disabled={own}
         aria-pressed={state.myVote === 1}
         onClick={() => vote(1)}
         className={cn(button, state.myVote === 1 && 'bg-accent-tint text-accent hover:text-accent')}
@@ -70,6 +76,7 @@ export function VoteButtons({
       <button
         type="button"
         aria-label="Downvote"
+        disabled={own}
         aria-pressed={state.myVote === -1}
         onClick={() => vote(-1)}
         className={cn(button, state.myVote === -1 && 'bg-surface-2 text-fg')}
