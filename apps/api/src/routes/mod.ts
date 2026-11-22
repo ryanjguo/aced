@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
 import { listPosts } from '../lib/post-list.js'
-import { currentUser, requireRole, toUserSummary } from '../user.js'
+import { currentUser, outranks, requireRole, toUserSummary } from '../user.js'
 
 const { reports, posts, comments, users, modActions } = schema
 
@@ -182,7 +182,18 @@ export const modRoutes: FastifyPluginAsyncZod = async (app) => {
     { schema: { body: actionBody } },
     async (req, reply): Promise<{ id: string }> => {
       const { action, targetType, targetId, reason, until } = req.body
-      const actorId = currentUser(req).id
+      const actor = currentUser(req)
+      const actorId = actor.id
+      if (targetType === 'user' && (action === 'ban' || action === 'unban')) {
+        if (targetId === actorId) throw new HttpError(403, 'forbidden', "You can't ban yourself")
+        const [target] = await app.db
+          .select({ role: users.role })
+          .from(users)
+          .where(eq(users.id, targetId))
+        if (target && !outranks(actor.role, target.role)) {
+          throw new HttpError(403, 'forbidden', 'You can only ban users below your role')
+        }
+      }
 
       const id = await app.db.transaction(async (tx) => {
         const table = { post: posts, comment: comments, user: users }[targetType]
