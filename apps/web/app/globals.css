@@ -3,7 +3,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* Design tokens (docs/design-system.md). Light on :root, dark on .dark. */
-:root {
+/* `.light` lets a panel force the light theme inside a dark page (the /design specimen). */
+:root,
+.light {
   --bg: #ffffff;
   --surface: #f7f8f9;
   --surface-2: #eef0f2;
