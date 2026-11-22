@@ -1,10 +1,12 @@
 'use client'
 
 import type { Series } from '@aced/types'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { MatchRow } from './MatchRow'
 
-type Tab = 'upcoming' | 'results'
+const tabs = ['upcoming', 'results'] as const
+type Tab = (typeof tabs)[number]
 
 function dayKey(iso: string, timeZone: string) {
   return new Intl.DateTimeFormat('en-CA', {
@@ -35,11 +37,8 @@ function timeLabel(iso: string, timeZone: string) {
   )
 }
 
-export function MatchList({ series }: { series: Series[] }) {
+export function MatchList({ series, timeZone }: { series: Series[]; timeZone: string }) {
   const [tab, setTab] = useState<Tab>('upcoming')
-  // Render in UTC on the server, then switch to the viewer's time zone after mount.
-  const [timeZone, setTimeZone] = useState('UTC')
-  useEffect(() => setTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone), [])
 
   const groups = useMemo(() => {
     const now = new Date()
@@ -64,48 +63,46 @@ export function MatchList({ series }: { series: Series[] }) {
     return [...byDay.values()]
   }, [series, tab, timeZone])
 
-  return (
-    <div>
-      <div
-        role="tablist"
-        className="mb-6 flex gap-1 rounded-lg border border-border bg-surface p-1 text-sm"
-      >
-        {(['upcoming', 'results'] as const).map((t) => (
-          <button
-            key={t}
-            type="button"
-            role="tab"
-            aria-selected={tab === t}
-            onClick={() => setTab(t)}
-            className={`flex-1 rounded-md px-3 py-1.5 capitalize transition-colors ${
-              tab === t ? 'bg-bg text-fg' : 'text-muted hover:text-fg'
-            }`}
-          >
-            {t}
-          </button>
+  const body =
+    groups.length === 0 ? (
+      <p className="py-12 text-center text-sm text-muted">
+        {tab === 'upcoming' ? 'No upcoming matches.' : 'No results yet.'}
+      </p>
+    ) : (
+      <div className="flex flex-col gap-6">
+        {groups.map((g) => (
+          <section key={g.label}>
+            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+              {g.label}
+            </h2>
+            <ul className="overflow-hidden rounded-lg border border-border bg-surface">
+              {g.items.map((s) => (
+                <MatchRow key={s.id} series={s} time={timeLabel(s.scheduledAt, timeZone)} />
+              ))}
+            </ul>
+          </section>
         ))}
       </div>
+    )
 
-      {groups.length === 0 ? (
-        <p className="py-12 text-center text-sm text-muted">
-          {tab === 'upcoming' ? 'No upcoming matches.' : 'No results yet.'}
-        </p>
-      ) : (
-        <div className="flex flex-col gap-6">
-          {groups.map((g) => (
-            <section key={g.label}>
-              <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-                {g.label}
-              </h2>
-              <ul className="overflow-hidden rounded-lg border border-border bg-surface">
-                {g.items.map((s) => (
-                  <MatchRow key={s.id} series={s} time={timeLabel(s.scheduledAt, timeZone)} />
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
-      )}
-    </div>
+  return (
+    <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-6">
+      <TabsList className="h-auto w-full border border-border bg-surface p-1">
+        {tabs.map((t) => (
+          <TabsTrigger
+            key={t}
+            value={t}
+            className="py-1.5 capitalize data-[state=active]:bg-bg dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-bg"
+          >
+            {t}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      {tabs.map((t) => (
+        <TabsContent key={t} value={t}>
+          {body}
+        </TabsContent>
+      ))}
+    </Tabs>
   )
 }
