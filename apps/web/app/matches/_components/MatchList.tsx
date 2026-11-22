@@ -85,13 +85,9 @@ export function MatchList({ series, timeZone }: { series: Series[]; timeZone: st
 
   return (
     <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-6">
-      <TabsList className="h-auto w-full border border-border bg-surface p-1">
+      <TabsList>
         {tabs.map((t) => (
-          <TabsTrigger
-            key={t}
-            value={t}
-            className="py-1.5 capitalize data-[state=active]:bg-bg dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-bg"
-          >
+          <TabsTrigger key={t} value={t} className="capitalize">
             {t}
           </TabsTrigger>
         ))}
