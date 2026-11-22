@@ -8,7 +8,8 @@ import { createJobs } from './jobs/index.js'
 
 // Off unless SENTRY_DSN is set.
 if (env.sentryDsn) Sentry.init({ dsn: env.sentryDsn })
-const db = createDb(env.databaseUrl)
+// Jobs do heavier batch queries than requests, so they get a longer statement timeout.
+const db = createDb(env.databaseUrl, { max: 5, statementTimeoutMs: 30_000 })
 const jobs = createJobs(db)
 const connection = createQueueConnection(env.redisUrl)
 const queues = createJobQueues(connection)

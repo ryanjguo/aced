@@ -19,6 +19,7 @@ const port = Number(process.env.PORT ?? 4000)
 export const env = {
   port,
   databaseUrl: required('DATABASE_URL'),
+  dbPoolMax: Number(process.env.DB_POOL_MAX ?? 10),
   redisUrl: required('REDIS_URL'),
   webOrigin: process.env.WEB_ORIGIN ?? 'http://localhost:3000',
   sentryDsn: process.env.SENTRY_DSN || undefined,

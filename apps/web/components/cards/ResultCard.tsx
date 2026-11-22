@@ -11,8 +11,8 @@ export function ResultCard({ data }: { data: ResultCardData }) {
     </Link>
   )
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-xs text-muted">
+    <div className="flex flex-col gap-2 rounded-[10px] bg-surface-2 px-3.5 py-3">
+      <p className="text-badge text-muted">
         Result ·{' '}
         <Link href={`/events/${data.event.slug}`} className="relative z-10 hover:text-fg">
           {data.event.name}
@@ -31,7 +31,7 @@ export function ResultCard({ data }: { data: ResultCardData }) {
         <div className="flex min-w-0 flex-1">{side(data.teamB, data.winner === 'b')}</div>
       </div>
       {data.maps.length > 0 && (
-        <p className="text-center text-xs text-muted">
+        <p className="text-center font-mono text-badge text-muted">
           {data.maps.map((m) => `${m.name} ${m.score[0]}–${m.score[1]}`).join(' · ')}
         </p>
       )}

@@ -16,6 +16,7 @@ import { adminRoutes } from './routes/admin.js'
 import { authRoutes } from './routes/auth.js'
 import { boardRoutes } from './routes/boards.js'
 import { commentRoutes } from './routes/comments.js'
+import { discoveryRoutes } from './routes/discovery.js'
 import { entityRoutes } from './routes/entities.js'
 import { eventRoutes } from './routes/events.js'
 import { feedRoutes } from './routes/feeds.js'
@@ -45,6 +46,7 @@ declare module 'fastify' {
 
 export interface AppOptions {
   databaseUrl: string
+  dbPoolMax?: number
   redisUrl: string
   webOrigin: string
   auth: Omit<AuthOptions, 'webOrigin'>
@@ -74,7 +76,7 @@ export function buildApp(options: AppOptions) {
   app.setValidatorCompiler(validatorCompiler)
   app.setSerializerCompiler(serializerCompiler)
 
-  const db = createDb(options.databaseUrl)
+  const db = createDb(options.databaseUrl, { max: options.dbPoolMax })
   const redis = createRedis(options.redisUrl)
   redis.on('error', (err) => app.log.warn({ err }, 'redis error'))
   app.decorate('db', db)
@@ -101,6 +103,15 @@ export function buildApp(options: AppOptions) {
     const origin = req.headers.origin
     if (origin && origin !== options.webOrigin) {
       throw new HttpError(403, 'forbidden', 'Cross-site requests are not allowed')
+    }
+  })
+  // Route pattern only, never the URL: no ids, query strings or bodies in logs.
+  app.addHook('onResponse', async (req, reply) => {
+    if (reply.elapsedTime > 500) {
+      req.log.warn(
+        { method: req.method, route: req.routeOptions.url, ms: Math.round(reply.elapsedTime) },
+        'slow request',
+      )
     }
   })
   registerCurrentUser(app)
@@ -145,6 +156,7 @@ export function buildApp(options: AppOptions) {
   app.register(feedRoutes)
   app.register(adminRoutes)
   app.register(sitemapRoutes)
+  app.register(discoveryRoutes)
 
   return app
 }
