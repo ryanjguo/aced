@@ -2,6 +2,23 @@ import type { ApiError, ApiErrorCode } from '@aced/types'
 import type { FastifyInstance } from 'fastify'
 import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod'
 
+export class HttpError extends Error {
+  constructor(
+    readonly statusCode: number,
+    readonly code: ApiErrorCode,
+    message: string,
+  ) {
+    super(message)
+  }
+}
+
+export function isUniqueViolation(err: unknown): boolean {
+  const pgError = err instanceof Error && err.cause instanceof Error ? err.cause : err
+  return (
+    typeof pgError === 'object' && pgError !== null && 'code' in pgError && pgError.code === '23505'
+  )
+}
+
 function apiError(code: ApiErrorCode, message: string): ApiError {
   return { error: { code, message } }
 }
@@ -12,6 +29,8 @@ export function registerErrorHandlers(app: FastifyInstance) {
   })
 
   app.setErrorHandler((err, req, reply) => {
+    if (err instanceof HttpError)
+      return reply.code(err.statusCode).send(apiError(err.code, err.message))
     if (hasZodFastifySchemaValidationErrors(err)) {
       return reply.code(400).send(apiError('bad_request', err.message))
     }
