@@ -36,8 +36,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           disableTransitionOnChange
         >
           <TooltipProvider>
+            <a
+              href="#main"
+              className="sr-only z-50 rounded-md bg-bg px-3 py-2 text-sm focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+            >
+              Skip to content
+            </a>
             <SiteHeader />
-            <div className="flex-1">{children}</div>
+            {/* Pages render their own <main>; this wrapper is the skip link's target. */}
+            <div id="main" tabIndex={-1} className="flex-1 outline-none">
+              {children}
+            </div>
             <SiteFooter />
             <MobileTabBar />
             <TimeZoneCookie />

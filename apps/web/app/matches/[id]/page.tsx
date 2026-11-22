@@ -84,7 +84,7 @@ export default async function SeriesPage({ params }: Props) {
           </Link>
           {status === 'live' ? (
             <span className="inline-flex items-center gap-1 font-semibold text-accent">
-              <span className="size-1.5 animate-pulse rounded-full bg-accent" />
+              <span className="size-1.5 motion-safe:animate-pulse rounded-full bg-accent" />
               LIVE
             </span>
           ) : (
