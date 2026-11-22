@@ -31,7 +31,13 @@ export function PostRow({ post, showBoard = true }: { post: Post; showBoard?: bo
   const site = post.url && domain(post.url)
   return (
     <li className="flex gap-3 border-b border-border px-4 py-3 last:border-b-0">
-      <VoteButtons targetType="post" targetId={post.id} score={post.score} myVote={post.myVote} />
+      <VoteButtons
+        targetType="post"
+        targetId={post.id}
+        score={post.score}
+        myVote={post.myVote}
+        ownerId={post.author?.id}
+      />
       <div className="min-w-0 flex-1">
         {post.data ? (
           // Stretched link to the post; links inside the card sit above it.
