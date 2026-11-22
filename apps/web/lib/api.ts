@@ -12,3 +12,9 @@ export const api = createApiClient({
         fetch(url, { ...init, headers: { ...init?.headers, 'x-aced-internal': secret } })
     : undefined,
 })
+
+/**
+ * Public esports data (series, events, players, teams) changes every few minutes at most, so
+ * server fetches of it share a 60s cache. Anything personal stays `no-store`.
+ */
+export const esportsCache: RequestInit = { next: { revalidate: 60 } }

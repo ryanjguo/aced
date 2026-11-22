@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
-import { api } from '@/lib/api'
+import { api, esportsCache } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
 import { AdminSeriesFix } from './_components/AdminSeriesFix'
 import { LocalTime } from './_components/LocalTime'
@@ -15,7 +15,7 @@ type Props = { params: Promise<{ id: string }> }
 // Shared by generateMetadata and the page so the API is called once per request.
 const getSeries = cache(async (id: string): Promise<SeriesDetail | 'not_found' | null> => {
   try {
-    return await api.seriesById(id, { cache: 'no-store' })
+    return await api.seriesById(id, esportsCache)
   } catch (err) {
     if (err instanceof ApiClientError && (err.status === 404 || err.status === 400)) {
       return 'not_found'
