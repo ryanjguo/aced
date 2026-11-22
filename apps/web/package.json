@@ -6,7 +6,9 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage --coverage.include='{app,components,lib}/**' --coverage.exclude='components/ui/**' --coverage.reporter=text-summary --coverage.reporter=json-summary"
   },
   "dependencies": {
     "@aced/api-client": "workspace:*",
@@ -26,10 +28,16 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.5",
+    "@testing-library/jest-dom": "^8.0.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.13",
     "@types/node": "^22",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@vitest/coverage-v8": "5.1.1",
+    "jsdom": "^31.0.1",
     "tailwindcss": "^4.3.5",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "5.1.1"
   }
 }
