@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { SignInButtons } from './_components/SignInButtons'
 
 export const metadata: Metadata = { title: 'Sign in' }
@@ -21,6 +22,21 @@ export default async function SignInPage({
         </p>
       </div>
       <SignInButtons callbackPath={callbackPath} />
+      <p className="text-meta text-muted">
+        By signing in you agree to the{' '}
+        <Link href="/terms" className="underline underline-offset-2 hover:text-fg">
+          terms
+        </Link>{' '}
+        and{' '}
+        <Link href="/guidelines" className="underline underline-offset-2 hover:text-fg">
+          guidelines
+        </Link>
+        . See how we handle your data in the{' '}
+        <Link href="/privacy" className="underline underline-offset-2 hover:text-fg">
+          privacy page
+        </Link>
+        .
+      </p>
     </main>
   )
 }
