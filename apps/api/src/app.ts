@@ -95,6 +95,16 @@ export function buildApp(options: AppOptions) {
   })
 
   registerErrorHandlers(app)
+  // Defence in depth for cookie auth: writes from a browser must come from the web app.
+  // Requests without Origin (server-to-server, tests) pass; Better Auth checks its own routes.
+  app.addHook('onRequest', async (req) => {
+    if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return
+    if (req.url.startsWith('/auth/')) return
+    const origin = req.headers.origin
+    if (origin && origin !== options.webOrigin) {
+      throw new HttpError(403, 'forbidden', 'Cross-site requests are not allowed')
+    }
+  })
   // Route pattern only, never the URL: no ids, query strings or bodies in logs.
   app.addHook('onResponse', async (req, reply) => {
     if (reply.elapsedTime > 500) {
