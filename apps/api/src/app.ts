@@ -1,5 +1,6 @@
 import { createDb, type Db } from '@aced/db'
-import { createRedis, type Redis } from '@aced/redis'
+import { createJobQueues, type JobQueues } from '@aced/jobs'
+import { createQueueConnection, createRedis, type Redis } from '@aced/redis'
 import cors from '@fastify/cors'
 import Fastify from 'fastify'
 import {
@@ -9,6 +10,7 @@ import {
 } from 'fastify-type-provider-zod'
 import { type Auth, type AuthOptions, createAuth } from './auth.js'
 import { registerErrorHandlers } from './errors.js'
+import { adminRoutes } from './routes/admin.js'
 import { authRoutes } from './routes/auth.js'
 import { boardRoutes } from './routes/boards.js'
 import { commentRoutes } from './routes/comments.js'
@@ -33,6 +35,7 @@ declare module 'fastify' {
     redis: Redis
     auth: Auth
     rateLimits: boolean
+    jobs: JobQueues
   }
 }
 
@@ -57,9 +60,15 @@ export function buildApp(options: AppOptions) {
   app.decorate('db', db)
   app.decorate('redis', redis)
   app.decorate('rateLimits', options.rateLimits ?? true)
+  const queueConnection = createQueueConnection(options.redisUrl)
+  queueConnection.on('error', (err) => app.log.warn({ err }, 'queue redis error'))
+  const jobs = createJobQueues(queueConnection)
+  app.decorate('jobs', jobs)
   app.decorate('auth', createAuth(db, { ...options.auth, webOrigin: options.webOrigin }))
   app.addHook('onClose', async () => {
     redis.disconnect()
+    await jobs.close()
+    queueConnection.disconnect()
     await db.$client.end()
   })
 
@@ -86,6 +95,7 @@ export function buildApp(options: AppOptions) {
   app.register(searchRoutes)
   app.register(followRoutes)
   app.register(feedRoutes)
+  app.register(adminRoutes)
 
   return app
 }

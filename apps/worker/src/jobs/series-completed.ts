@@ -1,11 +1,11 @@
 import { asc, type Db, eq, inArray, schema, sql } from '@aced/db'
-import type { JobDefinition } from '@aced/jobs'
+import { JOBS, type JobDefinition } from '@aced/jobs'
 import { hotScore } from '@aced/ranking'
 import type { ResultCardData } from '@aced/types'
 
 const { series, teams, events, maps, posts, postTags, boards } = schema
 
-export const SERIES_COMPLETED = 'series-completed'
+export const SERIES_COMPLETED = JOBS.seriesCompleted
 
 /**
  * Creates the result card and match thread for a completed series. Upserts on deterministic

@@ -3,6 +3,13 @@ import { type Job, Queue, type RepeatOptions } from 'bullmq'
 
 export type { Job }
 
+/** Names of jobs other apps enqueue; the worker registers handlers under these. */
+export const JOBS = {
+  seriesCompleted: 'series-completed',
+  mapCompleted: 'map-completed',
+  rosterChanged: 'roster-changed',
+} as const
+
 /** A job module in `apps/worker/src/jobs`. Each job name is also its queue name. */
 export interface JobDefinition<Data = unknown> {
   name: string

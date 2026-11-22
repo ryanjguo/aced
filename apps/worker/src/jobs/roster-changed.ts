@@ -1,11 +1,11 @@
 import { and, type Db, eq, inArray, schema, sql } from '@aced/db'
-import type { JobDefinition } from '@aced/jobs'
+import { JOBS, type JobDefinition } from '@aced/jobs'
 import { hotScore } from '@aced/ranking'
 import type { TransferCardData } from '@aced/types'
 
 const { players, teams, posts, postTags, rumorStatus } = schema
 
-export const ROSTER_CHANGED = 'roster-changed'
+export const ROSTER_CHANGED = JOBS.rosterChanged
 
 export interface RosterChange {
   playerId: string
