@@ -21,6 +21,13 @@ export interface JobDefinition<Data = unknown> {
   repeat?: Pick<RepeatOptions, 'every' | 'pattern'>
 }
 
+/** How many finished runs each queue keeps; the rest are trimmed so Redis doesn't grow forever. */
+export const KEEP = {
+  oneOff: { removeOnComplete: 1000, removeOnFail: 5000 },
+  // Scheduled jobs run hundreds of times a day; recent runs are enough to debug them.
+  scheduled: { removeOnComplete: 100, removeOnFail: 500 },
+}
+
 /** Retries for one-off jobs. Handlers are idempotent (deterministic source keys), so retrying is safe. */
 export const RETRY = { attempts: 5, backoff: { type: 'exponential', delay: 5000 } } as const
 
@@ -43,7 +50,7 @@ export function createJobQueues(connection: Redis) {
   return {
     queue,
     enqueue: (name: string, data: unknown = {}) =>
-      queue(name).add(name, data, { ...RETRY, removeOnComplete: 1000, removeOnFail: 5000 }),
+      queue(name).add(name, data, { ...RETRY, ...KEEP.oneOff }),
     close: () => Promise.all([...queues.values()].map((q) => q.close())),
   }
 }
