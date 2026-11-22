@@ -43,6 +43,7 @@ Run `pnpm lint && pnpm typecheck && pnpm build` before every push. CI runs the s
 - Only `apps/worker` talks to GRID. Store GRID ids in mapping columns; use our own UUIDs everywhere else.
 - Generated posts (stat cards, results, transfers) must be idempotent via a deterministic `source_key`.
 - Cursor pagination only, never offsets.
+- New code ships with tests. Each package's `test:coverage` script sets a coverage floor (`--coverage.thresholds.*`) and CI fails below it. Floors only go up: raise one when coverage climbs. Web aims for 60% lines.
 - DB row types come from `@aced/db` (`TeamRow`, `SeriesRow`, …); API response shapes from `@aced/types`. Map between them in the API.
 - Schema changes go through Drizzle migrations: edit `packages/db/src/schema`, run `pnpm db:generate`, commit the generated SQL. Never edit an applied migration.
 - UI follows `docs/design-system.md`: tokens only (no raw hex), crimson only where it allows, check both themes.

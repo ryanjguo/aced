@@ -26,6 +26,7 @@ import { reportRoutes } from './routes/reports.js'
 import { searchRoutes } from './routes/search.js'
 import { seriesRoutes } from './routes/series.js'
 import { sitemapRoutes } from './routes/sitemap.js'
+import { testLoginRoutes } from './routes/test-login.js'
 import { userRoutes } from './routes/users.js'
 import { voteRoutes } from './routes/votes.js'
 import { registerCurrentUser } from './user.js'
@@ -48,6 +49,8 @@ export interface AppOptions {
   logger?: boolean
   /** Off in most tests, which write faster than real users. */
   rateLimits?: boolean
+  /** Registers POST /auth/test-login; never on in production. */
+  testLogin?: boolean
 }
 
 export function buildApp(options: AppOptions) {
@@ -83,6 +86,7 @@ export function buildApp(options: AppOptions) {
   app.register(healthRoutes)
   app.register(seriesRoutes)
   app.register(eventRoutes)
+  if (options.testLogin) app.register(testLoginRoutes)
   app.register(authRoutes)
   app.register(meRoutes)
   app.register(entityRoutes)

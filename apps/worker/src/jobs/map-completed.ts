@@ -88,6 +88,9 @@ export async function createStatCards(db: Db, mapId: string) {
     ]
   })
 
+  // Standouts whose team isn't in the series (bad data) leave nothing to insert.
+  if (values.length === 0) return { cards: 0 }
+
   return db.transaction(async (tx) => {
     const created = await tx
       .insert(posts)
