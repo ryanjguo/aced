@@ -25,6 +25,7 @@ declare module 'fastify' {
     db: Db
     redis: Redis
     auth: Auth
+    rateLimits: boolean
   }
 }
 
@@ -34,6 +35,8 @@ export interface AppOptions {
   webOrigin: string
   auth: Omit<AuthOptions, 'webOrigin'>
   logger?: boolean
+  /** Off in most tests, which write faster than real users. */
+  rateLimits?: boolean
 }
 
 export function buildApp(options: AppOptions) {
@@ -46,6 +49,7 @@ export function buildApp(options: AppOptions) {
   redis.on('error', (err) => app.log.warn({ err }, 'redis error'))
   app.decorate('db', db)
   app.decorate('redis', redis)
+  app.decorate('rateLimits', options.rateLimits ?? true)
   app.decorate('auth', createAuth(db, { ...options.auth, webOrigin: options.webOrigin }))
   app.addHook('onClose', async () => {
     redis.disconnect()

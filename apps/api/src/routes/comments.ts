@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
 import { toComment } from '../mappers/social.js'
+import { assertClean, rateLimit } from '../moderation.js'
 import { currentUser, requireUser } from '../user.js'
 import { myVotes } from '../votes.js'
 
@@ -166,7 +167,8 @@ export const commentRoutes: FastifyPluginAsyncZod = async (app) => {
         if (depth > MAX_DEPTH) throw new HttpError(400, 'bad_request', 'Thread is too deep')
       }
 
-      // #54: content filter and rate limits run here, before the insert.
+      assertClean(req.body.body)
+      await rateLimit(app, user, 'comment')
       const row = await app.db.transaction(async (tx) => {
         const [created] = await tx
           .insert(comments)
@@ -199,6 +201,7 @@ export const commentRoutes: FastifyPluginAsyncZod = async (app) => {
     async (req): Promise<CommentNode> => {
       const user = currentUser(req)
       const comment = await ownComment(req.params.id, user.id)
+      assertClean(req.body.body)
       const [row] = await app.db
         .update(comments)
         .set({ body: req.body.body, editedAt: new Date() })

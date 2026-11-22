@@ -3,6 +3,7 @@ import type { Me } from '@aced/types'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError, isUniqueViolation } from '../errors.js'
+import { assertClean } from '../moderation.js'
 import { currentUser, requireUser, toUserSummary } from '../user.js'
 
 const patchBody = z.object({
@@ -28,6 +29,7 @@ export const meRoutes: FastifyPluginAsyncZod = async (app) => {
     async (req): Promise<Me> => {
       const user = currentUser(req)
       if (Object.keys(req.body).length === 0) return toMe(user)
+      assertClean(req.body.handle, req.body.bio)
       try {
         const [updated] = await app.db
           .update(schema.users)
