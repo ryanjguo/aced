@@ -52,7 +52,10 @@ test('a signed-in user comments and replies', async ({ page }) => {
 
 test('a signed-in user upvotes and then removes the vote', async ({ page }) => {
   await signIn(page, 'op_main')
-  await page.goto(`/p/${await newTake(page, `E2E votes ${Date.now()}`)}`)
+  const postId = await newTake(page, `E2E votes ${Date.now()}`)
+  // Votes on your own posts are rejected, so vote as someone else.
+  await signIn(page, 'lurker_42')
+  await page.goto(`/p/${postId}`)
   const up = page.getByRole('button', { name: 'Upvote' }).first()
   await up.click()
   await expect(up).toHaveAttribute('aria-pressed', 'true')
