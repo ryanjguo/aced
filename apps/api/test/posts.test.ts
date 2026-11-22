@@ -3,7 +3,7 @@ import { eq, inArray, schema } from '@aced/db'
 import { hotScore } from '@aced/ranking'
 import type { Post } from '@aced/types'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { buildTestApp, signIn } from './build-test-app.js'
+import { buildTestApp, createUser } from './build-test-app.js'
 
 const { users, posts, boards } = schema
 
@@ -14,15 +14,10 @@ describe('posts', () => {
   let author = { cookie: '' }
   let other = { cookie: '' }
 
-  const createUser = async () => {
-    const run = randomUUID().slice(0, 8)
-    const [user] = await app.db
-      .insert(users)
-      .values({ name: run, email: `${run}@test.dev`, handle: `p_${run}` })
-      .returning()
-    if (!user) throw new Error('insert failed')
+  const newUser = async () => {
+    const user = await createUser(app, 'p')
     userIds.push(user.id)
-    return signIn(app, user.id)
+    return user
   }
 
   const create = (payload: object, cookie = author.cookie) =>
@@ -31,8 +26,8 @@ describe('posts', () => {
   beforeAll(async () => {
     const [general] = await app.db.select().from(boards).where(eq(boards.slug, 'general'))
     boardId = general?.id ?? ''
-    author = await createUser()
-    other = await createUser()
+    author = await newUser()
+    other = await newUser()
   })
 
   afterAll(async () => {

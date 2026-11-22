@@ -1,8 +1,7 @@
-import { randomUUID } from 'node:crypto'
 import { eq, inArray, schema } from '@aced/db'
 import type { CommentNode, Page, Post } from '@aced/types'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { buildTestApp, signIn } from './build-test-app.js'
+import { buildTestApp, createPost, createUser } from './build-test-app.js'
 
 const { users, posts } = schema
 
@@ -12,26 +11,13 @@ describe('comments', () => {
   let author = { cookie: '' }
   let other = { cookie: '' }
 
-  const createUser = async () => {
-    const run = randomUUID().slice(0, 8)
-    const [user] = await app.db
-      .insert(users)
-      .values({ name: run, email: `${run}@test.dev`, handle: `c_${run}` })
-      .returning()
-    if (!user) throw new Error('insert failed')
+  const newUser = async () => {
+    const user = await createUser(app, 'c')
     userIds.push(user.id)
-    return signIn(app, user.id)
+    return user
   }
 
-  const newPost = async () => {
-    const res = await app.inject({
-      method: 'POST',
-      url: '/posts',
-      headers: { cookie: author.cookie },
-      payload: { kind: 'take', body: 'Discuss' },
-    })
-    return res.json<Post>()
-  }
+  const newPost = () => createPost(app, author.cookie, 'Discuss')
 
   const reply = (postId: string, body: string, parentId?: string, cookie = author.cookie) =>
     app.inject({
@@ -45,8 +31,8 @@ describe('comments', () => {
     (await app.inject({ method: 'GET', url: `/posts/${id}` })).json<Post>()
 
   beforeAll(async () => {
-    author = await createUser()
-    other = await createUser()
+    author = await newUser()
+    other = await newUser()
   })
 
   afterAll(async () => {

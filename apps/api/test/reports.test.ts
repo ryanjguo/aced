@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto'
 import { eq, inArray, schema } from '@aced/db'
-import type { CommentNode, Post } from '@aced/types'
+import type { CommentNode } from '@aced/types'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { buildTestApp, signIn } from './build-test-app.js'
+import { buildTestApp, createPost, createUser } from './build-test-app.js'
 
 const { users, posts, comments } = schema
 
@@ -13,14 +13,9 @@ describe('reports', () => {
 
   beforeAll(async () => {
     for (let i = 0; i < 6; i++) {
-      const run = randomUUID().slice(0, 8)
-      const [user] = await app.db
-        .insert(users)
-        .values({ name: run, email: `${run}@test.dev`, handle: `r_${run}` })
-        .returning()
-      if (!user) throw new Error('insert failed')
+      const user = await createUser(app, 'r')
       userIds.push(user.id)
-      cookies.push((await signIn(app, user.id)).cookie)
+      cookies.push(user.cookie)
     }
   })
 
@@ -30,15 +25,7 @@ describe('reports', () => {
     await app.close()
   })
 
-  const newPost = async () =>
-    (
-      await app.inject({
-        method: 'POST',
-        url: '/posts',
-        headers: { cookie: cookies[0] },
-        payload: { kind: 'take', body: 'Report me' },
-      })
-    ).json<Post>()
+  const newPost = () => createPost(app, cookies[0], 'Report me')
 
   const report = (targetType: string, targetId: string, cookie = cookies[1], reason = 'spam') =>
     app.inject({

@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { eq, inArray, schema } from '@aced/db'
 import type { Post, Profile, UserRole } from '@aced/types'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { buildTestApp, signIn } from './build-test-app.js'
+import { buildTestApp, createUser } from './build-test-app.js'
 
 const { users, posts, players, teams, modActions } = schema
 
@@ -18,14 +18,10 @@ describe('rumor resolution and credit', () => {
   let team = ''
   let otherTeam = ''
 
-  const createUser = async (key: keyof typeof people, role: UserRole = 'user') => {
-    const handle = `rc_${randomUUID().slice(0, 8)}`
-    const [u] = await app.db
-      .insert(users)
-      .values({ name: handle, email: `${handle}@test.dev`, handle, role })
-      .returning()
-    ids.push(u?.id ?? '')
-    people[key] = { handle, cookie: (await signIn(app, u?.id ?? '')).cookie }
+  const newUser = async (key: keyof typeof people, role: UserRole = 'user') => {
+    const user = await createUser(app, 'rc', { role })
+    ids.push(user.id)
+    people[key] = user
   }
 
   const rumor = async (who: 'a' | 'b', teamId: string) =>
@@ -59,9 +55,9 @@ describe('rumor resolution and credit', () => {
       .rumors
 
   beforeAll(async () => {
-    await createUser('a')
-    await createUser('b')
-    await createUser('mod', 'moderator')
+    await newUser('a')
+    await newUser('b')
+    await newUser('mod', 'moderator')
     player = (await app.db.select().from(players).where(eq(players.slug, 'tundra')))[0]?.id ?? ''
     team = (await app.db.select().from(teams).where(eq(teams.slug, 'driftwood')))[0]?.id ?? ''
     otherTeam = (await app.db.select().from(teams).where(eq(teams.slug, 'emberfall')))[0]?.id ?? ''

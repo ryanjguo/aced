@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { inArray, schema } from '@aced/db'
 import type { CommentNode, Page, Post, VoteResult } from '@aced/types'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { buildTestApp, signIn } from './build-test-app.js'
+import { buildTestApp, createPost, createUser } from './build-test-app.js'
 
 const { users, posts } = schema
 
@@ -13,14 +13,9 @@ describe('votes', () => {
 
   beforeAll(async () => {
     for (let i = 0; i < 3; i++) {
-      const run = randomUUID().slice(0, 8)
-      const [user] = await app.db
-        .insert(users)
-        .values({ name: run, email: `${run}@test.dev`, handle: `v_${run}` })
-        .returning()
-      if (!user) throw new Error('insert failed')
+      const user = await createUser(app, 'v')
       userIds.push(user.id)
-      cookies.push((await signIn(app, user.id)).cookie)
+      cookies.push(user.cookie)
     }
   })
 
@@ -30,15 +25,7 @@ describe('votes', () => {
     await app.close()
   })
 
-  const newPost = async () =>
-    (
-      await app.inject({
-        method: 'POST',
-        url: '/posts',
-        headers: { cookie: cookies[0] },
-        payload: { kind: 'take', body: 'Vote on me' },
-      })
-    ).json<Post>()
+  const newPost = () => createPost(app, cookies[0], 'Vote on me')
 
   const vote = (targetType: string, targetId: string, value: number, cookie = cookies[0]) =>
     app.inject({
