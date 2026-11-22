@@ -18,6 +18,9 @@ const KIND_LABEL: Partial<Record<Post['kind'], string>> = {
   transfer: 'Transfer',
 }
 
+// Posts the worker writes; they have no author.
+const GENERATED = new Set<Post['kind']>(['match_thread', 'result', 'stat_card', 'transfer'])
+
 function domain(url: string) {
   try {
     return new URL(url).hostname.replace(/^www\./, '')
@@ -84,11 +87,13 @@ export function PostRow({ post, showBoard = true }: { post: Post; showBoard?: bo
               <span aria-hidden>·</span>
             </>
           )}
-          {post.data ? (
-            <span>Auto-generated</span>
-          ) : (
-            post.author && <span>@{post.author.handle}</span>
-          )}
+          <span>
+            {post.author
+              ? `@${post.author.handle}`
+              : GENERATED.has(post.kind)
+                ? 'Auto-generated'
+                : '[deleted]'}
+          </span>
           <span aria-hidden>·</span>
           <Link href={`/p/${post.id}`} className="hover:text-fg">
             {post.commentCount} comment{post.commentCount === 1 ? '' : 's'}
