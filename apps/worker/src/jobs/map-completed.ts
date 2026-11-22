@@ -8,7 +8,7 @@ const { maps, series, teams, events, players, playerMapStats, posts, postTags } 
 export const MAP_COMPLETED = JOBS.mapCompleted
 
 /** What makes a performance card-worthy; checked in order, first match is the highlight. */
-export const STAT_CARD_RULES = {
+const STAT_CARD_RULES = {
   maxPerMap: 3,
   thresholds: [
     { label: '30+ kills', test: (s: { kills: number }) => s.kills >= 30 },
