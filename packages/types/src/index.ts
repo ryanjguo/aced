@@ -145,6 +145,20 @@ export interface Post {
   editedAt: string | null
 }
 
+export interface Comment {
+  id: string
+  postId: string
+  parentId: string | null
+  author: UserSummary | null
+  body: string
+  score: number
+  depth: number
+  isRemoved: boolean
+  createdAt: string
+  editedAt: string | null
+}
+
+export type VoteValue = -1 | 0 | 1
 export interface UpdateMeInput {
   handle?: string
   bio?: string | null
