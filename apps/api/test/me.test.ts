@@ -35,7 +35,13 @@ describe('current user', () => {
   it('returns the signed-in user from /me', async () => {
     const { user, cookie } = await createUser(`me_${run}`)
     const res = await app.inject({ method: 'GET', url: '/me', headers: { cookie } })
-    expect(res.json()).toEqual({ id: user.id, handle: `me_${run}`, avatarUrl: null, role: 'user' })
+    expect(res.json()).toEqual({
+      id: user.id,
+      handle: `me_${run}`,
+      avatarUrl: null,
+      role: 'user',
+      bio: null,
+    })
   })
 
   it('updates handle and bio', async () => {
@@ -47,7 +53,7 @@ describe('current user', () => {
       payload: { handle: `New_${run}`, bio: 'Duelist main' },
     })
     expect(res.statusCode).toBe(200)
-    expect(res.json()).toMatchObject({ handle: `new_${run}` })
+    expect(res.json()).toMatchObject({ handle: `new_${run}`, bio: 'Duelist main' })
   })
 
   it('accepts an empty update', async () => {
