@@ -1,6 +1,7 @@
 'use client'
 
 import type { Post } from '@aced/types'
+import { track } from '@vercel/analytics'
 import Link from 'next/link'
 import { type FormEvent, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -43,6 +44,7 @@ export function TakeComposer() {
     setError(null)
     try {
       const post = await api.createPost({ kind: 'take', body: text })
+      track('post_created', { kind: 'take' })
       setPosted((prev) => [post, ...prev])
       setBody('')
     } catch (err) {
