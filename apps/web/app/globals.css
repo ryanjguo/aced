@@ -158,6 +158,14 @@ body {
   background: none;
   padding: 0;
 }
+.prose-aced a {
+  text-decoration: underline;
+  text-decoration-color: var(--muted);
+  text-underline-offset: 2px;
+}
+.prose-aced a:hover {
+  text-decoration-color: var(--fg);
+}
 .prose-aced h1,
 .prose-aced h2,
 .prose-aced h3 {
