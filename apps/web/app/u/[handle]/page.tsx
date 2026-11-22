@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { FollowButton } from '@/components/FollowButton'
+import { LinkTabs } from '@/components/LinkTabs'
 import { ReportButton } from '@/components/ReportButton'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { serverApi } from '@/lib/server-api'
@@ -61,12 +62,6 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     )
   }
 
-  const tabClass = (active: boolean) =>
-    cn(
-      'rounded-md px-3 py-1.5 text-sm transition-colors',
-      active ? 'bg-bg text-fg' : 'text-muted hover:text-fg',
-    )
-
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
       <header className="flex items-start gap-4">
@@ -100,25 +95,17 @@ export default async function ProfilePage({ params, searchParams }: Props) {
         </div>
       </header>
 
-      <nav
-        aria-label="Profile sections"
-        className="flex w-fit gap-1 rounded-lg border border-border bg-surface p-1"
-      >
-        <Link
-          href={`/u/${profile.handle}`}
-          aria-current={tab === 'posts' ? 'page' : undefined}
-          className={tabClass(tab === 'posts')}
-        >
-          Posts
-        </Link>
-        <Link
-          href={`/u/${profile.handle}?tab=comments`}
-          aria-current={tab === 'comments' ? 'page' : undefined}
-          className={tabClass(tab === 'comments')}
-        >
-          Comments
-        </Link>
-      </nav>
+      <LinkTabs
+        label="Profile sections"
+        items={[
+          { href: `/u/${profile.handle}`, label: 'Posts', current: tab === 'posts' },
+          {
+            href: `/u/${profile.handle}?tab=comments`,
+            label: 'Comments',
+            current: tab === 'comments',
+          },
+        ]}
+      />
 
       {posts && <ProfileFeed key="posts" handle={profile.handle} tab="posts" initial={posts} />}
       {comments && (

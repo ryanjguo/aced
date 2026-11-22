@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
+import { LinkTabs } from '@/components/LinkTabs'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { serverApi } from '@/lib/server-api'
@@ -45,12 +46,6 @@ export default async function BoardPage({ params, searchParams }: Props) {
   const board = boards?.items.find((b) => b.slug === slug)
   if (boards && !board) notFound()
 
-  const tab = (active: boolean) =>
-    cn(
-      'rounded-md px-3 py-1.5 text-sm capitalize transition-colors',
-      active ? 'bg-bg text-fg' : 'text-muted hover:text-fg',
-    )
-
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
       <header className="mb-6 flex items-start justify-between gap-4">
@@ -63,19 +58,15 @@ export default async function BoardPage({ params, searchParams }: Props) {
         </Button>
       </header>
 
-      <nav aria-label="Sort posts" className="mb-4 flex flex-wrap items-center gap-3">
-        <div className="flex gap-1 rounded-lg border border-border bg-surface p-1">
-          {SORTS.map((s) => (
-            <Link
-              key={s}
-              href={`/b/${slug}?sort=${s}`}
-              aria-current={s === sort ? 'page' : undefined}
-              className={tab(s === sort)}
-            >
-              {s}
-            </Link>
-          ))}
-        </div>
+      <div className="mb-4 flex flex-wrap items-end gap-3">
+        <LinkTabs
+          label="Sort posts"
+          items={SORTS.map((s) => ({
+            href: `/b/${slug}?sort=${s}`,
+            label: s,
+            current: s === sort,
+          }))}
+        />
         {sort === 'top' && (
           <div className="flex gap-1 text-xs">
             {WINDOWS.map((w) => (
@@ -93,7 +84,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
             ))}
           </div>
         )}
-      </nav>
+      </div>
 
       {page ? (
         <PostFeed key={`${sort}:${t}`} source={{ board: slug }} query={query} initial={page} />
