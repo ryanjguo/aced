@@ -319,3 +319,13 @@ export interface TeamDetail {
   recent: Series[]
   upcoming: Series[]
 }
+
+export type FollowTargetType = 'player' | 'team' | 'event' | 'user'
+
+export interface Follow {
+  type: FollowTargetType
+  id: string
+  /** Player handle, team or event name, or user handle. */
+  name: string
+  slug: string
+}
