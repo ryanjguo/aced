@@ -2,5 +2,6 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "ignoreIssues": {
     "apps/web/components/ui/**": ["exports", "types"]
-  }
+  },
+  "ignore": ["scripts/load/**"]
 }
