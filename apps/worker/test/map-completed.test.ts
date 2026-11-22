@@ -1,27 +1,30 @@
-import { and, createDb, eq, inArray, like, ne, schema } from '@aced/db'
+import { createDb, inArray, like, schema } from '@aced/db'
 import type { StatCardData } from '@aced/types'
-import { afterAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createStatCards } from '../src/jobs/map-completed.js'
+import { createEsportsFixture, type EsportsFixture } from './fixtures.js'
 
 const url = process.env.DATABASE_URL
-const { series, maps, playerMapStats, players, posts, postTags, teams } = schema
+const { maps, playerMapStats, posts, postTags } = schema
 
-// Builds a map on a seeded series (`pnpm db:seed`).
 describe.skipIf(!url)('map-completed job', () => {
   const db = createDb(url ?? '', { max: 1 })
   let mapId = ''
-  let strayMapId = ''
+  let fx: EsportsFixture | undefined
 
+  beforeAll(async () => {
+    fx = await createEsportsFixture(db)
+  })
+  // Maps, stats and stat cards belong to the fixture's series, so its cleanup removes them.
   afterAll(async () => {
-    await db.delete(posts).where(like(posts.sourceKey, `stat_card:${mapId}:%`))
-    await db.delete(maps).where(inArray(maps.id, [mapId, strayMapId].filter(Boolean)))
+    await fx?.cleanup()
     await db.$client.end()
   })
 
   it('creates at most 3 cards for standout players, highest ACS first, idempotently', async () => {
-    const [s] = await db.select().from(series).where(eq(series.gridId, 'seed-series-3'))
-    if (!s?.teamAId) throw new Error('Run pnpm db:seed')
-    const roster = await db.select().from(players).where(eq(players.currentTeamId, s.teamAId))
+    const s = fx?.completed
+    if (!s?.teamAId || !fx) throw new Error('fixture missing')
+    const roster = fx.roster(s.teamAId)
     const [map] = await db
       .insert(maps)
       .values({
@@ -86,17 +89,10 @@ describe.skipIf(!url)('map-completed job', () => {
   })
 
   it('makes no cards when no standout belongs to a team in the series', async () => {
-    const [s] = await db.select().from(series).where(eq(series.gridId, 'seed-series-3'))
-    if (!s?.teamAId || !s.teamBId) throw new Error('Run pnpm db:seed')
-    const [stray] = await db
-      .select()
-      .from(teams)
-      .where(and(ne(teams.id, s.teamAId), ne(teams.id, s.teamBId)))
-      .limit(1)
-    const [player] = await db
-      .select()
-      .from(players)
-      .where(eq(players.currentTeamId, stray?.id ?? ''))
+    if (!fx) throw new Error('fixture missing')
+    const s = fx.completed
+    const stray = fx.teams.c
+    const [player] = fx.roster(stray.id)
     const [map] = await db
       .insert(maps)
       .values({
@@ -108,7 +104,7 @@ describe.skipIf(!url)('map-completed job', () => {
         completedAt: new Date(),
       })
       .returning()
-    strayMapId = map?.id ?? ''
+    const strayMapId = map?.id ?? ''
     await db.insert(playerMapStats).values({
       mapId: strayMapId,
       playerId: player?.id ?? '',

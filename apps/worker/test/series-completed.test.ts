@@ -1,24 +1,28 @@
-import { createDb, eq, inArray, schema, sql } from '@aced/db'
+import { createDb, inArray, schema, sql } from '@aced/db'
 import type { ResultCardData } from '@aced/types'
-import { afterAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createSeriesPosts } from '../src/jobs/series-completed.js'
+import { createEsportsFixture, type EsportsFixture } from './fixtures.js'
 
 const url = process.env.DATABASE_URL
-const { series, posts, postTags } = schema
+const { posts, postTags } = schema
 
-// Runs against `pnpm db:seed` data.
 describe.skipIf(!url)('series-completed job', () => {
   const db = createDb(url ?? '', { max: 1 })
-  afterAll(() => db.$client.end())
+  let fx: EsportsFixture | undefined
 
-  const seedSeries = async (gridId: string) =>
-    (await db.select().from(series).where(eq(series.gridId, gridId)))[0]
+  beforeAll(async () => {
+    fx = await createEsportsFixture(db)
+  })
+  afterAll(async () => {
+    await fx?.cleanup()
+    await db.$client.end()
+  })
 
   it('creates one result card and one match thread, tagged, idempotently', async () => {
-    const s = await seedSeries('seed-series-1')
-    if (!s) throw new Error('Run pnpm db:seed')
+    const s = fx?.completed
+    if (!s) throw new Error('fixture missing')
     const keys = [`result:${s.id}`, `match_thread:${s.id}`]
-    await db.delete(posts).where(inArray(posts.sourceKey, keys))
 
     await createSeriesPosts(db, s.id)
     await createSeriesPosts(db, s.id)
@@ -44,7 +48,6 @@ describe.skipIf(!url)('series-completed job', () => {
   })
 
   it('skips series that are not completed', async () => {
-    const s = await seedSeries('seed-series-16')
-    expect(await createSeriesPosts(db, s?.id ?? '')).toEqual({ skipped: true })
+    expect(await createSeriesPosts(db, fx?.scheduled.id ?? '')).toEqual({ skipped: true })
   })
 })

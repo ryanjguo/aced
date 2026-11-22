@@ -1,20 +1,25 @@
 import { createDb, eq, inArray, like, schema } from '@aced/db'
 import type { TransferCardData } from '@aced/types'
-import { afterAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createTransferPost } from '../src/jobs/roster-changed.js'
+import { createEsportsFixture, type EsportsFixture } from './fixtures.js'
 
 const url = process.env.DATABASE_URL
-const { players, teams, posts, postTags, rumorStatus } = schema
+const { posts, postTags, rumorStatus } = schema
 
-// Uses `pnpm db:seed` players and teams.
 describe.skipIf(!url)('roster-changed job', () => {
   const db = createDb(url ?? '', { max: 1 })
   const created: string[] = []
   let playerId = ''
+  let fx: EsportsFixture | undefined
 
+  beforeAll(async () => {
+    fx = await createEsportsFixture(db)
+  })
   afterAll(async () => {
     await db.delete(posts).where(inArray(posts.id, created))
-    await db.delete(posts).where(like(posts.sourceKey, `transfer:${playerId}:%`))
+    if (playerId) await db.delete(posts).where(like(posts.sourceKey, `transfer:${playerId}:%`))
+    await fx?.cleanup()
     await db.$client.end()
   })
 
@@ -34,10 +39,10 @@ describe.skipIf(!url)('roster-changed job', () => {
   }
 
   it('posts one tagged transfer card and flags matching open rumors', async () => {
-    const [player] = await db.select().from(players).where(eq(players.slug, 'pike'))
-    const [from] = await db.select().from(teams).where(eq(teams.slug, 'rook-esports'))
-    const [to] = await db.select().from(teams).where(eq(teams.slug, 'silverline'))
-    if (!player || !from || !to) throw new Error('Run pnpm db:seed')
+    if (!fx) throw new Error('fixture missing')
+    const { b: from, c: to } = fx.teams
+    const [player] = fx.roster(from.id)
+    if (!player) throw new Error('fixture missing')
     playerId = player.id
     const matching = await rumorAbout(player.id, to.id)
     const other = await rumorAbout(player.id, from.id)
@@ -51,8 +56,8 @@ describe.skipIf(!url)('roster-changed job', () => {
       .from(posts)
       .where(like(posts.sourceKey, `transfer:${player.id}:%`))
     expect(transfers).toHaveLength(1)
-    expect(transfers[0]?.title).toBe('Pike joins Silverline from Rook Esports')
-    expect((transfers[0]?.data as TransferCardData | undefined)?.to?.slug).toBe('silverline')
+    expect(transfers[0]?.title).toBe(`${player.handle} joins ${to.name} from ${from.name}`)
+    expect((transfers[0]?.data as TransferCardData | undefined)?.to?.slug).toBe(to.slug)
     const tags = await db
       .select()
       .from(postTags)
@@ -66,8 +71,8 @@ describe.skipIf(!url)('roster-changed job', () => {
     expect(o?.matchedTransferId).toBeNull()
   })
   it('ignores a move to the same team', async () => {
-    const [team] = await db.select().from(teams).where(eq(teams.slug, 'silverline'))
-    const change = { playerId, fromTeamId: team?.id ?? null, toTeamId: team?.id ?? null }
+    const team = fx?.teams.c.id ?? null
+    const change = { playerId, fromTeamId: team, toTeamId: team }
     expect(await createTransferPost(db, change)).toEqual({ skipped: true })
   })
 })
