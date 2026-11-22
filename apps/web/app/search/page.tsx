@@ -50,9 +50,7 @@ export default async function SearchPage({ searchParams }: Props) {
         SECTIONS.map(([type, label, href]) =>
           byType(type).length ? (
             <section key={type} aria-label={label}>
-              <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-                {label}
-              </h2>
+              <h2 className="mb-2 text-rail-heading">{label}</h2>
               <ul className="overflow-hidden rounded-lg border border-border bg-surface">
                 {byType(type).map((e) => (
                   <li key={e.id} className="border-b border-border last:border-b-0">
@@ -72,7 +70,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
       {q && (
         <section aria-label="Posts">
-          <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Posts</h2>
+          <h2 className="mb-2 text-rail-heading">Posts</h2>
           {posts ? (
             <PostFeed
               key={q}

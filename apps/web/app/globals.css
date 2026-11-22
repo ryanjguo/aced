@@ -34,6 +34,8 @@
 }
 
 @theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
@@ -77,6 +79,34 @@
 body {
   background: var(--color-bg);
   color: var(--color-fg);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* Type roles from docs/design-system.md. */
+@utility text-page-title {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 600;
+}
+@utility text-section-title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+@utility text-meta {
+  font-size: 12.5px;
+  line-height: 18px;
+}
+@utility text-rail-heading {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+@utility text-badge {
+  font-size: 11px;
+  line-height: 14px;
 }
 
 /* Spacing for rendered markdown (posts and comments). */

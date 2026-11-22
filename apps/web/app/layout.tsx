@@ -1,3 +1,5 @@
+import { GeistMono } from 'geist/font/mono'
+import { GeistSans } from 'geist/font/sans'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import type { ReactNode } from 'react'
@@ -15,7 +17,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     // next-themes sets the theme class on <html> before hydration.
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      suppressHydrationWarning
+    >
       <body className="flex min-h-dvh flex-col antialiased">
         <ThemeProvider
           attribute="class"

@@ -15,7 +15,7 @@ export default async function SignInPage({
   return (
     <main className="mx-auto flex max-w-sm flex-col gap-8 px-4 py-16 text-center">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold tracking-tight">Sign in to Aced</h1>
+        <h1 className="text-page-title">Sign in to Aced</h1>
         <p className="text-sm text-muted">
           Post takes, vote, and follow the teams and players you care about.
         </p>

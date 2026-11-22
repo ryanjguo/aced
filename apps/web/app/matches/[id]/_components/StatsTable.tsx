@@ -31,15 +31,15 @@ export function StatsTable({ team, stats }: { team: Team; stats: PlayerMapStat[]
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="font-mono whitespace-nowrap">
           {rows.map((s) => (
             <tr key={s.player.id} className="border-b border-border last:border-b-0">
-              <th scope="row" className="truncate px-4 py-2 text-left font-medium">
+              <th scope="row" className="truncate px-4 py-2 text-left font-sans font-medium">
                 <Link href={`/players/${s.player.slug}`} className="hover:underline">
                   {s.player.handle}
                 </Link>
               </th>
-              <td className="px-2 py-2 text-muted">{s.agent ?? '–'}</td>
+              <td className="px-2 py-2 font-sans text-muted">{s.agent ?? '–'}</td>
               <td className="px-2 py-2 text-right">
                 {s.kills} / {s.deaths} / {s.assists}
               </td>

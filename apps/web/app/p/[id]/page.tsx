@@ -67,7 +67,7 @@ export default async function PostPage({ params }: Props) {
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
       <article className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 sm:p-6">
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-muted">
           {post.kind !== 'thread' && !post.data && (
             <Badge variant="secondary" className="capitalize">
               {post.kind.replace('_', ' ')}
@@ -91,9 +91,7 @@ export default async function PostPage({ params }: Props) {
         {post.data && !post.isRemoved && <PostCard data={post.data} />}
         {post.title && (
           // The card shows the same facts, so keep the title for screen readers only.
-          <h1 className={post.data ? 'sr-only' : 'text-xl font-bold tracking-tight break-words'}>
-            {post.title}
-          </h1>
+          <h1 className={post.data ? 'sr-only' : 'text-page-title break-words'}>{post.title}</h1>
         )}
         {post.isRemoved ? (
           <p className="text-sm text-muted italic">[removed]</p>

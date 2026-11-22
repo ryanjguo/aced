@@ -61,7 +61,7 @@ export default async function PlayerPage({ params }: Props) {
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
       <header className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold tracking-tight">{player.handle}</h1>
+          <h1 className="text-page-title">{player.handle}</h1>
           <p className="text-sm text-muted">
             {[player.realName, player.country && `${flag(player.country)} ${player.country}`]
               .filter(Boolean)
@@ -80,7 +80,7 @@ export default async function PlayerPage({ params }: Props) {
       </header>
 
       <section aria-labelledby="averages">
-        <h2 id="averages" className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+        <h2 id="averages" className="mb-2 text-rail-heading">
           Last 30 days{avg && ` · ${avg.maps} map${avg.maps === 1 ? '' : 's'}`}
         </h2>
         <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -94,7 +94,7 @@ export default async function PlayerPage({ params }: Props) {
       </section>
 
       <section aria-labelledby="recent">
-        <h2 id="recent" className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+        <h2 id="recent" className="mb-2 text-rail-heading">
           Recent maps
         </h2>
         {player.recentMaps.length === 0 ? (
@@ -127,7 +127,7 @@ export default async function PlayerPage({ params }: Props) {
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="font-mono whitespace-nowrap">
                 {player.recentMaps.map((m) => (
                   <tr
                     key={`${m.seriesId}:${m.mapName}`}
@@ -136,7 +136,7 @@ export default async function PlayerPage({ params }: Props) {
                     <td className="px-4 py-2 text-muted">
                       {m.playedAt ? day.format(new Date(m.playedAt)) : '–'}
                     </td>
-                    <td className="px-2 py-2">
+                    <td className="px-2 py-2 font-sans">
                       <Link href={`/matches/${m.seriesId}`} className="hover:underline">
                         {m.mapName}
                       </Link>
@@ -155,7 +155,7 @@ export default async function PlayerPage({ params }: Props) {
                         'TBD'
                       )}
                     </td>
-                    <td className="px-2 py-2 text-muted">{m.stat.agent ?? '–'}</td>
+                    <td className="px-2 py-2 font-sans text-muted">{m.stat.agent ?? '–'}</td>
                     <td className="px-2 py-2 text-right">
                       {m.stat.kills} / {m.stat.deaths} / {m.stat.assists}
                     </td>

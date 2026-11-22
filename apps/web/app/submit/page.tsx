@@ -14,7 +14,7 @@ export default async function SubmitPage({
   const boards = await api.boards({ cache: 'no-store' }).catch(() => null)
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">New post</h1>
+      <h1 className="mb-6 text-page-title">New post</h1>
       {boards ? (
         <PostForm boards={boards.items} initialBoardId={board} />
       ) : (

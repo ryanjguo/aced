@@ -58,7 +58,7 @@ export function PostRow({ post, showBoard = true }: { post: Post; showBoard?: bo
           </Link>
         )}
         {site && <span className="text-xs text-muted"> ({site})</span>}
-        <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+        <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-muted">
           {label && !post.data && <Badge variant="secondary">{label}</Badge>}
           {post.rumorStatus && <RumorBadge status={post.rumorStatus} />}
           {showBoard && post.board && (
