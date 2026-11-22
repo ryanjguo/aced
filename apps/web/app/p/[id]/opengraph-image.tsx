@@ -1,18 +1,13 @@
 import type { Post } from '@aced/types'
 import { ImageResponse } from 'next/og'
 import { api } from '@/lib/api'
+import { darkColors } from '@/lib/theme-colors'
 
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 export const alt = 'Aced'
 
-const colors = {
-  bg: '#0b0d10',
-  surface: '#13161b',
-  fg: '#f2f4f7',
-  muted: '#8a93a3',
-  accent: '#c6f432',
-}
+const colors = darkColors
 
 function Body({ post }: { post: Post }) {
   const data = post.data
@@ -57,7 +52,7 @@ function Body({ post }: { post: Post }) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
         <div style={{ display: 'flex', fontSize: 32, color: colors.muted }}>
-          <span style={{ color: colors.accent }}>{data.highlight}</span>
+          <span style={{ color: colors.fg }}>{data.highlight}</span>
           <span>
             &nbsp;·&nbsp;{data.mapName}
             {data.opponent ? ` vs ${data.opponent.tag}` : ''} · {data.event.name}
