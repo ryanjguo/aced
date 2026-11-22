@@ -71,6 +71,20 @@
       "when": 1795250494670,
       "tag": "0009_post_tags",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1795250552335,
+      "tag": "0010_pg_trgm",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1795250559493,
+      "tag": "0011_entity_search_indexes",
+      "breakpoints": true
     }
   ]
 }

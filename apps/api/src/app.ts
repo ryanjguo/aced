@@ -18,6 +18,7 @@ import { meRoutes } from './routes/me.js'
 import { modRoutes } from './routes/mod.js'
 import { postRoutes } from './routes/posts.js'
 import { reportRoutes } from './routes/reports.js'
+import { searchRoutes } from './routes/search.js'
 import { seriesRoutes } from './routes/series.js'
 import { userRoutes } from './routes/users.js'
 import { voteRoutes } from './routes/votes.js'
@@ -78,6 +79,7 @@ export function buildApp(options: AppOptions) {
   app.register(reportRoutes)
   app.register(modRoutes)
   app.register(userRoutes)
+  app.register(searchRoutes)
 
   return app
 }

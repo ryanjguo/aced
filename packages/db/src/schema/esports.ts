@@ -30,19 +30,30 @@ export const events = pgTable(
     endsAt: timestamp({ withTimezone: true }),
     ...timestamps,
   },
-  (t) => [index().on(t.startsAt)],
+  (t) => [
+    index().on(t.startsAt),
+    index('events_name_trgm').using('gin', t.name.op('gin_trgm_ops')),
+  ],
 )
 
-export const teams = pgTable('teams', {
-  id: id(),
-  gridId: text().notNull().unique(),
-  name: text().notNull(),
-  tag: text().notNull(),
-  slug: citext().notNull().unique(),
-  region: region(),
-  logoUrl: text(),
-  ...timestamps,
-})
+export const teams = pgTable(
+  'teams',
+  {
+    id: id(),
+    gridId: text().notNull().unique(),
+    name: text().notNull(),
+    tag: text().notNull(),
+    slug: citext().notNull().unique(),
+    region: region(),
+    logoUrl: text(),
+    ...timestamps,
+  },
+  // Trigram indexes for autocomplete (pg_trgm from 0010).
+  (t) => [
+    index('teams_name_trgm').using('gin', t.name.op('gin_trgm_ops')),
+    index('teams_tag_trgm').using('gin', t.tag.op('gin_trgm_ops')),
+  ],
+)
 
 export const players = pgTable(
   'players',
@@ -57,7 +68,10 @@ export const players = pgTable(
     currentTeamId: uuid().references(() => teams.id, { onDelete: 'set null' }),
     ...timestamps,
   },
-  (t) => [index().on(t.currentTeamId)],
+  (t) => [
+    index().on(t.currentTeamId),
+    index('players_handle_trgm').using('gin', t.handle.op('gin_trgm_ops')),
+  ],
 )
 
 export const rosterStints = pgTable(
