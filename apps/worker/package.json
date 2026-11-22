@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage --coverage.include='src/**' --coverage.reporter=text-summary --coverage.reporter=json-summary --coverage.exclude='src/index.ts' --coverage.exclude='src/env.ts' --coverage.exclude='src/scripts/**'",
     "cards:enqueue": "tsx src/scripts/enqueue-completed.ts",
     "roster:simulate": "tsx src/scripts/simulate-transfer.ts"
   },
@@ -24,6 +25,7 @@
   "devDependencies": {
     "@aced/tsconfig": "workspace:*",
     "@types/node": "^22",
+    "@vitest/coverage-v8": "5.1.1",
     "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "^5.1.1"
