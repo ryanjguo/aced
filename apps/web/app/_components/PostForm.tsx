@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { api } from '@/lib/api'
 import { apiErrorMessage } from '@/lib/api-error'
 import { authClient } from '@/lib/auth-client'
+import { type PickedTag, TagPicker } from './TagPicker'
 
 const field = 'flex flex-col gap-2'
 const label = 'text-sm font-medium'
@@ -34,6 +35,7 @@ export function PostForm({
   const [title, setTitle] = useState(post?.title ?? '')
   const [url, setUrl] = useState(post?.url ?? '')
   const [body, setBody] = useState(post?.body ?? '')
+  const [tags, setTags] = useState<PickedTag[]>(post?.tags ?? [])
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
@@ -48,11 +50,17 @@ export function PostForm({
     e.preventDefault()
     setSaving(true)
     setError(null)
+    const refs = tags.map(({ type, id }) => ({ type, id }))
     try {
       const saved = post
-        ? await api.updatePost(post.id, post.kind === 'take' ? { body } : { title, body })
+        ? await api.updatePost(
+            post.id,
+            post.kind === 'take' ? { body, tags: refs } : { title, body, tags: refs },
+          )
         : await api.createPost(
-            kind === 'link' ? { kind, boardId, title, url, body } : { kind, boardId, title, body },
+            kind === 'link'
+              ? { kind, boardId, title, url, body, tags: refs }
+              : { kind, boardId, title, body, tags: refs },
           )
       router.push(`/p/${saved.id}`)
       router.refresh()
@@ -164,6 +172,13 @@ export function PostForm({
             </div>
           </TabsContent>
         </Tabs>
+      </div>
+
+      <div className={field}>
+        <label htmlFor="tags" className={label}>
+          Tags
+        </label>
+        <TagPicker value={tags} onChange={setTags} />
       </div>
 
       {error && (

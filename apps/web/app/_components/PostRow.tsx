@@ -1,5 +1,6 @@
 import type { Post } from '@aced/types'
 import Link from 'next/link'
+import { TagChips } from '@/components/TagChips'
 import { Badge } from '@/components/ui/badge'
 import { VoteButtons } from '@/components/VoteButtons'
 import { timeAgo } from '@/lib/time-ago'
@@ -50,6 +51,11 @@ export function PostRow({ post, showBoard = true }: { post: Post; showBoard?: bo
             {post.commentCount} comment{post.commentCount === 1 ? '' : 's'}
           </Link>
         </p>
+        {post.tags.length > 0 && (
+          <div className="mt-2">
+            <TagChips tags={post.tags} />
+          </div>
+        )}
       </div>
     </li>
   )

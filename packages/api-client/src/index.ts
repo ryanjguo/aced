@@ -4,6 +4,7 @@ import type {
   BoardList,
   CommentNode,
   CreatePostInput,
+  EntityResult,
   EventDetail,
   HealthResponse,
   Me,
@@ -17,6 +18,7 @@ import type {
   SeriesDetail,
   SeriesList,
   SeriesStatus,
+  TagEntityType,
   TopWindow,
   UpdateMeInput,
   UpdatePostInput,
@@ -101,6 +103,11 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
     postComments: (id: string, cursor?: string, init?: RequestInit) =>
       request<Page<CommentNode>>(
         `/posts/${encodeURIComponent(id)}/comments${query({ cursor })}`,
+        init,
+      ),
+    searchEntities: (q: string, types?: TagEntityType[], init?: RequestInit) =>
+      request<{ items: EntityResult[] }>(
+        `/search/entities${query({ q, types: types?.join(',') })}`,
         init,
       ),
     user: (handle: string, init?: RequestInit) =>

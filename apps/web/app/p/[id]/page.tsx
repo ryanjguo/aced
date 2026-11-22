@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { Markdown } from '@/components/Markdown'
+import { TagChips } from '@/components/TagChips'
 import { Badge } from '@/components/ui/badge'
 import { VoteButtons } from '@/components/VoteButtons'
 import { serverApi } from '@/lib/server-api'
@@ -102,6 +103,7 @@ export default async function PostPage({ params }: Props) {
               ))}
           </>
         )}
+        {!post.isRemoved && <TagChips tags={post.tags} />}
         <div className="flex items-center gap-3 text-xs text-muted">
           {!post.isRemoved && (
             <VoteButtons
