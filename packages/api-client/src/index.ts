@@ -132,6 +132,8 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch, timeoutMs }: 
     feed: (kind: 'following' | 'for-you', cursor?: string, init?: RequestInit) =>
       request<Page<Post>>(`/feed/${kind}${query({ cursor })}`, init),
     follows: (init?: RequestInit) => request<{ items: Follow[] }>('/me/follows', init),
+    isFollowing: (type: FollowTargetType, id: string) =>
+      request<{ following: boolean }>(`/follows/${type}/${encodeURIComponent(id)}`),
     follow: (type: FollowTargetType, id: string) =>
       request<null>(`/follows/${type}/${encodeURIComponent(id)}`, { method: 'PUT' }),
     unfollow: (type: FollowTargetType, id: string) =>
