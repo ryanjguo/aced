@@ -1,19 +1,20 @@
-import { createDb, eq, inArray, like, schema } from '@aced/db'
+import { and, createDb, eq, inArray, like, ne, schema } from '@aced/db'
 import type { StatCardData } from '@aced/types'
 import { afterAll, describe, expect, it } from 'vitest'
 import { createStatCards } from '../src/jobs/map-completed.js'
 
 const url = process.env.DATABASE_URL
-const { series, maps, playerMapStats, players, posts, postTags } = schema
+const { series, maps, playerMapStats, players, posts, postTags, teams } = schema
 
 // Builds a map on a seeded series (`pnpm db:seed`).
 describe.skipIf(!url)('map-completed job', () => {
   const db = createDb(url ?? '', { max: 1 })
   let mapId = ''
+  let strayMapId = ''
 
   afterAll(async () => {
     await db.delete(posts).where(like(posts.sourceKey, `stat_card:${mapId}:%`))
-    await db.delete(maps).where(eq(maps.id, mapId))
+    await db.delete(maps).where(inArray(maps.id, [mapId, strayMapId].filter(Boolean)))
     await db.$client.end()
   })
 
@@ -82,5 +83,40 @@ describe.skipIf(!url)('map-completed job', () => {
         ),
       )
     expect(tags).toHaveLength(9)
+  })
+
+  it('makes no cards when no standout belongs to a team in the series', async () => {
+    const [s] = await db.select().from(series).where(eq(series.gridId, 'seed-series-3'))
+    if (!s?.teamAId || !s.teamBId) throw new Error('Run pnpm db:seed')
+    const [stray] = await db
+      .select()
+      .from(teams)
+      .where(and(ne(teams.id, s.teamAId), ne(teams.id, s.teamBId)))
+      .limit(1)
+    const [player] = await db
+      .select()
+      .from(players)
+      .where(eq(players.currentTeamId, stray?.id ?? ''))
+    const [map] = await db
+      .insert(maps)
+      .values({
+        seriesId: s.id,
+        order: 98,
+        mapName: 'Haven',
+        scoreA: 13,
+        scoreB: 2,
+        completedAt: new Date(),
+      })
+      .returning()
+    strayMapId = map?.id ?? ''
+    await db.insert(playerMapStats).values({
+      mapId: strayMapId,
+      playerId: player?.id ?? '',
+      teamId: stray?.id ?? '',
+      kills: 33,
+      deaths: 10,
+      assists: 2,
+    })
+    await expect(createStatCards(db, strayMapId)).resolves.toEqual({ cards: 0 })
   })
 })
