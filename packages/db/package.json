@@ -18,7 +18,7 @@
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx src/seed.ts",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage --coverage.include='src/**' --coverage.reporter=text-summary --coverage.reporter=json-summary --coverage.exclude='src/seed.ts'"
+    "test:coverage": "vitest run --coverage --coverage.include='src/**' --coverage.reporter=text-summary --coverage.reporter=json-summary --coverage.exclude='src/seed.ts' --coverage.thresholds.lines=60 --coverage.thresholds.branches=45"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.4",

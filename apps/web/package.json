@@ -8,7 +8,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage --coverage.include='{app,components,lib}/**' --coverage.exclude='components/ui/**' --coverage.reporter=text-summary --coverage.reporter=json-summary"
+    "test:coverage": "vitest run --coverage --coverage.include='{app,components,lib}/**' --coverage.exclude='components/ui/**' --coverage.reporter=text-summary --coverage.reporter=json-summary --coverage.thresholds.lines=15 --coverage.thresholds.branches=12"
   },
   "dependencies": {
     "@aced/api-client": "workspace:*",
