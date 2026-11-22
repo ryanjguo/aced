@@ -1,17 +1,7 @@
-import type { HealthResponse } from '@aced/types'
+import { api } from '@/lib/api'
 
-async function getHealth(): Promise<HealthResponse | null> {
-  const base = process.env.NEXT_PUBLIC_API_URL
-  if (!base) return null
-  try {
-    const res = await fetch(`${base}/health`, {
-      cache: 'no-store',
-      signal: AbortSignal.timeout(3000),
-    })
-    return (await res.json()) as HealthResponse
-  } catch {
-    return null
-  }
+function getHealth() {
+  return api.health({ cache: 'no-store', signal: AbortSignal.timeout(3000) }).catch(() => null)
 }
 
 export async function ApiStatus() {
