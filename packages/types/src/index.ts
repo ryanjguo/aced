@@ -101,3 +101,12 @@ export interface UserSummary {
   avatarUrl: string | null
   role: UserRole
 }
+
+export interface UpdateMeInput {
+  handle?: string
+  bio?: string | null
+}
+
+export interface Me extends UserSummary {
+  bio: string | null
+}
