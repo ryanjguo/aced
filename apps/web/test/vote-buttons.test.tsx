@@ -62,3 +62,13 @@ describe('VoteButtons', () => {
     expect(vote).not.toHaveBeenCalled()
   })
 })
+
+describe('VoteButtons on your own content', () => {
+  it('disables both arrows', async () => {
+    session.data = { user: { id: 'u1' } }
+    render(<VoteButtons targetType="post" targetId="p1" score={4} myVote={0} ownerId="u1" />)
+    expect(screen.getByRole('button', { name: 'Upvote' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Downvote' })).toBeDisabled()
+    expect(screen.getByText('4')).toBeInTheDocument()
+  })
+})

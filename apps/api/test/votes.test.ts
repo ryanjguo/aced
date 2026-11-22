@@ -12,7 +12,8 @@ describe('votes', () => {
   const cookies: string[] = []
 
   beforeAll(async () => {
-    for (let i = 0; i < 3; i++) {
+    // cookies[3] only authors posts and comments, so voters never vote on their own content.
+    for (let i = 0; i < 4; i++) {
       const user = await createUser(app, 'v')
       userIds.push(user.id)
       cookies.push(user.cookie)
@@ -25,7 +26,7 @@ describe('votes', () => {
     await app.close()
   })
 
-  const newPost = () => createPost(app, cookies[0], 'Vote on me')
+  const newPost = () => createPost(app, cookies[3], 'Vote on me')
 
   const vote = (targetType: string, targetId: string, value: number, cookie = cookies[0]) =>
     app.inject({
@@ -63,7 +64,7 @@ describe('votes', () => {
       await app.inject({
         method: 'POST',
         url: `/posts/${post.id}/comments`,
-        headers: { cookie: cookies[0] },
+        headers: { cookie: cookies[3] },
         payload: { body: 'nice' },
       })
     ).json<CommentNode>()
@@ -87,7 +88,7 @@ describe('votes', () => {
     await app.inject({
       method: 'DELETE',
       url: `/posts/${post.id}`,
-      headers: { cookie: cookies[0] },
+      headers: { cookie: cookies[3] },
     })
     expect((await vote('post', post.id, 1)).statusCode).toBe(403)
     expect((await vote('post', randomUUID(), 1)).statusCode).toBe(404)
@@ -97,5 +98,26 @@ describe('votes', () => {
   it('requires sign-in', async () => {
     const post = await newPost()
     expect((await vote('post', post.id, 1, '')).statusCode).toBe(401)
+  })
+
+  it('rejects votes on your own posts and comments', async () => {
+    const post = await newPost()
+    const comment = (
+      await app.inject({
+        method: 'POST',
+        url: `/posts/${post.id}/comments`,
+        headers: { cookie: cookies[3] },
+        payload: { body: 'mine' },
+      })
+    ).json<CommentNode>()
+    for (const [type, id] of [
+      ['post', post.id],
+      ['comment', comment.id],
+    ] as const) {
+      const res = await vote(type, id, 1, cookies[3])
+      expect(res.statusCode).toBe(403)
+      expect(res.json()).toMatchObject({ error: { code: 'forbidden' } })
+    }
+    expect((await vote('post', post.id, 1, cookies[0])).statusCode).toBe(200)
   })
 })

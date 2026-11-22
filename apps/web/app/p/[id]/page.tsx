@@ -131,6 +131,7 @@ export default async function PostPage({ params }: Props) {
               score={post.score}
               myVote={post.myVote}
               layout="row"
+              ownerId={post.author?.id}
             />
           )}
           <span>
