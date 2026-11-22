@@ -24,6 +24,7 @@ import type {
   SeriesDetail,
   SeriesList,
   SeriesStatus,
+  SitemapEntries,
   TagEntityType,
   TeamDetail,
   TopWindow,
@@ -102,6 +103,7 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
       request<SeriesDetail>(`/series/${encodeURIComponent(id)}`, init),
     event: (slug: string, init?: RequestInit) =>
       request<EventDetail>(`/events/${encodeURIComponent(slug)}`, init),
+    sitemapEntries: (init?: RequestInit) => request<SitemapEntries>('/sitemap/entries', init),
     createPost: (input: CreatePostInput) => request<Post>('/posts', json('POST', input)),
     updatePost: (id: string, input: UpdatePostInput) =>
       request<Post>(`/posts/${encodeURIComponent(id)}`, json('PATCH', input)),

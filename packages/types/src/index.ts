@@ -405,3 +405,12 @@ export interface MatchedRumor {
   /** The transfer post that matched it. */
   transferId: string
 }
+
+export interface SitemapEntries {
+  boards: string[]
+  events: string[]
+  teams: string[]
+  players: string[]
+  /** Newest visible posts first. */
+  posts: { id: string; updatedAt: string }[]
+}

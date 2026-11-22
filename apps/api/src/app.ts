@@ -25,6 +25,7 @@ import { postRoutes } from './routes/posts.js'
 import { reportRoutes } from './routes/reports.js'
 import { searchRoutes } from './routes/search.js'
 import { seriesRoutes } from './routes/series.js'
+import { sitemapRoutes } from './routes/sitemap.js'
 import { userRoutes } from './routes/users.js'
 import { voteRoutes } from './routes/votes.js'
 import { registerCurrentUser } from './user.js'
@@ -96,6 +97,7 @@ export function buildApp(options: AppOptions) {
   app.register(followRoutes)
   app.register(feedRoutes)
   app.register(adminRoutes)
+  app.register(sitemapRoutes)
 
   return app
 }
