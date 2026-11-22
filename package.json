@@ -15,6 +15,7 @@
     "db:generate": "pnpm --filter @aced/db db:generate",
     "db:migrate": "pnpm --filter @aced/db db:migrate",
     "db:studio": "pnpm --filter @aced/db db:studio",
+    "db:seed": "pnpm --filter @aced/db db:seed",
     "test": "turbo test"
   },
   "devDependencies": {

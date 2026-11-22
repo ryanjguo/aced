@@ -18,3 +18,8 @@ export async function pingRedis(redis: Redis, timeoutMs = 1000): Promise<boolean
   )
   return Promise.race([ping, timeout])
 }
+
+/** Connection for BullMQ, which requires blocking commands to retry forever. */
+export function createQueueConnection(url: string): Redis {
+  return new Redis(url, { maxRetriesPerRequest: null })
+}
