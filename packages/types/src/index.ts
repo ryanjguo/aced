@@ -159,8 +159,6 @@ export interface Comment {
 }
 
 export type VoteValue = -1 | 0 | 1
-}
-
 export interface UpdateMeInput {
   handle?: string
   bio?: string | null
