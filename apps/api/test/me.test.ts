@@ -41,6 +41,7 @@ describe('current user', () => {
       avatarUrl: null,
       role: 'user',
       bio: null,
+      onboardedAt: null,
     })
   })
 

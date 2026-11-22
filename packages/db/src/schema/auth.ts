@@ -27,6 +27,8 @@ export const users = pgTable(
     role: userRole().notNull().default('user'),
     karma: integer().notNull().default(0),
     bio: text(),
+    // Set when the user finishes or skips first-run onboarding (picking teams).
+    onboardedAt: timestamp({ withTimezone: true }),
     bannedUntil: timestamp({ withTimezone: true }),
     ...timestamps,
   },
