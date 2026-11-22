@@ -1,6 +1,7 @@
 'use client'
 
 import type { FollowTargetType } from '@aced/types'
+import { track } from '@vercel/analytics'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -34,6 +35,7 @@ export function FollowButton({ type, id }: { type: FollowTargetType; id: string 
     setError(false)
     try {
       await (next ? api.follow(type, id) : api.unfollow(type, id))
+      if (next) track('follow', { type })
     } catch {
       setFollowing(!next)
       setError(true)

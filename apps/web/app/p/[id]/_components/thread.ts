@@ -1,4 +1,5 @@
 import type { CommentNode, UserSummary } from '@aced/types'
+import { track } from '@vercel/analytics'
 import { createContext } from 'react'
 import { api } from '@/lib/api'
 import { apiErrorMessage } from '@/lib/api-error'
@@ -44,6 +45,7 @@ export async function addOptimistic(
   try {
     const saved = await api.createComment(postId, { body, parentId: parent?.id })
     setComments((prev) => prev.map((c) => (c.id === temp.id ? saved : c)))
+    track('comment_created', { reply: Boolean(parent) })
     return null
   } catch (err) {
     setComments((prev) => prev.filter((c) => c.id !== temp.id))
