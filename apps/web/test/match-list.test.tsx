@@ -2,7 +2,7 @@ import type { Series, Team } from '@aced/types'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
-import { MatchList } from '@/app/matches/_components/MatchList'
+import { MatchList } from '@/components/MatchList'
 
 const NOW = new Date('2027-03-10T12:00:00Z')
 const team = (tag: string): Team => ({
