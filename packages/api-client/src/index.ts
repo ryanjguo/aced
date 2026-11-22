@@ -104,9 +104,6 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
     event: (slug: string, init?: RequestInit) =>
       request<EventDetail>(`/events/${encodeURIComponent(slug)}`, init),
     sitemapEntries: (init?: RequestInit) => request<SitemapEntries>('/sitemap/entries', init),
-    boards: (init?: RequestInit) => request<BoardList>('/boards', init),
-    boardPosts: (slug: string, params: BoardPostsQuery = {}, init?: RequestInit) =>
-      request<Page<Post>>(`/boards/${encodeURIComponent(slug)}/posts${query(params)}`, init),
     createPost: (input: CreatePostInput) => request<Post>('/posts', json('POST', input)),
     updatePost: (id: string, input: UpdatePostInput) =>
       request<Post>(`/posts/${encodeURIComponent(id)}`, json('PATCH', input)),
@@ -195,6 +192,9 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(input),
       }),
+    boards: (init?: RequestInit) => request<BoardList>('/boards', init),
+    boardPosts: (slug: string, params: BoardPostsQuery = {}, init?: RequestInit) =>
+      request<Page<Post>>(`/boards/${encodeURIComponent(slug)}/posts${query(params)}`, init),
   }
 }
 
