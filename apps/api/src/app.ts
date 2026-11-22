@@ -46,6 +46,7 @@ declare module 'fastify' {
 
 export interface AppOptions {
   databaseUrl: string
+  dbPoolMax?: number
   redisUrl: string
   webOrigin: string
   auth: Omit<AuthOptions, 'webOrigin'>
@@ -75,7 +76,7 @@ export function buildApp(options: AppOptions) {
   app.setValidatorCompiler(validatorCompiler)
   app.setSerializerCompiler(serializerCompiler)
 
-  const db = createDb(options.databaseUrl)
+  const db = createDb(options.databaseUrl, { max: options.dbPoolMax })
   const redis = createRedis(options.redisUrl)
   redis.on('error', (err) => app.log.warn({ err }, 'redis error'))
   app.decorate('db', db)
@@ -94,6 +95,15 @@ export function buildApp(options: AppOptions) {
   })
 
   registerErrorHandlers(app)
+  // Route pattern only, never the URL: no ids, query strings or bodies in logs.
+  app.addHook('onResponse', async (req, reply) => {
+    if (reply.elapsedTime > 500) {
+      req.log.warn(
+        { method: req.method, route: req.routeOptions.url, ms: Math.round(reply.elapsedTime) },
+        'slow request',
+      )
+    }
+  })
   registerCurrentUser(app)
   // A JSON API serves no HTML, so a content security policy adds nothing here.
   app.register(helmet, { contentSecurityPolicy: false })
