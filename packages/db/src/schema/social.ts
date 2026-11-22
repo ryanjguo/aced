@@ -160,3 +160,15 @@ export const follows = pgTable(
     index().on(t.targetType, t.targetId),
   ],
 )
+
+export const rumorState = pgEnum('rumor_state', ['open', 'confirmed', 'denied'])
+
+/** Resolution of a `rumor` post; one row per rumor. */
+export const rumorStatus = pgTable('rumor_status', {
+  postId: uuid()
+    .primaryKey()
+    .references(() => posts.id, { onDelete: 'cascade' }),
+  status: rumorState().notNull().default('open'),
+  resolvedBy: uuid().references(() => users.id, { onDelete: 'set null' }),
+  resolvedAt: timestamp({ withTimezone: true }),
+})

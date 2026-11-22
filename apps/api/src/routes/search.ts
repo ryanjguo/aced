@@ -5,8 +5,7 @@ import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
 import { toPost } from '../mappers/social.js'
-import { loadTags } from '../tags.js'
-import { myVotes } from '../votes.js'
+import { loadPostExtras } from '../post-extras.js'
 
 const { players, teams, events, posts, users, boards } = schema
 
@@ -143,15 +142,10 @@ export const searchRoutes: FastifyPluginAsyncZod = async (app) => {
 
       const page = rows.slice(0, POST_PAGE)
       const ids = page.map((r) => r.post.id)
-      const [votes, tags] = await Promise.all([
-        myVotes(app.db, req.user?.id, 'post', ids),
-        loadTags(app.db, ids),
-      ])
+      const extras = await loadPostExtras(app.db, req.user?.id, ids)
       const last = page.at(-1)
       return {
-        items: page.map((r) =>
-          toPost(r.post, r.author, r.board, votes.get(r.post.id), tags.get(r.post.id)),
-        ),
+        items: page.map((r) => toPost(r.post, r.author, r.board, extras(r.post.id))),
         nextCursor:
           rows.length > POST_PAGE && last ? encodeCursor([last.rank, last.post.id]) : null,
       }

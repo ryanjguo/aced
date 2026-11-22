@@ -7,9 +7,9 @@ import { HttpError } from '../errors.js'
 import { listPosts, listQuery } from '../lib/post-list.js'
 import { toPost } from '../mappers/social.js'
 import { assertClean, rateLimit } from '../moderation.js'
-import { loadTags, saveTags, tagsInput } from '../tags.js'
+import { loadPostExtras } from '../post-extras.js'
+import { saveTags, tagsInput } from '../tags.js'
 import { currentUser, requireUser } from '../user.js'
-import { myVotes } from '../votes.js'
 
 const { posts, users, boards } = schema
 
@@ -40,6 +40,16 @@ const createBody = z.discriminatedUnion('kind', [
     boardId: z.uuid().optional(),
     tags: tagsInput.default([]),
   }),
+  z.object({
+    kind: z.literal('rumor'),
+    title,
+    // Rumors must cite where they came from.
+    url: z.url({ protocol: /^https?$/ }).max(2000),
+    body: body.default(''),
+    tags: tagsInput.refine((t) => t.some((x) => x.type === 'player' || x.type === 'team'), {
+      message: 'Tag at least one player or team',
+    }),
+  }),
 ])
 
 const updateBody = z.object({
@@ -50,6 +60,12 @@ const updateBody = z.object({
 const idParams = z.object({ id: z.uuid() })
 
 export const postRoutes: FastifyPluginAsyncZod = async (app) => {
+  async function transfersBoardId() {
+    const [board] = await app.db.select().from(boards).where(eq(boards.slug, 'transfers'))
+    if (!board) throw new Error('Transfers board missing (migration 0004)')
+    return board.id
+  }
+
   async function loadPost(id: string, userId: string | undefined): Promise<Post> {
     const [row] = await app.db
       .select({ post: posts, author: users, board: boards })
@@ -58,11 +74,8 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
       .leftJoin(boards, eq(boards.id, posts.boardId))
       .where(eq(posts.id, id))
     if (!row) throw new HttpError(404, 'not_found', 'Post not found')
-    const [votes, tags] = await Promise.all([
-      myVotes(app.db, userId, 'post', [id]),
-      loadTags(app.db, [id]),
-    ])
-    return toPost(row.post, row.author, row.board, votes.get(id), tags.get(id))
+    const extras = await loadPostExtras(app.db, userId, [id])
+    return toPost(row.post, row.author, row.board, extras(id))
   }
 
   async function ownPost(id: string, userId: string): Promise<PostRow> {
@@ -77,7 +90,8 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireUser, schema: { body: createBody } },
     async (req, reply): Promise<Post> => {
       const user = currentUser(req)
-      const input = req.body
+      const input =
+        req.body.kind === 'rumor' ? { ...req.body, boardId: await transfersBoardId() } : req.body
       if (input.boardId) {
         const [board] = await app.db.select().from(boards).where(eq(boards.id, input.boardId))
         if (!board) throw new HttpError(400, 'bad_request', 'Unknown board')
@@ -97,6 +111,8 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
           .returning({ id: posts.id })
         if (!created) throw new Error('insert returned no row')
         await saveTags(tx, created.id, tags)
+        if (values.kind === 'rumor')
+          await tx.insert(schema.rumorStatus).values({ postId: created.id })
         return created
       })
       reply.code(201)

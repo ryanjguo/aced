@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { PostCard } from '@/components/cards/PostCard'
 import { Markdown } from '@/components/Markdown'
+import { RumorBadge } from '@/components/RumorBadge'
 import { TagChips } from '@/components/TagChips'
 import { Badge } from '@/components/ui/badge'
 import { VoteButtons } from '@/components/VoteButtons'
@@ -69,6 +70,7 @@ export default async function PostPage({ params }: Props) {
               {post.kind.replace('_', ' ')}
             </Badge>
           )}
+          {post.rumorStatus && <RumorBadge status={post.rumorStatus} />}
           {post.board && (
             <Link href={`/b/${post.board.slug}`} className="hover:text-fg">
               {post.board.name}
