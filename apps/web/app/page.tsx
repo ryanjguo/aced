@@ -7,7 +7,9 @@ import { LiveUpcoming } from './_components/LiveUpcoming'
 import { PostFeed } from './_components/PostFeed'
 import { TakeComposer } from './_components/TakeComposer'
 import { TodayStrip } from './_components/TodayStrip'
+import { TopAcs } from './_components/TopAcs'
 import { TransferTracker } from './_components/TransferTracker'
+import { Trending } from './_components/Trending'
 
 export const dynamic = 'force-dynamic'
 
@@ -66,10 +68,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
           </p>
         )}
       </main>
-      {/* Right rail; trending and top ACS come in #188. */}
+      {/* Right rail */}
       <aside aria-label="Highlights" className="flex max-w-[280px] flex-[1_1_240px] flex-col gap-4">
         <LiveUpcoming />
         <TransferTracker />
+        <Trending />
+        <TopAcs />
       </aside>
     </div>
   )
