@@ -167,3 +167,15 @@ export interface UpdateMeInput {
 export interface Me extends UserSummary {
   bio: string | null
 }
+
+export interface Page<T> {
+  items: T[]
+  nextCursor: string | null
+}
+
+export interface BoardList {
+  items: Board[]
+}
+
+export type PostSort = 'hot' | 'new' | 'top'
+export type TopWindow = 'day' | 'week' | 'all'

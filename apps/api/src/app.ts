@@ -10,6 +10,7 @@ import {
 import { type Auth, type AuthOptions, createAuth } from './auth.js'
 import { registerErrorHandlers } from './errors.js'
 import { authRoutes } from './routes/auth.js'
+import { boardRoutes } from './routes/boards.js'
 import { eventRoutes } from './routes/events.js'
 import { healthRoutes } from './routes/health.js'
 import { meRoutes } from './routes/me.js'
@@ -60,6 +61,7 @@ export function buildApp(options: AppOptions) {
   app.register(eventRoutes)
   app.register(authRoutes)
   app.register(meRoutes)
+  app.register(boardRoutes)
 
   return app
 }
