@@ -5,6 +5,7 @@ import { HttpError } from '../errors.js'
 import { toPost } from '../mappers/social.js'
 import { loadPostExtras } from '../post-extras.js'
 import { decodeCursor, encodeCursor } from './cursor.js'
+import { postColumns } from './post-columns.js'
 
 const PAGE_SIZE = 25
 const DAY = 24 * 60 * 60 * 1000
@@ -36,7 +37,7 @@ export async function listPosts(
   const keyText = opts.sort === 'new' ? sql<string>`${posts.createdAt}::text` : column
 
   const rows = await db
-    .select({ post: posts, author: users, board: boards, key: keyText })
+    .select({ post: postColumns, author: users, board: boards, key: keyText })
     .from(posts)
     .leftJoin(users, eq(users.id, posts.authorId))
     .leftJoin(boards, eq(boards.id, posts.boardId))

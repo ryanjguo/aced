@@ -4,6 +4,7 @@ import type { Page, Post } from '@aced/types'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
+import { postColumns } from '../lib/post-columns.js'
 import { listPosts, listQuery } from '../lib/post-list.js'
 import { toPost } from '../mappers/social.js'
 import { assertClean, rateLimit } from '../moderation.js'
@@ -68,7 +69,7 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
 
   async function loadPost(id: string, userId: string | undefined): Promise<Post> {
     const [row] = await app.db
-      .select({ post: posts, author: users, board: boards })
+      .select({ post: postColumns, author: users, board: boards })
       .from(posts)
       .leftJoin(users, eq(users.id, posts.authorId))
       .leftJoin(boards, eq(boards.id, posts.boardId))
@@ -79,7 +80,7 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
   }
 
   async function ownPost(id: string, userId: string): Promise<PostRow> {
-    const [row] = await app.db.select().from(posts).where(eq(posts.id, id))
+    const [row] = await app.db.select(postColumns).from(posts).where(eq(posts.id, id))
     if (!row || row.isRemoved) throw new HttpError(404, 'not_found', 'Post not found')
     if (row.authorId !== userId) throw new HttpError(403, 'forbidden', 'Not your post')
     return row

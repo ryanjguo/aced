@@ -4,6 +4,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
+import { postColumns } from '../lib/post-columns.js'
 import { toComment } from '../mappers/social.js'
 import { assertClean, rateLimit } from '../moderation.js'
 import { currentUser, requireUser } from '../user.js'
@@ -152,7 +153,7 @@ export const commentRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (req, reply): Promise<CommentNode> => {
       const user = currentUser(req)
-      const [post] = await app.db.select().from(posts).where(eq(posts.id, req.params.id))
+      const [post] = await app.db.select(postColumns).from(posts).where(eq(posts.id, req.params.id))
       if (!post || post.isRemoved) throw new HttpError(404, 'not_found', 'Post not found')
       if (post.isLocked) throw new HttpError(403, 'locked', 'This post is locked')
 
