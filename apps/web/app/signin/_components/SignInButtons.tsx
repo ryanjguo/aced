@@ -18,7 +18,8 @@ export function SignInButtons({ callbackPath }: { callbackPath: string }) {
     setError(null)
     const { error } = await authClient.signIn.social({
       provider,
-      callbackURL: `${window.location.origin}${callbackPath}`,
+      // Through /welcome, which shows onboarding once and otherwise forwards to callbackPath.
+      callbackURL: `${window.location.origin}/welcome?from=${encodeURIComponent(callbackPath)}`,
     })
     if (error) {
       setError(error.message ?? 'Sign-in failed. Try again.')
