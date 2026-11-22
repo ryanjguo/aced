@@ -4,6 +4,8 @@ export const authRoutes: FastifyPluginAsyncZod = async (app) => {
   app.route({
     method: ['GET', 'POST'],
     url: '/auth/*',
+    // Sign-in attempts per IP.
+    config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
     handler: async (req, reply) => {
       const headers = new Headers()
       for (const [key, value] of Object.entries(req.headers)) {

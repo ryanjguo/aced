@@ -36,10 +36,13 @@ function matches(column: AnyPgColumn, q: string): SQL {
   return sql`(${column} ilike ${`%${like}%`} or ${column} % ${q})`
 }
 
+// Search is the most expensive anonymous endpoint, so it gets a tighter per-IP limit.
+const SEARCH_LIMIT = { max: 60, timeWindow: '1 minute' }
+
 export const searchRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/search/entities',
-    { schema: { querystring: query } },
+    { schema: { querystring: query }, config: { rateLimit: SEARCH_LIMIT } },
     async (req): Promise<{ items: EntityResult[] }> => {
       const { q, types } = req.query
       const want = (t: TagEntityType) => types.includes(t)
@@ -113,6 +116,7 @@ export const searchRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/search/posts',
     {
+      config: { rateLimit: SEARCH_LIMIT },
       schema: {
         querystring: z.object({
           q: z.string().trim().min(1).max(200),
