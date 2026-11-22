@@ -93,6 +93,15 @@ export interface ApiError {
   }
 }
 
+export interface SeriesList {
+  items: Series[]
+}
+
+export interface EventDetail {
+  event: Event
+  series: Series[]
+}
+
 export type UserRole = 'user' | 'moderator' | 'admin'
 
 export interface UserSummary {
@@ -134,4 +143,13 @@ export interface Post {
   isLocked: boolean
   createdAt: string
   editedAt: string | null
+}
+
+export interface UpdateMeInput {
+  handle?: string
+  bio?: string | null
+}
+
+export interface Me extends UserSummary {
+  bio: string | null
 }
