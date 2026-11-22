@@ -53,17 +53,21 @@ If the seed script exists, run `pnpm db:seed` for sample data.
 - Micro commits: one small logical step each, imperative subject.
 - Stay under ~400 changed lines excluding generated files. If the ticket is clearly bigger, ship the first coherent part, and create a follow-up issue for the rest (template below), linked in the PR.
 - Add tests for API routes and worker jobs (Vitest; API routes via `app.inject`).
-- For UI, take screenshots with headless Chrome at 390px and 1100px and check them:
+- For UI, take screenshots with headless Chrome at 390px and 1100px, in **both light and dark themes**, and check them:
   `google-chrome --headless=new --no-sandbox --window-size=390,900 --virtual-time-budget=4000 --screenshot=/tmp/shot.png http://localhost:3000/<path>`
 - Unsure about a product decision not covered by the ticket? Pick the simplest option that keeps the acceptance criteria, and note it under "Decisions" in the PR.
 
 ## 5. Check
 
 ```sh
-pnpm lint && pnpm typecheck && pnpm build && pnpm test
+pnpm lint && pnpm knip && pnpm typecheck && pnpm build && pnpm test:coverage
 ```
 
-All must pass before pushing. Never push red.
+This matches CI. Export `DATABASE_URL` first: without it the DB tests skip and coverage floors fail in CI but not locally. All must pass before pushing. Never push red.
+
+### Independent review
+
+Before opening the PR, start a fresh subagent with no shared context. Give it the issue's acceptance criteria, `CLAUDE.md` and `git diff origin/main`, and have it report pass or fail per criterion, plus anything from CLAUDE.md's Avoid list. Fix the failures, then open the PR.
 
 ## 6. Pull request
 
