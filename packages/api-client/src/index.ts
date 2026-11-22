@@ -99,6 +99,12 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
         `/posts/${encodeURIComponent(id)}/comments${query({ cursor })}`,
         init,
       ),
+    createComment: (postId: string, input: { body: string; parentId?: string }) =>
+      request<CommentNode>(`/posts/${encodeURIComponent(postId)}/comments`, json('POST', input)),
+    updateComment: (id: string, body: string) =>
+      request<CommentNode>(`/comments/${encodeURIComponent(id)}`, json('PATCH', { body })),
+    deleteComment: (id: string) =>
+      request<null>(`/comments/${encodeURIComponent(id)}`, { method: 'DELETE' }),
     commentReplies: (id: string, init?: RequestInit) =>
       request<{ items: CommentNode[] }>(`/comments/${encodeURIComponent(id)}/replies`, init),
     modReports: (cursor?: string, init?: RequestInit) =>
