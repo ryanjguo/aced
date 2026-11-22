@@ -80,4 +80,15 @@ describe('rumors', () => {
     })
     expect(res.json<Post>().rumorStatus).toBeNull()
   })
+  it('lists rumors by status, newest first', async () => {
+    const res = await app.inject({ method: 'GET', url: '/rumors?status=open' })
+    const items = res.json<Page<Post>>().items
+    expect(items.length).toBeGreaterThan(0)
+    expect(items.every((p) => p.kind === 'rumor' && p.rumorStatus === 'open')).toBe(true)
+    const confirmed = await app.inject({ method: 'GET', url: '/rumors?status=confirmed' })
+    expect(confirmed.json<Page<Post>>().items.every((p) => p.rumorStatus === 'confirmed')).toBe(
+      true,
+    )
+    expect((await app.inject({ method: 'GET', url: '/rumors?status=maybe' })).statusCode).toBe(400)
+  })
 })

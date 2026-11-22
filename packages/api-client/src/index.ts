@@ -19,6 +19,7 @@ import type {
   PostSort,
   Profile,
   ProfileComment,
+  RumorStatus,
   SeriesDetail,
   SeriesList,
   SeriesStatus,
@@ -127,6 +128,8 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
       request<null>(`/follows/${type}/${encodeURIComponent(id)}`, { method: 'PUT' }),
     unfollow: (type: FollowTargetType, id: string) =>
       request<null>(`/follows/${type}/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+    rumors: (status: RumorStatus, cursor?: string, init?: RequestInit) =>
+      request<Page<Post>>(`/rumors${query({ status, cursor })}`, init),
     searchPosts: (q: string, cursor?: string, init?: RequestInit) =>
       request<Page<Post>>(`/search/posts${query({ q, cursor })}`, init),
     searchEntities: (q: string, types?: TagEntityType[], init?: RequestInit) =>
