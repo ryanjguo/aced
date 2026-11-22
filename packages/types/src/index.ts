@@ -77,3 +77,12 @@ export interface HealthResponse {
     redis: boolean
   }
 }
+
+export type ApiErrorCode = 'bad_request' | 'not_found' | 'internal'
+
+export interface ApiError {
+  error: {
+    code: ApiErrorCode
+    message: string
+  }
+}
