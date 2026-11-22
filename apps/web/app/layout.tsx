@@ -8,7 +8,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: { default: 'Aced', template: '%s · Aced' },
-  description: 'The VCT community hub.',
+  description: 'The pro esports community hub: matches, stats, rumors and discussion.',
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
