@@ -59,6 +59,25 @@ export const followRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
+  app.get(
+    '/follows/:targetType/:targetId',
+    { preHandler: requireUser, schema: { params: target } },
+    async (req): Promise<{ following: boolean }> => {
+      const { targetType, targetId } = req.params
+      const [row] = await app.db
+        .select({ userId: follows.userId })
+        .from(follows)
+        .where(
+          and(
+            eq(follows.userId, currentUser(req).id),
+            eq(follows.targetType, targetType),
+            eq(follows.targetId, targetId),
+          ),
+        )
+      return { following: row !== undefined }
+    },
+  )
+
   app.get('/me/follows', { preHandler: requireUser }, async (req): Promise<{ items: Follow[] }> => {
     const rows = await app.db
       .select()
