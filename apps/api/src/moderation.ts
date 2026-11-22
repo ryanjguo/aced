@@ -9,9 +9,9 @@ export function assertClean(...texts: (string | null | undefined)[]) {
   }
 }
 
-const HOURLY_LIMITS = { post: 5, comment: 30, vote: 300 }
+const HOURLY_LIMITS = { post: 5, comment: 30, vote: 300, report: 10, follow: 60 }
 const WINDOW_SECONDS = 3600
-const NEW_ACCOUNT_MS = 7 * 24 * 60 * 60 * 1000
+export const NEW_ACCOUNT_MS = 7 * 24 * 60 * 60 * 1000
 
 /** Fixed-window rate limit per user and action; accounts under 7 days old get half. */
 export async function rateLimit(

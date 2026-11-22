@@ -3,6 +3,7 @@ import type { Follow, FollowTargetType } from '@aced/types'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
+import { rateLimit } from '../moderation.js'
 import { currentUser, requireUser } from '../user.js'
 
 const { follows, players, teams, events, users } = schema
@@ -20,6 +21,7 @@ export const followRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireUser, schema: { params: target } },
     async (req, reply) => {
       const user = currentUser(req)
+      await rateLimit(app, user, 'follow')
       const { targetType, targetId } = req.params
       if (targetType === 'user' && targetId === user.id) {
         throw new HttpError(400, 'bad_request', "You can't follow yourself")
@@ -43,6 +45,7 @@ export const followRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireUser, schema: { params: target } },
     async (req, reply) => {
       const { targetType, targetId } = req.params
+      await rateLimit(app, currentUser(req), 'follow')
       await app.db
         .delete(follows)
         .where(
