@@ -1,4 +1,5 @@
 import type {
+  AcsLeader,
   ApiError,
   ApiErrorCode,
   BoardList,
@@ -28,6 +29,7 @@ import type {
   TagEntityType,
   TeamDetail,
   TopWindow,
+  TrendingEntity,
   UpdateMeInput,
   UpdatePostInput,
   VoteResult,
@@ -131,6 +133,9 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch, timeoutMs }: 
     ) => request<Page<Post>>(`/posts${query({ entityType, entityId, ...params })}`, init),
     feed: (kind: 'following' | 'for-you', cursor?: string, init?: RequestInit) =>
       request<Page<Post>>(`/feed/${kind}${query({ cursor })}`, init),
+    trending: (init?: RequestInit) => request<{ items: TrendingEntity[] }>('/trending', init),
+    acsLeaders: (init?: RequestInit) =>
+      request<{ items: AcsLeader[] }>('/leaderboards/acs?days=7&limit=5', init),
     follows: (init?: RequestInit) => request<{ items: Follow[] }>('/me/follows', init),
     isFollowing: (type: FollowTargetType, id: string) =>
       request<{ following: boolean }>(`/follows/${type}/${encodeURIComponent(id)}`),

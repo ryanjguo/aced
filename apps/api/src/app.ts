@@ -16,6 +16,7 @@ import { adminRoutes } from './routes/admin.js'
 import { authRoutes } from './routes/auth.js'
 import { boardRoutes } from './routes/boards.js'
 import { commentRoutes } from './routes/comments.js'
+import { discoveryRoutes } from './routes/discovery.js'
 import { entityRoutes } from './routes/entities.js'
 import { eventRoutes } from './routes/events.js'
 import { feedRoutes } from './routes/feeds.js'
@@ -135,6 +136,7 @@ export function buildApp(options: AppOptions) {
   app.register(feedRoutes)
   app.register(adminRoutes)
   app.register(sitemapRoutes)
+  app.register(discoveryRoutes)
 
   return app
 }
