@@ -30,7 +30,8 @@ export type UserRow = typeof users.$inferSelect
 export type SessionRow = typeof sessions.$inferSelect
 export type AccountRow = typeof accounts.$inferSelect
 export type BoardRow = typeof boards.$inferSelect
-export type PostRow = typeof posts.$inferSelect
+// Loaded rows leave out the generated search vector (see apps/api/src/lib/post-columns.ts).
+export type PostRow = Omit<typeof posts.$inferSelect, 'searchVector'>
 export type CommentRow = typeof comments.$inferSelect
 export type VoteRow = typeof votes.$inferSelect
 export type ReportRow = typeof reports.$inferSelect

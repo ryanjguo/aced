@@ -5,6 +5,7 @@ export {
   countDistinct,
   desc,
   eq,
+  getTableColumns,
   gt,
   gte,
   inArray,
