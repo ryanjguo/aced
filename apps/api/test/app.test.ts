@@ -51,4 +51,13 @@ describe('app', () => {
     })
     expect(res.headers['access-control-allow-origin']).toBe('http://localhost:3000')
   })
+  it('allows PATCH and DELETE in preflight', async () => {
+    const res = await app.inject({
+      method: 'OPTIONS',
+      url: '/me',
+      headers: { origin: 'http://localhost:3000', 'access-control-request-method': 'PATCH' },
+    })
+    expect(res.headers['access-control-allow-methods']).toContain('PATCH')
+    expect(res.headers['access-control-allow-methods']).toContain('DELETE')
+  })
 })
