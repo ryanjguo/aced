@@ -5,6 +5,8 @@ import type {
   EventDetail,
   HealthResponse,
   Me,
+  ModActionInput,
+  ModQueueItem,
   Page,
   Post,
   PostSort,
@@ -74,6 +76,14 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
       request<SeriesDetail>(`/series/${encodeURIComponent(id)}`, init),
     event: (slug: string, init?: RequestInit) =>
       request<EventDetail>(`/events/${encodeURIComponent(slug)}`, init),
+    modReports: (cursor?: string, init?: RequestInit) =>
+      request<Page<ModQueueItem>>(`/mod/reports${query({ cursor })}`, init),
+    modAction: (input: ModActionInput) =>
+      request<{ id: string }>('/mod/actions', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(input),
+      }),
     me: (init?: RequestInit) => request<Me>('/me', init),
     updateMe: (input: UpdateMeInput) =>
       request<Me>('/me', {

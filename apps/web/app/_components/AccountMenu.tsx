@@ -30,7 +30,7 @@ export function AccountMenu() {
     )
   }
 
-  const { handle, image } = data.user
+  const { handle, image, role } = data.user
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="rounded-full" aria-label="Account menu">
@@ -48,6 +48,11 @@ export function AccountMenu() {
         <DropdownMenuItem asChild>
           <Link href="/settings">Settings</Link>
         </DropdownMenuItem>
+        {(role === 'moderator' || role === 'admin') && (
+          <DropdownMenuItem asChild>
+            <Link href="/mod">Mod queue</Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onSelect={() => authClient.signOut()}>Sign out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
