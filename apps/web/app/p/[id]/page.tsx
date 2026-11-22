@@ -37,7 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPost((await params).id)
   if (!post || post === 'not_found') return { title: 'Post' }
   if (post.isRemoved) return { title: '[removed]', robots: { index: false } }
-  const description = post.body.slice(0, 160) || undefined
+  // Link, card and title-only posts have no body; the headline keeps a meta description.
+  const description = post.body.slice(0, 160) || headline(post)
   return {
     title: headline(post),
     description,
