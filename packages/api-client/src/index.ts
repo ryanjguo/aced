@@ -76,9 +76,6 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
       request<SeriesDetail>(`/series/${encodeURIComponent(id)}`, init),
     event: (slug: string, init?: RequestInit) =>
       request<EventDetail>(`/events/${encodeURIComponent(slug)}`, init),
-    boards: (init?: RequestInit) => request<BoardList>('/boards', init),
-    boardPosts: (slug: string, params: BoardPostsQuery = {}, init?: RequestInit) =>
-      request<Page<Post>>(`/boards/${encodeURIComponent(slug)}/posts${query(params)}`, init),
     modReports: (cursor?: string, init?: RequestInit) =>
       request<Page<ModQueueItem>>(`/mod/reports${query({ cursor })}`, init),
     modAction: (input: ModActionInput) =>
@@ -94,6 +91,9 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(input),
       }),
+    boards: (init?: RequestInit) => request<BoardList>('/boards', init),
+    boardPosts: (slug: string, params: BoardPostsQuery = {}, init?: RequestInit) =>
+      request<Page<Post>>(`/boards/${encodeURIComponent(slug)}/posts${query(params)}`, init),
   }
 }
 
