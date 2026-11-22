@@ -14,6 +14,7 @@ import { serverApi } from '@/lib/server-api'
 import { timeAgo } from '@/lib/time-ago'
 import { AuthorActions } from './_components/AuthorActions'
 import { CommentThread } from './_components/CommentThread'
+import { RumorActions } from './_components/RumorActions'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -115,6 +116,7 @@ export default async function PostPage({ params }: Props) {
           </>
         )}
         {!post.isRemoved && <TagChips tags={post.tags} />}
+        {post.rumorStatus === 'open' && !post.isRemoved && <RumorActions postId={post.id} />}
         <div className="flex items-center gap-3 text-xs text-muted">
           {!post.isRemoved && (
             <VoteButtons

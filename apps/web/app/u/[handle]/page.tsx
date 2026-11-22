@@ -76,6 +76,14 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             {profile.role !== 'user' && ` · ${profile.role}`}
           </p>
           {profile.bio && <p className="mt-2 text-sm break-words">{profile.bio}</p>}
+          {profile.rumors.posted > 0 && (
+            <p className="mt-2 text-xs text-muted">
+              Rumors: {profile.rumors.posted} posted · {profile.rumors.confirmed} confirmed
+              {profile.rumors.accuracy !== null &&
+                ` · ${Math.round(profile.rumors.accuracy * 100)}% accurate`}
+              {profile.rumors.credit > 0 && ` · ${profile.rumors.credit} credit`}
+            </p>
+          )}
         </div>
         <FollowButton type="user" id={profile.id} />
       </header>

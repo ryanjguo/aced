@@ -237,4 +237,34 @@ export const modRoutes: FastifyPluginAsyncZod = async (app) => {
       return { id }
     },
   )
+
+  app.post(
+    '/mod/rumors/:postId',
+    {
+      schema: {
+        params: z.object({ postId: z.uuid() }),
+        body: z.object({ status: z.enum(['confirmed', 'denied']) }),
+      },
+    },
+    async (req, reply) => {
+      const { postId } = req.params
+      const { status } = req.body
+      const actorId = currentUser(req).id
+      await app.db.transaction(async (tx) => {
+        const [updated] = await tx
+          .update(schema.rumorStatus)
+          .set({ status, resolvedBy: actorId, resolvedAt: new Date() })
+          .where(eq(schema.rumorStatus.postId, postId))
+          .returning()
+        if (!updated) throw new HttpError(404, 'not_found', 'Rumor not found')
+        await tx.insert(modActions).values({
+          actorId,
+          action: status === 'confirmed' ? 'confirm_rumor' : 'deny_rumor',
+          targetType: 'post',
+          targetId: postId,
+        })
+      })
+      return reply.code(204).send()
+    },
+  )
 }

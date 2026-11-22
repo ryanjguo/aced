@@ -160,6 +160,8 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(input),
       }),
+    resolveRumor: (postId: string, status: 'confirmed' | 'denied') =>
+      request<null>(`/mod/rumors/${encodeURIComponent(postId)}`, json('POST', { status })),
     me: (init?: RequestInit) => request<Me>('/me', init),
     updateMe: (input: UpdateMeInput) =>
       request<Me>('/me', {
