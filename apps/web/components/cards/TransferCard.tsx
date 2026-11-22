@@ -12,8 +12,8 @@ export function TransferCard({ data }: { data: TransferCardData }) {
       <span className="text-muted">Free agent</span>
     )
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-xs text-muted">Transfer</p>
+    <div className="flex flex-col gap-1 rounded-[10px] bg-surface-2 px-3.5 py-3">
+      <p className="text-badge text-muted">Transfer</p>
       <p className="flex flex-wrap items-center gap-2 text-base">
         <Link
           href={`/players/${data.player.slug}`}
