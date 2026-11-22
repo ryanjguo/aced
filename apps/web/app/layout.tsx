@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import type { ReactNode } from 'react'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { siteUrl } from '@/lib/site-url'
 import { MobileTabBar } from './_components/MobileTabBar'
 import { SiteFooter } from './_components/SiteFooter'
 import { SiteHeader } from './_components/SiteHeader'
@@ -11,8 +12,12 @@ import { TimeZoneCookie } from './_components/TimeZoneCookie'
 import './globals.css'
 
 export const metadata: Metadata = {
+  // Makes relative canonical and share-image URLs absolute.
+  metadataBase: new URL(siteUrl),
   title: { default: 'Aced', template: '%s · Aced' },
   description: 'The pro esports community hub: matches, stats, rumors and discussion.',
+  openGraph: { siteName: 'Aced', type: 'website' },
+  twitter: { card: 'summary_large_image' },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
