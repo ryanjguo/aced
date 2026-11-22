@@ -414,3 +414,16 @@ export interface SitemapEntries {
   /** Newest visible posts first. */
   posts: { id: string; updatedAt: string }[]
 }
+
+export interface TrendingEntity extends PostTag {
+  /** Posts tagged with it in the window. */
+  posts: number
+}
+
+export interface AcsLeader {
+  rank: number
+  player: { handle: string; slug: string }
+  team: { tag: string; slug: string } | null
+  acs: number
+  maps: number
+}
