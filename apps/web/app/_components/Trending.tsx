@@ -1,12 +1,12 @@
 import Link from 'next/link'
-import { api } from '@/lib/api'
+import { api, esportsCache } from '@/lib/api'
 import { RailCard } from './RailCard'
 
 const href = { player: 'players', team: 'teams', event: 'events' } as const
 
 /** Most-tagged players, teams and events in the last 24 hours, as mono chips. */
 export async function Trending() {
-  const trending = await api.trending({ cache: 'no-store' }).catch(() => null)
+  const trending = await api.trending(esportsCache).catch(() => null)
   if (!trending) return null
   return (
     <RailCard title="Trending">

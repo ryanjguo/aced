@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import { api } from '@/lib/api'
+import { api, esportsCache } from '@/lib/api'
 import { RailCard, railItem } from './RailCard'
 
 /** Top average ACS over the last 7 days (2+ maps). */
 export async function TopAcs() {
-  const leaders = await api.acsLeaders({ cache: 'no-store' }).catch(() => null)
+  const leaders = await api.acsLeaders(esportsCache).catch(() => null)
   if (!leaders) return null
   return (
     <RailCard title="Top ACS this week">

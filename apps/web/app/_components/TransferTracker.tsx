@@ -1,6 +1,6 @@
 import type { RumorStatus } from '@aced/types'
 import Link from 'next/link'
-import { api } from '@/lib/api'
+import { api, esportsCache } from '@/lib/api'
 import { RailCard, railItem } from './RailCard'
 
 const STATUSES: RumorStatus[] = ['open', 'confirmed', 'denied']
@@ -18,7 +18,7 @@ const TONE: Record<RumorStatus, string> = {
 /** The 4 newest rumors of any status. */
 export async function TransferTracker() {
   const pages = await Promise.all(
-    STATUSES.map((s) => api.rumors(s, undefined, { cache: 'no-store' }).catch(() => null)),
+    STATUSES.map((s) => api.rumors(s, undefined, esportsCache).catch(() => null)),
   )
   if (pages.every((p) => p === null)) return null
   const rumors = pages
