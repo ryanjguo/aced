@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { VoteButtons } from '@/components/VoteButtons'
 import { serverApi } from '@/lib/server-api'
 import { timeAgo } from '@/lib/time-ago'
+import { AdminPostActions } from './_components/AdminPostActions'
 import { AuthorActions } from './_components/AuthorActions'
 import { CommentThread } from './_components/CommentThread'
 import { RumorActions } from './_components/RumorActions'
@@ -117,6 +118,10 @@ export default async function PostPage({ params }: Props) {
         )}
         {!post.isRemoved && <TagChips tags={post.tags} />}
         {post.rumorStatus === 'open' && !post.isRemoved && <RumorActions postId={post.id} />}
+        {/* By kind, since hidden posts don't expose their card data. */}
+        {(post.kind === 'result' || post.kind === 'stat_card' || post.kind === 'match_thread') && (
+          <AdminPostActions postId={post.id} removed={post.isRemoved} />
+        )}
         <div className="flex items-center gap-3 text-xs text-muted">
           {!post.isRemoved && (
             <VoteButtons
