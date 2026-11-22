@@ -100,6 +100,15 @@ export interface ApiError {
   }
 }
 
+export interface SeriesList {
+  items: Series[]
+}
+
+export interface EventDetail {
+  event: Event
+  series: Series[]
+}
+
 export type UserRole = 'user' | 'moderator' | 'admin'
 
 export interface UserSummary {
@@ -166,14 +175,13 @@ export interface Comment {
 }
 
 export type VoteValue = -1 | 0 | 1
-
-export interface SeriesList {
-  items: Series[]
+export interface UpdateMeInput {
+  handle?: string
+  bio?: string | null
 }
 
-export interface EventDetail {
-  event: Event
-  series: Series[]
+export interface Me extends UserSummary {
+  bio: string | null
 }
 
 export interface Page<T> {
@@ -251,15 +259,6 @@ export interface ModActionInput {
   reason?: string
   /** Required for `ban`. */
   until?: string
-}
-
-export interface UpdateMeInput {
-  handle?: string
-  bio?: string | null
-}
-
-export interface Me extends UserSummary {
-  bio: string | null
 }
 
 export interface Profile extends UserSummary {
