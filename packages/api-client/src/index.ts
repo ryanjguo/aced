@@ -105,6 +105,8 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
     createPost: (input: CreatePostInput) => request<Post>('/posts', json('POST', input)),
     updatePost: (id: string, input: UpdatePostInput) =>
       request<Post>(`/posts/${encodeURIComponent(id)}`, json('PATCH', input)),
+    deletePost: (id: string) =>
+      request<null>(`/posts/${encodeURIComponent(id)}`, { method: 'DELETE' }),
     post: (id: string, init?: RequestInit) =>
       request<Post>(`/posts/${encodeURIComponent(id)}`, init),
     postComments: (id: string, cursor?: string, init?: RequestInit) =>
