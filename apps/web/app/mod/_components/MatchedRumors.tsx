@@ -34,7 +34,7 @@ export function MatchedRumors() {
   if (items.length === 0) return null
   return (
     <section aria-labelledby="matched-rumors" className="flex flex-col gap-2">
-      <h2 id="matched-rumors" className="text-xs font-semibold uppercase tracking-wide text-muted">
+      <h2 id="matched-rumors" className="text-rail-heading">
         Rumors matching confirmed transfers
       </h2>
       {error && (

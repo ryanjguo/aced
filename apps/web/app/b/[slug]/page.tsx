@@ -51,7 +51,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
     <main className="mx-auto max-w-3xl px-4 py-8">
       <header className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{board?.name ?? slug}</h1>
+          <h1 className="text-page-title">{board?.name ?? slug}</h1>
           {board?.description && <p className="text-sm text-muted">{board.description}</p>}
         </div>
         <Button asChild size="sm">

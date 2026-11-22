@@ -32,7 +32,7 @@ export default async function RumorsPage({
     <main className="mx-auto flex max-w-3xl flex-col gap-4 px-4 py-8">
       <header className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Rumor tracker</h1>
+          <h1 className="text-page-title">Rumor tracker</h1>
           <p className="text-sm text-muted">Every rumor with a source, and how it turned out.</p>
         </div>
         <Button asChild size="sm">

@@ -12,7 +12,7 @@ export async function Discussion({ type, id }: { type: TagEntityType; id: string
   return (
     <section aria-labelledby="discussion">
       <div className="mb-2 flex items-center justify-between">
-        <h2 id="discussion" className="text-xs font-semibold uppercase tracking-wide text-muted">
+        <h2 id="discussion" className="text-rail-heading">
           Discussion
         </h2>
         <Link href="/submit" className="text-xs text-muted hover:text-fg">

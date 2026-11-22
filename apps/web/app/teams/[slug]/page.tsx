@@ -50,14 +50,14 @@ export default async function TeamPage({ params }: Props) {
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
       <header className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold tracking-tight">{team.name}</h1>
+          <h1 className="text-page-title">{team.name}</h1>
           <p className="text-sm text-muted">{[team.tag, region].filter(Boolean).join(' · ')}</p>
         </div>
         <FollowButton type="team" id={team.id} />
       </header>
 
       <section aria-labelledby="roster">
-        <h2 id="roster" className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+        <h2 id="roster" className="mb-2 text-rail-heading">
           Roster
         </h2>
         {roster.length === 0 ? (

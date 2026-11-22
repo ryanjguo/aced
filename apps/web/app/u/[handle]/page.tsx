@@ -71,7 +71,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
           <AvatarFallback>{profile.handle.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-2xl font-bold tracking-tight">@{profile.handle}</h1>
+          <h1 className="truncate text-page-title">@{profile.handle}</h1>
           <p className="text-sm text-muted">
             {profile.karma} karma · joined {joined(profile.createdAt)}
             {profile.role !== 'user' && ` · ${profile.role}`}
