@@ -16,10 +16,12 @@
     "db:migrate": "pnpm --filter @aced/db db:migrate",
     "db:studio": "pnpm --filter @aced/db db:studio",
     "db:seed": "pnpm --filter @aced/db db:seed",
-    "test": "turbo test"
+    "test": "turbo test",
+    "knip": "DATABASE_URL=${DATABASE_URL:-postgres://localhost/knip} knip"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.8",
+    "knip": "^6.47.0",
     "turbo": "^2.11.13"
   }
 }

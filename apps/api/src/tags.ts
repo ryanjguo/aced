@@ -5,7 +5,7 @@ import { HttpError } from './errors.js'
 
 const { postTags, players, teams, events } = schema
 
-export const MAX_TAGS = 10
+const MAX_TAGS = 10
 
 export const tagsInput = z
   .array(z.object({ type: z.enum(['player', 'team', 'event']), id: z.uuid() }))

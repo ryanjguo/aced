@@ -7,7 +7,7 @@ import { currentUser, requireUser } from '../user.js'
 const { reports, posts, comments, users } = schema
 
 // Content with this many open reports from different users is hidden until a moderator reviews it.
-export const AUTO_HIDE_REPORTS = 5
+const AUTO_HIDE_REPORTS = 5
 
 const reportBody = z.object({
   targetType: z.enum(['post', 'comment', 'user']),
