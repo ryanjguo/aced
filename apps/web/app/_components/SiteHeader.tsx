@@ -11,6 +11,9 @@ export function SiteHeader() {
         <Link href="/matches" className="text-sm text-muted hover:text-fg">
           Matches
         </Link>
+        <Link href="/boards" className="text-sm text-muted hover:text-fg">
+          Boards
+        </Link>
         <div className="ml-auto">
           <AccountMenu />
         </div>
