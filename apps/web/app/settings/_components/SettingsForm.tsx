@@ -57,7 +57,7 @@ export function SettingsForm() {
 
   if (!form) {
     return status ? (
-      <p role="alert" className="text-sm text-live">
+      <p role="alert" className="text-sm text-danger">
         {status.message}
       </p>
     ) : (
@@ -106,7 +106,7 @@ export function SettingsForm() {
           {saving ? 'Saving…' : 'Save'}
         </Button>
         {status && (
-          <p role="status" className={`text-sm ${status.ok ? 'text-muted' : 'text-live'}`}>
+          <p role="status" className={`text-sm ${status.ok ? 'text-muted' : 'text-danger'}`}>
             {status.message}
           </p>
         )}

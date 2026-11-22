@@ -71,7 +71,7 @@ export function ProfileFeed(props: Props) {
         </Button>
       )}
       {error && (
-        <p role="alert" className="text-center text-sm text-live">
+        <p role="alert" className="text-center text-sm text-danger">
           Couldn't load more.
         </p>
       )}

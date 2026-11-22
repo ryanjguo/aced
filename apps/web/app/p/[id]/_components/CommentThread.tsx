@@ -61,7 +61,7 @@ export function CommentThread({
             <p className="text-sm text-muted">
               <Link
                 href={`/signin?from=${encodeURIComponent(`/p/${postId}`)}`}
-                className="text-accent hover:underline"
+                className="underline decoration-muted underline-offset-2 hover:decoration-fg"
               >
                 Sign in
               </Link>{' '}
@@ -85,7 +85,7 @@ export function CommentThread({
           </Button>
         )}
         {error && (
-          <p role="alert" className="text-center text-sm text-live">
+          <p role="alert" className="text-center text-sm text-danger">
             Couldn't load more comments.
           </p>
         )}

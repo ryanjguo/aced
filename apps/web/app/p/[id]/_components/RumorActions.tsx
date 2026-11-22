@@ -38,7 +38,7 @@ export function RumorActions({ postId }: { postId: string }) {
       <Button size="sm" variant="outline" disabled={busy} onClick={() => resolve('denied')}>
         Deny rumor
       </Button>
-      {error && <span className="text-xs text-live">{error}</span>}
+      {error && <span className="text-xs text-danger">{error}</span>}
     </div>
   )
 }

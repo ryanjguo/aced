@@ -38,7 +38,7 @@ export function MatchedRumors() {
         Rumors matching confirmed transfers
       </h2>
       {error && (
-        <p role="alert" className="text-sm text-live">
+        <p role="alert" className="text-sm text-danger">
           {error}
         </p>
       )}

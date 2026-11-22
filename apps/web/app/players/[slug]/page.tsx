@@ -141,7 +141,7 @@ export default async function PlayerPage({ params }: Props) {
                         {m.mapName}
                       </Link>
                       {m.won !== null && (
-                        <span className={`ml-2 text-xs ${m.won ? 'text-accent' : 'text-live'}`}>
+                        <span className={`ml-2 text-xs ${m.won ? 'text-fg' : 'text-muted'}`}>
                           {m.won ? 'W' : 'L'}
                         </span>
                       )}

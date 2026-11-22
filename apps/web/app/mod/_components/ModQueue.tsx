@@ -75,7 +75,7 @@ export function ModQueue() {
   return (
     <div className="flex flex-col gap-4">
       {actionError && (
-        <p role="alert" className="text-sm text-live">
+        <p role="alert" className="text-sm text-danger">
           {actionError}
         </p>
       )}
