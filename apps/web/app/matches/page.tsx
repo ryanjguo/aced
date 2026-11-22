@@ -1,14 +1,12 @@
 import type { Metadata } from 'next'
 import { MatchList } from '@/components/MatchList'
-import { api } from '@/lib/api'
+import { api, esportsCache } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
 
 export const metadata: Metadata = { title: 'Matches' }
-export const dynamic = 'force-dynamic'
-
 export default async function MatchesPage() {
   const [result, timeZone] = await Promise.all([
-    api.series({}, { cache: 'no-store' }).catch(() => null),
+    api.series({}, esportsCache).catch(() => null),
     getTimeZone(),
   ])
 

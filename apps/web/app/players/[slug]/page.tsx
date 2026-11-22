@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { FollowButton } from '@/components/FollowButton'
-import { api } from '@/lib/api'
+import { api, esportsCache } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
 import { Discussion } from '../../_components/Discussion'
 
@@ -13,7 +13,7 @@ type Props = { params: Promise<{ slug: string }> }
 
 const getPlayer = cache(async (slug: string): Promise<PlayerDetail | 'not_found' | null> => {
   try {
-    return await api.player(slug, { cache: 'no-store' })
+    return await api.player(slug, esportsCache)
   } catch (err) {
     if (err instanceof ApiClientError && err.status === 404) return 'not_found'
     return null
