@@ -44,6 +44,15 @@ Set `NEXT_PUBLIC_API_URL` for Production and Preview. `NEXT_PUBLIC_` values are 
 
 Every PR gets a preview deployment.
 
+## Custom domain and auth cookies
+
+Sign-in needs web and API on one parent domain (e.g. `aced.gg` and `api.aced.gg`): browsers won't send the session cookie from `*.vercel.app` to `*.railway.app`. Once both have custom domains:
+
+1. Railway API: set `BETTER_AUTH_URL=https://api.aced.gg`, `WEB_ORIGIN=https://aced.gg` and `COOKIE_DOMAIN=.aced.gg`.
+2. Vercel: set `NEXT_PUBLIC_API_URL=https://api.aced.gg` and redeploy.
+
+With an `https` `BETTER_AUTH_URL` the cookies are `Secure`; they stay `SameSite=Lax`. Leave `COOKIE_DOMAIN` blank locally.
+
 ## Checking a deploy
 
 - API: `GET /health` returns `200` with `postgres` and `redis` both `true`
