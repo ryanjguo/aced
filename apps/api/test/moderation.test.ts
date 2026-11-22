@@ -1,8 +1,7 @@
-import { randomUUID } from 'node:crypto'
-import { inArray, schema, sql } from '@aced/db'
+import { inArray, schema } from '@aced/db'
 import type { Post } from '@aced/types'
 import { afterAll, describe, expect, it } from 'vitest'
-import { buildTestApp, signIn } from './build-test-app.js'
+import { buildTestApp, createUser } from './build-test-app.js'
 
 const { users, posts } = schema
 
@@ -10,20 +9,12 @@ describe('content filter and rate limits', () => {
   const app = buildTestApp({ rateLimits: true })
   const userIds: string[] = []
 
-  const createUser = async (ageDays: number) => {
-    const run = randomUUID().slice(0, 8)
-    const [user] = await app.db
-      .insert(users)
-      .values({
-        name: run,
-        email: `${run}@test.dev`,
-        handle: `m_${run}`,
-        createdAt: sql`now() - make_interval(days => ${ageDays})`,
-      })
-      .returning()
-    if (!user) throw new Error('insert failed')
+  const newUser = async (ageDays: number) => {
+    const user = await createUser(app, 'm', {
+      createdAt: new Date(Date.now() - ageDays * 86_400_000),
+    })
     userIds.push(user.id)
-    return (await signIn(app, user.id)).cookie
+    return user.cookie
   }
 
   const take = (cookie: string, body = 'fine take') =>
@@ -41,7 +32,7 @@ describe('content filter and rate limits', () => {
   })
 
   it('blocks slurs in posts, comments and handles', async () => {
-    const cookie = await createUser(30)
+    const cookie = await newUser(30)
     const blocked = await take(cookie, 'what a r3tard')
     expect(blocked.statusCode).toBe(422)
     expect(blocked.json()).toMatchObject({ error: { code: 'content_blocked' } })
@@ -65,7 +56,7 @@ describe('content filter and rate limits', () => {
   })
 
   it('limits posts to 5 an hour', async () => {
-    const cookie = await createUser(30)
+    const cookie = await newUser(30)
     for (let i = 0; i < 5; i++) expect((await take(cookie)).statusCode).toBe(201)
     const res = await take(cookie)
     expect(res.statusCode).toBe(429)
@@ -77,7 +68,7 @@ describe('content filter and rate limits', () => {
   })
 
   it('halves limits for accounts under 7 days old', async () => {
-    const cookie = await createUser(1)
+    const cookie = await newUser(1)
     for (let i = 0; i < 2; i++) expect((await take(cookie)).statusCode).toBe(201)
     expect((await take(cookie)).statusCode).toBe(429)
   })

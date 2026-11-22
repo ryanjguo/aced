@@ -1,8 +1,7 @@
-import { randomUUID } from 'node:crypto'
 import { and, eq, inArray, schema } from '@aced/db'
 import type { CommentNode, ModQueueItem, Page, Post, UserRole } from '@aced/types'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { buildTestApp, signIn } from './build-test-app.js'
+import { buildTestApp, createUser } from './build-test-app.js'
 
 const { users, posts, comments, reports, modActions } = schema
 
@@ -13,15 +12,10 @@ describe('moderation', () => {
   let member = ''
   let memberId = ''
 
-  const createUser = async (role: UserRole = 'user') => {
-    const run = randomUUID().slice(0, 8)
-    const [user] = await app.db
-      .insert(users)
-      .values({ name: run, email: `${run}@test.dev`, handle: `mod_${run}`, role })
-      .returning()
-    if (!user) throw new Error('insert failed')
+  const newUser = async (role: UserRole = 'user') => {
+    const user = await createUser(app, 'mod', { role })
     userIds.push(user.id)
-    return { id: user.id, cookie: (await signIn(app, user.id)).cookie }
+    return user
   }
 
   const act = (payload: object, cookie = mod) =>
@@ -46,8 +40,8 @@ describe('moderation', () => {
     })
 
   beforeAll(async () => {
-    mod = (await createUser('moderator')).cookie
-    const m = await createUser()
+    mod = (await newUser('moderator')).cookie
+    const m = await newUser()
     member = m.cookie
     memberId = m.id
   })
@@ -149,7 +143,7 @@ describe('moderation', () => {
   })
 
   it('bans users from writing but not reading, then unbans', async () => {
-    const target = await createUser()
+    const target = await newUser()
     const until = new Date(Date.now() + 86_400_000).toISOString()
     expect(
       (await act({ action: 'ban', targetType: 'user', targetId: target.id, reason: 'x' }))

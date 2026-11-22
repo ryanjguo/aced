@@ -1,8 +1,7 @@
-import { randomUUID } from 'node:crypto'
 import { eq, inArray, schema, sql } from '@aced/db'
 import type { Page, Post } from '@aced/types'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { buildTestApp, redisReady, signIn } from './build-test-app.js'
+import { buildTestApp, createUser, redisReady } from './build-test-app.js'
 
 const { users, posts, teams } = schema
 
@@ -14,14 +13,8 @@ describe('feeds', () => {
   const stranger = { id: '', cookie: '' }
   let teamId = ''
 
-  const createUser = async (into: { id: string; cookie: string }) => {
-    const handle = `feed_${randomUUID().slice(0, 8)}`
-    const [u] = await app.db
-      .insert(users)
-      .values({ name: handle, email: `${handle}@test.dev`, handle })
-      .returning()
-    into.id = u?.id ?? ''
-    into.cookie = (await signIn(app, into.id)).cookie
+  const newUser = async (into: { id: string; cookie: string }) => {
+    Object.assign(into, await createUser(app, 'feed'))
     userIds.push(into.id)
   }
 
@@ -43,9 +36,9 @@ describe('feeds', () => {
   beforeAll(async () => {
     await redisReady(app)
     await app.redis.del('feed:for-you:first-page')
-    await createUser(reader)
-    await createUser(writer)
-    await createUser(stranger)
+    await newUser(reader)
+    await newUser(writer)
+    await newUser(stranger)
     teamId = (await app.db.select().from(teams).where(eq(teams.slug, 'driftwood')))[0]?.id ?? ''
   })
 
