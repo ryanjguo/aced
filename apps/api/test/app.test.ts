@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { z } from 'zod'
+import { workerFresh } from '../src/routes/health.js'
 import { buildTestApp, redisReady } from './build-test-app.js'
 
 describe('app', () => {
@@ -59,5 +60,12 @@ describe('app', () => {
     })
     expect(res.headers['access-control-allow-methods']).toContain('PATCH')
     expect(res.headers['access-control-allow-methods']).toContain('DELETE')
+  })
+  it('reports worker freshness', () => {
+    const now = Date.parse('2027-01-01T12:00:00Z')
+    expect(workerFresh(null, now)).toBeNull()
+    expect(workerFresh('2027-01-01T11:45:00Z', now)).toBe(true)
+    expect(workerFresh('2027-01-01T11:00:00Z', now)).toBe(false)
+    expect(workerFresh('garbage', now)).toBe(false)
   })
 })

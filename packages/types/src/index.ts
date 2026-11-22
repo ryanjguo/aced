@@ -75,6 +75,8 @@ export interface HealthResponse {
   checks: {
     postgres: boolean
     redis: boolean
+    /** Synced in the last 30 minutes; null until the first sync has ever run. */
+    worker: boolean | null
   }
 }
 
