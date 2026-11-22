@@ -18,6 +18,8 @@ import type {
   TopWindow,
   UpdateMeInput,
   UpdatePostInput,
+  VoteResult,
+  VoteValue,
 } from '@aced/types'
 
 export class ApiClientError extends Error {
@@ -99,6 +101,8 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
         `/posts/${encodeURIComponent(id)}/comments${query({ cursor })}`,
         init,
       ),
+    vote: (targetType: 'post' | 'comment', targetId: string, value: VoteValue) =>
+      request<VoteResult>('/votes', json('PUT', { targetType, targetId, value })),
     createComment: (postId: string, input: { body: string; parentId?: string }) =>
       request<CommentNode>(`/posts/${encodeURIComponent(postId)}/comments`, json('POST', input)),
     updateComment: (id: string, body: string) =>

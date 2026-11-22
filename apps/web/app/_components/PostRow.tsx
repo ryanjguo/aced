@@ -1,6 +1,7 @@
 import type { Post } from '@aced/types'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
+import { VoteButtons } from '@/components/VoteButtons'
 import { timeAgo } from '@/lib/time-ago'
 
 const KIND_LABEL: Partial<Record<Post['kind'], string>> = {
@@ -27,9 +28,7 @@ export function PostRow({ post, showBoard = true }: { post: Post; showBoard?: bo
   const site = post.url && domain(post.url)
   return (
     <li className="flex gap-3 border-b border-border px-4 py-3 last:border-b-0">
-      <div className="w-10 shrink-0 pt-0.5 text-center font-mono text-sm tabular-nums text-muted">
-        {post.score}
-      </div>
+      <VoteButtons targetType="post" targetId={post.id} score={post.score} myVote={post.myVote} />
       <div className="min-w-0 flex-1">
         <Link
           href={`/p/${post.id}`}
