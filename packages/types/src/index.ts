@@ -365,4 +365,11 @@ export interface StatCardData {
   highlight: string
 }
 
-export type PostData = ResultCardData | StatCardData
+export interface TransferCardData {
+  type: 'transfer'
+  player: { handle: string; slug: string }
+  from: { name: string; tag: string; slug: string } | null
+  to: { name: string; tag: string; slug: string } | null
+}
+
+export type PostData = ResultCardData | StatCardData | TransferCardData
