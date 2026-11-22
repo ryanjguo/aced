@@ -7,6 +7,8 @@ export interface AuthOptions {
   secret?: string
   baseUrl: string
   webOrigin: string
+  /** Parent domain shared by web and API (e.g. `.aced.gg`), so the session cookie reaches both. */
+  cookieDomain?: string
   google?: { clientId: string; clientSecret: string }
   discord?: { clientId: string; clientSecret: string }
 }
@@ -26,7 +28,13 @@ export function createAuth(db: Db, options: AuthOptions) {
         verification: schema.verifications,
       },
     }),
-    advanced: { database: { generateId: 'uuid' } },
+    advanced: {
+      database: { generateId: 'uuid' },
+      // Secure cookies follow from an https baseURL; SameSite stays Lax.
+      ...(options.cookieDomain && {
+        crossSubDomainCookies: { enabled: true, domain: options.cookieDomain },
+      }),
+    },
     socialProviders: {
       ...(options.google && { google: options.google }),
       ...(options.discord && { discord: options.discord }),
