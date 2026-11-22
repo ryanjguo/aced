@@ -27,6 +27,7 @@ export const users = pgTable(
     role: userRole().notNull().default('user'),
     karma: integer().notNull().default(0),
     bio: text(),
+    bannedUntil: timestamp({ withTimezone: true }),
     ...timestamps,
   },
   (t) => [check('users_handle_format', sql`${t.handle}::text ~ '^[a-z0-9_]{3,20}$'`)],

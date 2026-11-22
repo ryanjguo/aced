@@ -88,6 +88,7 @@ export type ApiErrorCode =
   | 'content_blocked'
   | 'rate_limited'
   | 'already_reported'
+  | 'banned'
   | 'internal'
 
 export interface ApiError {
@@ -218,4 +219,33 @@ export interface CreateReportInput {
   targetId: string
   reason: ReportReason
   note?: string
+}
+
+export type ModActionType = 'remove' | 'restore' | 'lock' | 'unlock' | 'ban' | 'unban' | 'dismiss'
+
+export interface ModQueueItem {
+  targetType: 'post' | 'comment' | 'user'
+  targetId: string
+  reportCount: number
+  reasons: ReportReason[]
+  notes: string[]
+  lastReportedAt: string
+  /** What was reported, shown in full to moderators even if removed. Null if it no longer exists. */
+  preview: {
+    title: string | null
+    body: string
+    author: UserSummary | null
+    postId: string | null
+    isRemoved: boolean
+    isLocked: boolean
+  } | null
+}
+
+export interface ModActionInput {
+  action: ModActionType
+  targetType: 'post' | 'comment' | 'user'
+  targetId: string
+  reason?: string
+  /** Required for `ban`. */
+  until?: string
 }

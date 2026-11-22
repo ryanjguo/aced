@@ -47,3 +47,28 @@ export const reports = pgTable(
     check('reports_note_length', sql`char_length(${t.note}) <= 500`),
   ],
 )
+
+export const modActionType = pgEnum('mod_action_type', [
+  'remove',
+  'restore',
+  'lock',
+  'unlock',
+  'ban',
+  'unban',
+  'dismiss',
+])
+
+/** Audit log of every moderator action. */
+export const modActions = pgTable(
+  'mod_actions',
+  {
+    id: id(),
+    actorId: uuid().references(() => users.id, { onDelete: 'set null' }),
+    action: modActionType().notNull(),
+    targetType: reportTarget().notNull(),
+    targetId: uuid().notNull(),
+    reason: text(),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index().on(t.targetType, t.targetId), index().on(t.createdAt)],
+)
