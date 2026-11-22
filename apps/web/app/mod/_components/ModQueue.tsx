@@ -177,7 +177,7 @@ function QueueItem({
             ban
             title={`Ban @${preview?.author?.handle ?? 'user'}`}
             trigger={
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="destructive">
                 Ban {targetType === 'user' ? 'user' : 'author'}
               </Button>
             }

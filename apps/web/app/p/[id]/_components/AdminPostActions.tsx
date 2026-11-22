@@ -12,6 +12,7 @@ export function AdminPostActions({ postId, removed }: { postId: string; removed:
   const router = useRouter()
   const { data } = authClient.useSession()
   const [message, setMessage] = useState<string | null>(null)
+  const [confirming, setConfirming] = useState(false)
   if (data?.user.role !== 'admin') return null
 
   async function run(action: () => Promise<unknown>, done: string) {
@@ -37,26 +38,38 @@ export function AdminPostActions({ postId, removed }: { postId: string; removed:
       >
         Regenerate
       </Button>
-      {!removed && (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() =>
-            run(
-              () =>
-                api.modAction({
-                  action: 'remove',
-                  targetType: 'post',
-                  targetId: postId,
-                  reason: 'Incorrect generated post',
-                }),
-              'Hidden.',
-            )
-          }
-        >
-          Hide
-        </Button>
-      )}
+      {!removed &&
+        (confirming ? (
+          <span className="flex items-center gap-2 text-xs">
+            Hide this post?
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => {
+                setConfirming(false)
+                run(
+                  () =>
+                    api.modAction({
+                      action: 'remove',
+                      targetType: 'post',
+                      targetId: postId,
+                      reason: 'Incorrect generated post',
+                    }),
+                  'Hidden.',
+                )
+              }}
+            >
+              Hide
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setConfirming(false)}>
+              Keep
+            </Button>
+          </span>
+        ) : (
+          <Button size="sm" variant="destructive" onClick={() => setConfirming(true)}>
+            Hide
+          </Button>
+        ))}
       {message && (
         <span role="status" className="text-xs text-muted">
           {message}
