@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { eq, inArray, schema } from '@aced/db'
+import { hotScore } from '@aced/ranking'
 import type { Post } from '@aced/types'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { buildTestApp, signIn } from './build-test-app.js'
@@ -52,6 +53,8 @@ describe('posts', () => {
     const post = res.json<Post>()
     expect(post).toMatchObject({ kind: input.kind, score: 0, isRemoved: false })
     expect(post.author?.handle).toMatch(/^p_/)
+    const [row] = await app.db.select().from(posts).where(eq(posts.id, post.id))
+    expect(row?.hotScore).toBeCloseTo(hotScore(0, new Date(post.createdAt)), 6)
   })
 
   it.each([

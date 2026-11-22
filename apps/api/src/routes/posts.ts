@@ -1,4 +1,5 @@
 import { eq, type PostRow, schema } from '@aced/db'
+import { hotScore } from '@aced/ranking'
 import type { Post } from '@aced/types'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
@@ -60,9 +61,10 @@ export const postRoutes: FastifyPluginAsyncZod = async (app) => {
         if (!board) throw new HttpError(400, 'bad_request', 'Unknown board')
       }
       // #54: content filter and rate limits run here, before the insert.
+      const createdAt = new Date()
       const [row] = await app.db
         .insert(posts)
-        .values({ ...input, authorId: user.id })
+        .values({ ...input, authorId: user.id, createdAt, hotScore: hotScore(0, createdAt) })
         .returning({ id: posts.id })
       if (!row) throw new Error('insert returned no row')
       reply.code(201)

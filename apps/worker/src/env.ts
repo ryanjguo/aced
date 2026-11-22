@@ -9,5 +9,6 @@ function required(name: string): string {
 }
 
 export const env = {
+  databaseUrl: required('DATABASE_URL'),
   redisUrl: required('REDIS_URL'),
 }

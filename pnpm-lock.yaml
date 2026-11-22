@@ -20,6 +20,9 @@ importers:
       '@aced/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@aced/ranking':
+        specifier: workspace:*
+        version: link:../../packages/ranking
       '@aced/redis':
         specifier: workspace:*
         version: link:../../packages/redis
@@ -115,9 +118,15 @@ importers:
 
   apps/worker:
     dependencies:
+      '@aced/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@aced/jobs':
         specifier: workspace:*
         version: link:../../packages/jobs
+      '@aced/ranking':
+        specifier: workspace:*
+        version: link:../../packages/ranking
       '@aced/redis':
         specifier: workspace:*
         version: link:../../packages/redis
@@ -206,6 +215,18 @@ importers:
       '@types/node':
         specifier: ^22
         version: 22.20.5
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+      vitest:
+        specifier: ^5.1.1
+        version: 5.1.1(@types/node@22.20.5)(vite@8.3.8(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+
+  packages/ranking:
+    devDependencies:
+      '@aced/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       typescript:
         specifier: ^5
         version: 5.9.3
