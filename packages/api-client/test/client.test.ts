@@ -64,4 +64,16 @@ describe('api client', () => {
       body: '{"handle":"tenz"}',
     })
   })
+
+  it('aborts requests that take longer than timeoutMs', async () => {
+    // A fetch that only settles when its signal aborts, like a hung server.
+    const fetch = vi.fn(
+      (_url: string, init?: RequestInit) =>
+        new Promise<Response>((_, reject) =>
+          init?.signal?.addEventListener('abort', () => reject(init.signal?.reason)),
+        ),
+    )
+    const api = createApiClient({ baseUrl: 'http://api', fetch, timeoutMs: 20 })
+    await expect(api.health()).rejects.toMatchObject({ name: 'TimeoutError' })
+  })
 })

@@ -75,16 +75,19 @@ const query = (params: object) => {
 export interface ApiClientOptions {
   baseUrl: string
   fetch?: typeof fetch
+  /** Aborts requests that take longer than this, unless the call passes its own signal. */
+  timeoutMs?: number
 }
 
 function isApiError(body: unknown): body is ApiError {
   return typeof body === 'object' && body !== null && 'error' in body
 }
 
-export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOptions) {
+export function createApiClient({ baseUrl, fetch: fetchFn = fetch, timeoutMs }: ApiClientOptions) {
   async function request<T>(path: string, init?: RequestInit, okStatuses: number[] = []) {
     // Send the session cookie on cross-origin browser requests; ignored on the server.
-    const res = await fetchFn(`${baseUrl}${path}`, { credentials: 'include', ...init })
+    const signal = init?.signal ?? (timeoutMs ? AbortSignal.timeout(timeoutMs) : undefined)
+    const res = await fetchFn(`${baseUrl}${path}`, { credentials: 'include', ...init, signal })
     const body: unknown = await res.json().catch(() => null)
     if (res.ok || okStatuses.includes(res.status)) return body as T
     if (isApiError(body)) {

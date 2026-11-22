@@ -9,6 +9,7 @@ export async function serverApi() {
   const cookie = (await cookies()).toString()
   return createApiClient({
     baseUrl: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000',
+    timeoutMs: 5000,
     fetch: (url, init) => fetch(url, { ...init, headers: { ...init?.headers, cookie } }),
   })
 }
