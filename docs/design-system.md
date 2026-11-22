@@ -27,7 +27,7 @@ CSS variables on `:root` (light) and `.dark` (dark). Components only use these n
 | `--accent-tint` | `rgb(224 69 90 / 0.16)` | `rgb(196 47 69 / 0.10)` | Background behind crimson elements |
 | `--btn` | `#eceef1` | `#121418` | Primary button background |
 | `--on-btn` | `#0c0d0f` | `#ffffff` | Primary button text |
-| `--success` | `#4ade80` | `#15803d` | Confirmed transfers, success messages only |
+| `--success` | `#4ade80` | `#166534` | Confirmed transfers, success messages only |
 | `--danger` | `#f06a7c` | `#c42f45` | Errors and destructive actions (same hue as accent) |
 
 All text tokens meet WCAG AA (4.5:1) on `--bg`, `--surface` and `--surface-2` in both themes.
