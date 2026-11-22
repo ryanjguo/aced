@@ -1,7 +1,6 @@
 import { ApiClientError } from '@aced/api-client'
 import type { Profile } from '@aced/types'
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { FollowButton } from '@/components/FollowButton'
@@ -9,7 +8,6 @@ import { LinkTabs } from '@/components/LinkTabs'
 import { ReportButton } from '@/components/ReportButton'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { serverApi } from '@/lib/server-api'
-import { cn } from '@/lib/utils'
 import { ProfileFeed } from './_components/ProfileFeed'
 
 type Props = {
