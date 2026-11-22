@@ -3,6 +3,7 @@ import { JOBS } from '@aced/jobs'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
+import { postColumns } from '../lib/post-columns.js'
 import { currentUser, requireRole } from '../user.js'
 
 const { series, posts, modActions } = schema
@@ -54,7 +55,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     '/admin/posts/:id/regenerate',
     { schema: { params: z.object({ id: z.uuid() }) } },
     async (req, reply) => {
-      const [post] = await app.db.select().from(posts).where(eq(posts.id, req.params.id))
+      const [post] = await app.db.select(postColumns).from(posts).where(eq(posts.id, req.params.id))
       if (!post) throw new HttpError(404, 'not_found', 'Post not found')
       const [kind, id, playerId] = post.sourceKey?.split(':') ?? []
       const job =

@@ -4,6 +4,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
+import { postColumns } from '../lib/post-columns.js'
 import { toComment, toPost } from '../mappers/social.js'
 import { loadPostExtras } from '../post-extras.js'
 import { rumorStats } from '../rumors.js'
@@ -49,7 +50,7 @@ export const userRoutes: FastifyPluginAsyncZod = async (app) => {
       const user = await findUser(req.params.handle)
       const after = decode(req.query.cursor)
       const rows = await app.db
-        .select({ post: posts, board: boards, key: sql<string>`${posts.createdAt}::text` })
+        .select({ post: postColumns, board: boards, key: sql<string>`${posts.createdAt}::text` })
         .from(posts)
         .leftJoin(boards, eq(boards.id, posts.boardId))
         .where(

@@ -4,6 +4,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
+import { postColumns } from '../lib/post-columns.js'
 import { toPost } from '../mappers/social.js'
 import { loadPostExtras } from '../post-extras.js'
 
@@ -128,7 +129,7 @@ export const searchRoutes: FastifyPluginAsyncZod = async (app) => {
       // Rounded so the cursor round-trips exactly through JSON.
       const rank = sql<number>`round(ts_rank(${posts.searchVector}, ${tsquery})::numeric, 6)::float`
       const rows = await app.db
-        .select({ post: posts, author: users, board: boards, rank })
+        .select({ post: postColumns, author: users, board: boards, rank })
         .from(posts)
         .leftJoin(users, eq(users.id, posts.authorId))
         .leftJoin(boards, eq(boards.id, posts.boardId))

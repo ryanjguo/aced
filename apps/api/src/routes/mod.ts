@@ -4,6 +4,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { HttpError } from '../errors.js'
 import { decodeCursor, encodeCursor } from '../lib/cursor.js'
+import { postColumns } from '../lib/post-columns.js'
 import { listPosts } from '../lib/post-list.js'
 import { currentUser, outranks, requireRole, toUserSummary } from '../user.js'
 
@@ -98,7 +99,7 @@ export const modRoutes: FastifyPluginAsyncZod = async (app) => {
       const [postRows, commentRows, userRows] = await Promise.all([
         ids('post').length
           ? app.db
-              .select({ post: posts, author: users })
+              .select({ post: postColumns, author: users })
               .from(posts)
               .leftJoin(users, eq(users.id, posts.authorId))
               .where(inArray(posts.id, ids('post')))
