@@ -54,7 +54,11 @@ export interface AppOptions {
 }
 
 export function buildApp(options: AppOptions) {
-  const app = Fastify({ logger: options.logger ?? true }).withTypeProvider<ZodTypeProvider>()
+  const app = Fastify({
+    logger: options.logger ?? true,
+    // Idle keep-alive sockets would otherwise hold close() open until they time out.
+    forceCloseConnections: 'idle',
+  }).withTypeProvider<ZodTypeProvider>()
   app.setValidatorCompiler(validatorCompiler)
   app.setSerializerCompiler(serializerCompiler)
 

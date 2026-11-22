@@ -33,6 +33,7 @@ console.log(`[worker] running ${jobs.map((j) => j.name).join(', ')}`)
 // Railway sends SIGTERM on redeploy; let running jobs finish before exiting.
 async function shutdown(signal: string) {
   console.log(`[worker] ${signal}, shutting down`)
+  setTimeout(() => process.exit(1), 10_000).unref()
   await Promise.all(workers.map((w) => w.close()))
   await queues.close()
   connection.disconnect()
