@@ -7,14 +7,19 @@ import { PostRow } from '@/app/_components/PostRow'
 import { api } from '@/lib/api'
 
 /** Server-rendered first page, then loads more as the end of the list scrolls into view. */
-export type FeedSource = { board: string } | { entityType: TagEntityType; entityId: string }
+export type FeedSource =
+  | { board: string }
+  | { entityType: TagEntityType; entityId: string }
+  | { search: string }
 
 export function PostFeed({
   source,
   query,
   initial,
+  emptyText = 'No posts yet.',
 }: {
   source: FeedSource
+  emptyText?: string
   query: BoardPostsQuery
   initial: { items: Post[]; nextCursor: string | null }
 }) {
@@ -35,7 +40,9 @@ export function PostFeed({
         const page =
           'board' in source
             ? await api.boardPosts(source.board, params)
-            : await api.entityPosts(source.entityType, source.entityId, params)
+            : 'search' in source
+              ? await api.searchPosts(source.search, cursor)
+              : await api.entityPosts(source.entityType, source.entityId, params)
         setItems((prev) => [...prev, ...page.items])
         setCursor(page.nextCursor)
       } catch {
@@ -49,7 +56,7 @@ export function PostFeed({
   }, [source, query, cursor])
 
   if (items.length === 0) {
-    return <p className="py-12 text-center text-sm text-muted">No posts yet.</p>
+    return <p className="py-12 text-center text-sm text-muted">{emptyText}</p>
   }
 
   return (
