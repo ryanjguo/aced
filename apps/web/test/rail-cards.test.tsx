@@ -12,7 +12,7 @@ const api = vi.hoisted(() => ({
   trending: vi.fn(),
   acsLeaders: vi.fn(),
 }))
-vi.mock('@/lib/api', () => ({ api }))
+vi.mock('@/lib/api', () => ({ api, esportsCache: {} }))
 
 const team = (tag: string) => ({ id: tag, name: tag, tag, slug: tag.toLowerCase() })
 const series = (id: string, status: Series['status'], inHours: number, a: string, b: string) =>

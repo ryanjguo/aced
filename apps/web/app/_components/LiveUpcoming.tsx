@@ -1,17 +1,18 @@
 import Link from 'next/link'
-import { api } from '@/lib/api'
+import { api, esportsCache } from '@/lib/api'
 import { timeUntil } from '@/lib/time-ago'
 import { RailCard, railItem } from './RailCard'
 
 /** Live series, then scheduled ones in the next 48 hours by start time (5 at most). */
 export async function LiveUpcoming() {
-  const now = Date.now()
+  // Rounded to the minute so the window's URL repeats and the 60s cache can hit.
+  const now = Math.floor(Date.now() / 60_000) * 60_000
   // Live ones can have started hours ago, so they're fetched on their own.
   const [live, next] = await Promise.all([
-    api.series({ status: 'live' }, { cache: 'no-store' }),
+    api.series({ status: 'live' }, esportsCache),
     api.series(
       { from: new Date(now).toISOString(), to: new Date(now + 48 * 3600_000).toISOString() },
-      { cache: 'no-store' },
+      esportsCache,
     ),
   ]).catch(() => [null, null])
   if (!live || !next) return null

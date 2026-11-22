@@ -14,7 +14,8 @@ export const api = createApiClient({
 })
 
 /**
- * Public esports data (series, events, players, teams) changes every few minutes at most, so
- * server fetches of it share a 60s cache. Anything personal stays `no-store`.
+ * Public, non-personal data (series, events, players, teams, boards, rumors, trending) changes
+ * every few minutes at most, so server fetches of it share a 60s cache. Anything personal stays
+ * `no-store`.
  */
 export const esportsCache: RequestInit = { next: { revalidate: 60 } }

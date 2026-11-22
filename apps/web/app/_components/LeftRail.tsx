@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { api } from '@/lib/api'
+import { api, esportsCache } from '@/lib/api'
 import { serverApi } from '@/lib/server-api'
 
 const item =
@@ -10,8 +10,8 @@ export async function LeftRail() {
   const viewer = await serverApi()
   const [follows, boards, live] = await Promise.all([
     viewer.follows({ cache: 'no-store' }).catch(() => null),
-    api.boards({ cache: 'no-store' }).catch(() => null),
-    api.series({ status: 'live' }, { cache: 'no-store' }).catch(() => null),
+    api.boards(esportsCache).catch(() => null),
+    api.series({ status: 'live' }, esportsCache).catch(() => null),
   ])
   const teams = follows?.items.filter((f) => f.type === 'team') ?? []
   const liveTeams = new Set(live?.items.flatMap((s) => [s.teamA?.id, s.teamB?.id]) ?? [])

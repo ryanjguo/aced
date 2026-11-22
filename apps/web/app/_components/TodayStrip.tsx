@@ -1,6 +1,6 @@
 import type { Series } from '@aced/types'
 import Link from 'next/link'
-import { api } from '@/lib/api'
+import { api, esportsCache } from '@/lib/api'
 import { getTimeZone, startOfToday } from '@/lib/time-zone'
 
 const rank = (s: Series) => (s.status === 'live' ? 0 : 1)
@@ -11,8 +11,8 @@ export async function TodayStrip() {
   const from = startOfToday(tz)
   const to = new Date(from.getTime() + 24 * 60 * 60 * 1000)
   const [today, live] = await Promise.all([
-    api.series({ from: from.toISOString(), to: to.toISOString() }, { cache: 'no-store' }),
-    api.series({ status: 'live' }, { cache: 'no-store' }),
+    api.series({ from: from.toISOString(), to: to.toISOString() }, esportsCache),
+    api.series({ status: 'live' }, esportsCache),
   ]).catch(() => [null, null])
   const byId = new Map([...(live?.items ?? []), ...(today?.items ?? [])].map((s) => [s.id, s]))
   const items = [...byId.values()]
