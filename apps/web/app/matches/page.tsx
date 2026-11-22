@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
+import { MatchList } from '@/components/MatchList'
 import { api } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
-import { MatchList } from './_components/MatchList'
 
 export const metadata: Metadata = { title: 'Matches' }
 export const dynamic = 'force-dynamic'

@@ -5,10 +5,10 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { FollowButton } from '@/components/FollowButton'
+import { MatchList } from '@/components/MatchList'
 import { api } from '@/lib/api'
 import { getTimeZone } from '@/lib/time-zone'
 import { Discussion } from '../../_components/Discussion'
-import { MatchList } from '../../matches/_components/MatchList'
 
 type Props = { params: Promise<{ slug: string }> }
 
