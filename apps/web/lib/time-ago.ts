@@ -16,3 +16,7 @@ export function timeAgo(iso: string, now = Date.now()): string {
   }
   return `${Math.floor(n)}y`
 }
+
+/** Compact time until a future instant, same units: `45m`, `2h`, `3d`. */
+export const timeUntil = (iso: string, now = Date.now()) =>
+  timeAgo(new Date(now).toISOString(), Date.parse(iso))
