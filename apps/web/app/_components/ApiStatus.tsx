@@ -14,7 +14,7 @@ export function ApiStatus() {
 
   if (health === undefined) return <p className="h-4" />
   const label = !health ? 'API unreachable' : health.status === 'ok' ? 'All systems ok' : 'Degraded'
-  const color = health?.status === 'ok' ? 'bg-accent' : 'bg-muted'
+  const color = health?.status === 'ok' ? 'bg-success' : 'bg-muted'
 
   return (
     <p className="flex items-center justify-center gap-2 text-xs text-muted">

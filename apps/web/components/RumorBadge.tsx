@@ -13,10 +13,8 @@ export function RumorBadge({ status }: { status: RumorStatus }) {
       variant="outline"
       className={
         status === 'confirmed'
-          ? 'border-accent text-accent'
-          : status === 'denied'
-            ? 'border-live text-live'
-            : ''
+          ? 'border-success text-success'
+          : `text-muted ${status === 'denied' ? 'line-through' : ''}`
       }
     >
       {LABEL[status]}

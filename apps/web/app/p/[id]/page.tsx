@@ -104,7 +104,7 @@ export default async function PostPage({ params }: Props) {
                 href={post.url}
                 rel="noopener noreferrer nofollow ugc"
                 target="_blank"
-                className="text-sm break-all text-accent hover:underline"
+                className="text-sm break-all underline decoration-muted underline-offset-2 hover:decoration-fg"
               >
                 {post.url}
               </a>

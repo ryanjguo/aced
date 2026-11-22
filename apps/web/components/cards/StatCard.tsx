@@ -12,7 +12,7 @@ export function StatCard({ data }: { data: StatCardData }) {
   return (
     <div className="flex flex-col gap-2">
       <p className="text-xs text-muted">
-        <span className="text-accent">{data.highlight}</span> ·{' '}
+        <span className="font-medium text-fg">{data.highlight}</span> ·{' '}
         <Link href={`/matches/${data.seriesId}`} className="relative z-10 hover:text-fg">
           {data.mapName}
           {data.opponent && ` vs ${data.opponent.tag}`}

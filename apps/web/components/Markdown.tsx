@@ -13,7 +13,7 @@ export function Markdown({ children }: { children: string }) {
               href={href}
               target="_blank"
               rel="noopener noreferrer nofollow ugc"
-              className="text-accent hover:underline"
+              className="underline decoration-muted underline-offset-2 hover:decoration-fg"
             >
               {children}
             </a>

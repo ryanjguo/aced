@@ -37,7 +37,7 @@ export function AuthorActions({ postId, authorId }: { postId: string; authorId: 
       {confirming ? (
         <span className="flex items-center gap-3">
           Delete this post?
-          <Button variant="link" size="sm" className={`${action} text-live`} onClick={remove}>
+          <Button variant="link" size="sm" className={`${action} text-danger`} onClick={remove}>
             Delete
           </Button>
           <Button variant="link" size="sm" className={action} onClick={() => setConfirming(false)}>
@@ -49,7 +49,7 @@ export function AuthorActions({ postId, authorId }: { postId: string; authorId: 
           Delete
         </Button>
       )}
-      {error && <span className="text-live">{error}</span>}
+      {error && <span className="text-danger">{error}</span>}
     </>
   )
 }

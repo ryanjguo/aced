@@ -51,7 +51,7 @@ export function CommentEditor({
         onFocus={(e) => e.currentTarget.setSelectionRange(body.length, body.length)}
       />
       {error && (
-        <p role="alert" className="text-xs text-live">
+        <p role="alert" className="text-xs text-danger">
           {error}
         </p>
       )}

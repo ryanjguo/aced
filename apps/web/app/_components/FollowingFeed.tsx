@@ -20,7 +20,10 @@ export function FollowingFeed() {
   if (!isPending && !session) {
     return (
       <p className="py-12 text-center text-sm text-muted">
-        <Link href="/signin?from=%2F%3Ftab%3Dfollowing" className="text-accent hover:underline">
+        <Link
+          href="/signin?from=%2F%3Ftab%3Dfollowing"
+          className="underline decoration-muted underline-offset-2 hover:decoration-fg"
+        >
           Sign in
         </Link>{' '}
         to see posts about the players, teams and people you follow.

@@ -50,7 +50,7 @@ export function VoteButtons({
   }
 
   const button =
-    'rounded p-0.5 text-muted transition-colors hover:bg-border/60 hover:text-fg disabled:pointer-events-none disabled:opacity-40'
+    'rounded p-0.5 text-muted transition-colors hover:bg-surface-2 hover:text-fg disabled:pointer-events-none disabled:opacity-40'
   return (
     <div className={cn('flex items-center', layout === 'column' ? 'flex-col' : 'flex-row gap-1')}>
       <button
@@ -59,7 +59,7 @@ export function VoteButtons({
         disabled={own}
         aria-pressed={state.myVote === 1}
         onClick={() => vote(1)}
-        className={cn(button, state.myVote === 1 && 'text-accent hover:text-accent')}
+        className={cn(button, state.myVote === 1 && 'bg-accent-tint text-accent hover:text-accent')}
       >
         <ChevronUp className="size-4" />
       </button>
@@ -67,8 +67,7 @@ export function VoteButtons({
         className={cn(
           'min-w-6 text-center font-mono text-xs tabular-nums',
           state.myVote === 1 && 'text-accent',
-          state.myVote === -1 && 'text-live',
-          error && 'text-live',
+          error && 'text-danger',
         )}
         title={error ? "Couldn't save your vote" : undefined}
       >
@@ -80,7 +79,7 @@ export function VoteButtons({
         disabled={own}
         aria-pressed={state.myVote === -1}
         onClick={() => vote(-1)}
-        className={cn(button, state.myVote === -1 && 'text-live hover:text-live')}
+        className={cn(button, state.myVote === -1 && 'bg-surface-2 text-fg')}
       >
         <ChevronDown className="size-4" />
       </button>

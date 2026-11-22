@@ -66,7 +66,7 @@ export function CommentActions({
       {mode === 'confirm-delete' && (
         <span className="flex gap-3 text-xs">
           <span className="text-muted">Delete this comment?</span>
-          <Button variant="link" size="sm" className={`${action} text-live`} onClick={onDelete}>
+          <Button variant="link" size="sm" className={`${action} text-danger`} onClick={onDelete}>
             Delete
           </Button>
           <Button variant="link" size="sm" className={action} onClick={() => setMode('view')}>

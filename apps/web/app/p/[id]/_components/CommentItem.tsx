@@ -73,7 +73,7 @@ export function CommentItem({ comment }: { comment: CommentNode }) {
         aria-label={collapsed ? 'Expand thread' : 'Collapse thread'}
         className="group flex w-3 shrink-0 justify-center pt-1"
       >
-        <span className="w-px bg-border group-hover:bg-accent" />
+        <span className="w-px bg-border group-hover:bg-muted" />
       </button>
       <div className="min-w-0 flex-1 py-1">
         <p className="text-xs text-muted">
@@ -151,7 +151,7 @@ export function CommentItem({ comment }: { comment: CommentNode }) {
                   : `Load ${hiddenReplies} more repl${hiddenReplies === 1 ? 'y' : 'ies'}`}
               </Button>
             )}
-            {error && <p className="text-xs text-live">{error}</p>}
+            {error && <p className="text-xs text-danger">{error}</p>}
           </>
         )}
       </div>

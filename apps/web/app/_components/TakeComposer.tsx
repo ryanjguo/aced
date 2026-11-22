@@ -24,7 +24,10 @@ export function TakeComposer() {
   if (!session) {
     return (
       <p className="rounded-lg border border-border bg-surface px-4 py-3 text-sm text-muted">
-        <Link href="/signin?from=%2F" className="text-accent hover:underline">
+        <Link
+          href="/signin?from=%2F"
+          className="underline decoration-muted underline-offset-2 hover:decoration-fg"
+        >
           Sign in
         </Link>{' '}
         to post your takes.
@@ -66,12 +69,12 @@ export function TakeComposer() {
         />
         <div className="flex items-center justify-end gap-3">
           {error && (
-            <p role="alert" className="mr-auto text-xs text-live">
+            <p role="alert" className="mr-auto text-xs text-danger">
               {error}
             </p>
           )}
           <span
-            className={`text-xs tabular-nums ${body.length > MAX - 50 ? 'text-live' : 'text-muted'}`}
+            className={`text-xs tabular-nums ${body.length > MAX - 50 ? 'text-danger' : 'text-muted'}`}
           >
             {MAX - body.length}
           </span>

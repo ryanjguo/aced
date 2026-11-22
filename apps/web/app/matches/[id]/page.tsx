@@ -71,8 +71,8 @@ export default async function SeriesPage({ params }: Props) {
             {series.event.name}
           </Link>
           {status === 'live' ? (
-            <span className="inline-flex items-center gap-1 font-semibold text-live">
-              <span className="size-1.5 animate-pulse rounded-full bg-live" />
+            <span className="inline-flex items-center gap-1 font-semibold text-accent">
+              <span className="size-1.5 animate-pulse rounded-full bg-accent" />
               LIVE
             </span>
           ) : (
@@ -114,7 +114,7 @@ export default async function SeriesPage({ params }: Props) {
               </span>
               <span className="font-mono tabular-nums">
                 {map.score[0]} : {map.score[1]}
-                {map.winnerId === null && <span className="ml-2 text-xs text-live">LIVE</span>}
+                {map.winnerId === null && <span className="ml-2 text-xs text-accent">LIVE</span>}
               </span>
             </h2>
             {map.stats.length === 0 ? (
