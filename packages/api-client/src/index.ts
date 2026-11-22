@@ -9,6 +9,7 @@ import type {
   Follow,
   FollowTargetType,
   HealthResponse,
+  MatchedRumor,
   Me,
   ModActionInput,
   ModQueueItem,
@@ -160,6 +161,7 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch }: ApiClientOp
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(input),
       }),
+    matchedRumors: (init?: RequestInit) => request<Page<MatchedRumor>>('/mod/rumors/matched', init),
     resolveRumor: (postId: string, status: 'confirmed' | 'denied') =>
       request<null>(`/mod/rumors/${encodeURIComponent(postId)}`, json('POST', { status })),
     me: (init?: RequestInit) => request<Me>('/me', init),
