@@ -87,7 +87,7 @@ export default async function PlayerPage({ params }: Props) {
         <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {tiles.map(([label, value]) => (
             <div key={label} className="rounded-lg border border-border bg-surface p-3">
-              <dt className="text-xs text-muted">{label}</dt>
+              <dt className="text-[11px] text-muted">{label}</dt>
               <dd className="font-mono text-xl tabular-nums">{value}</dd>
             </div>
           ))}
@@ -101,29 +101,29 @@ export default async function PlayerPage({ params }: Props) {
         {player.recentMaps.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted">No maps played yet.</p>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+          <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full min-w-[560px] text-sm tabular-nums">
-              <thead className="text-xs text-muted">
+              <thead className="bg-surface text-xs text-muted">
                 <tr className="border-b border-border">
-                  <th scope="col" className="px-4 py-2 text-left font-medium">
+                  <th scope="col" className="px-4 py-1.5 text-left font-medium">
                     Date
                   </th>
-                  <th scope="col" className="px-2 py-2 text-left font-medium">
+                  <th scope="col" className="px-2 py-1.5 text-left font-medium">
                     Map
                   </th>
-                  <th scope="col" className="px-2 py-2 text-left font-medium">
+                  <th scope="col" className="px-2 py-1.5 text-left font-medium">
                     Opponent
                   </th>
-                  <th scope="col" className="px-2 py-2 text-left font-medium">
+                  <th scope="col" className="px-2 py-1.5 text-left font-medium">
                     Agent
                   </th>
-                  <th scope="col" className="px-2 py-2 text-right font-medium">
-                    K / D / A
+                  <th scope="col" className="px-2 py-1.5 text-right font-medium">
+                    K/D/A
                   </th>
-                  <th scope="col" className="px-2 py-2 text-right font-medium">
+                  <th scope="col" className="px-2 py-1.5 text-right font-medium">
                     ACS
                   </th>
-                  <th scope="col" className="px-4 py-2 text-right font-medium">
+                  <th scope="col" className="px-4 py-1.5 text-right font-medium">
                     ADR
                   </th>
                 </tr>
@@ -134,10 +134,10 @@ export default async function PlayerPage({ params }: Props) {
                     key={`${m.seriesId}:${m.mapName}`}
                     className="border-b border-border last:border-b-0"
                   >
-                    <td className="px-4 py-2 text-muted">
+                    <td className="px-4 py-1.5 text-muted">
                       {m.playedAt ? day.format(new Date(m.playedAt)) : '–'}
                     </td>
-                    <td className="px-2 py-2 font-sans">
+                    <td className="px-2 py-1.5 font-sans">
                       <Link href={`/matches/${m.seriesId}`} className="hover:underline">
                         {m.mapName}
                       </Link>
@@ -147,7 +147,7 @@ export default async function PlayerPage({ params }: Props) {
                         </span>
                       )}
                     </td>
-                    <td className="px-2 py-2">
+                    <td className="px-2 py-1.5">
                       {m.opponent ? (
                         <Link href={`/teams/${m.opponent.slug}`} className="hover:underline">
                           {m.opponent.tag}
@@ -156,12 +156,12 @@ export default async function PlayerPage({ params }: Props) {
                         'TBD'
                       )}
                     </td>
-                    <td className="px-2 py-2 font-sans text-muted">{m.stat.agent ?? '–'}</td>
-                    <td className="px-2 py-2 text-right">
-                      {m.stat.kills} / {m.stat.deaths} / {m.stat.assists}
+                    <td className="px-2 py-1.5 font-sans text-muted">{m.stat.agent ?? '–'}</td>
+                    <td className="px-2 py-1.5 text-right">
+                      {m.stat.kills}/{m.stat.deaths}/{m.stat.assists}
                     </td>
-                    <td className="px-2 py-2 text-right">{fixed(m.stat.acs)}</td>
-                    <td className="px-4 py-2 text-right">{fixed(m.stat.adr)}</td>
+                    <td className="px-2 py-1.5 text-right">{fixed(m.stat.acs)}</td>
+                    <td className="px-4 py-1.5 text-right">{fixed(m.stat.adr)}</td>
                   </tr>
                 ))}
               </tbody>
