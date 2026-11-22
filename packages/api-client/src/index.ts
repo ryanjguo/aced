@@ -196,6 +196,7 @@ export function createApiClient({ baseUrl, fetch: fetchFn = fetch, timeoutMs }: 
     resolveRumor: (postId: string, status: 'confirmed' | 'denied') =>
       request<null>(`/mod/rumors/${encodeURIComponent(postId)}`, json('POST', { status })),
     me: (init?: RequestInit) => request<Me>('/me', init),
+    deleteMe: (confirm: string) => request<null>('/me', json('DELETE', { confirm })),
     updateMe: (input: UpdateMeInput) =>
       request<Me>('/me', {
         method: 'PATCH',

@@ -37,8 +37,9 @@ export default function PrivacyPage() {
         </ul>
         <h2>Deleting your account</h2>
         <p>
-          Email [CONTACT EMAIL] from the address you signed in with and we'll delete your account.
-          Your posts and comments stay, shown as from a removed user, so threads still make sense.
+          Go to <Link href="/settings">Settings</Link> to download your data or delete your account.
+          Deleting removes your sign-in, votes and follows; your posts and comments stay without
+          your name, so threads still make sense.
         </p>
         <h2>Contact</h2>
         <p>
