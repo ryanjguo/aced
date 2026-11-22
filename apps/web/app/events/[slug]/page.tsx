@@ -38,7 +38,12 @@ const region = (event: Event) =>
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const detail = await getEvent((await params).slug)
-  return { title: detail && detail !== 'not_found' ? detail.event.name : 'Event' }
+  if (!detail || detail === 'not_found') return { title: 'Event' }
+  return {
+    title: detail.event.name,
+    description: `${detail.event.name} schedule, results and discussion.`,
+    alternates: { canonical: `/events/${detail.event.slug}` },
+  }
 }
 
 export default async function EventPage({ params }: Props) {

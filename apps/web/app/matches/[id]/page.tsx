@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { api } from '@/lib/api'
+import { seriesJsonLd } from '@/lib/json-ld'
 import { getTimeZone } from '@/lib/time-zone'
 import { AdminSeriesFix } from './_components/AdminSeriesFix'
 import { LocalTime } from './_components/LocalTime'
@@ -30,7 +31,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const series = await getSeries((await params).id)
   if (!series || series === 'not_found') return { title: 'Match' }
   const middle = series.status === 'scheduled' ? 'vs' : `${series.score[0]}–${series.score[1]}`
-  return { title: `${tag(series.teamA)} ${middle} ${tag(series.teamB)} · ${series.event.name}` }
+  return {
+    title: `${tag(series.teamA)} ${middle} ${tag(series.teamB)} · ${series.event.name}`,
+    description: `${series.teamA?.name ?? 'TBD'} vs ${series.teamB?.name ?? 'TBD'}, best of ${series.bestOf}, ${series.event.name}: maps, stats and match thread.`,
+    alternates: { canonical: `/matches/${series.id}` },
+  }
 }
 
 function TeamName({ team, won }: { team: Team | null; won: boolean }) {
@@ -65,6 +70,13 @@ export default async function SeriesPage({ params }: Props) {
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD from our own data, with < escaped
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(seriesJsonLd(series)).replace(/</g, '\\u003c'),
+        }}
+      />
       <header className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-4 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
           <Link href={`/events/${series.event.slug}`} className="hover:text-fg">

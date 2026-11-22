@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { PostForm } from '@/app/_components/PostForm'
 import { api } from '@/lib/api'
 
-export const metadata: Metadata = { title: 'New post' }
+export const metadata: Metadata = { title: 'New post', robots: { index: false } }
 export const dynamic = 'force-dynamic'
 
 export default async function SubmitPage({
